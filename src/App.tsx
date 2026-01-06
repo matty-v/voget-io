@@ -11,11 +11,11 @@ const projects = [
     github: "https://github.com/matty-v/budget-app",
   },
   {
-    title: "Project Two",
-    description: "Description of your second project. What problem does it solve? What technologies did you use?",
-    tech: ["Node.js", "PostgreSQL", "Docker"],
+    title: "Google Drive MCP Server",
+    description: "MCP server enabling Claude to interact with Google Drive. Browse, search, read, create, and edit files with full OAuth2 authentication.",
+    tech: ["TypeScript", "Google Cloud", "OAuth2", "Docker"],
     link: "#",
-    github: "#",
+    github: "https://github.com/matty-v/google-drive-mcp",
   },
   {
     title: "Project Three",
