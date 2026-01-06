@@ -4,11 +4,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 
 const projects = [
   {
-    title: "Budget Tracker",
-    description: "Personal finance app with Google Sheets backend. Track expenses, manage accounts, and import transactions from bank CSV exports.",
-    tech: ["React", "TypeScript", "Tailwind", "Google Sheets API"],
-    link: "https://budget.voget.io",
-    github: "https://github.com/matty-v/budget-app",
+    title: "Lifting Tracker",
+    description: "Workout logging app to track lifts, log sessions, and monitor progress over time.",
+    tech: ["React", "TypeScript", "Tailwind"],
+    link: "https://lifting.voget.io",
+    github: "https://github.com/matty-v/lifting",
   },
   {
     title: "Google Drive MCP Server",
@@ -18,11 +18,11 @@ const projects = [
     github: "https://github.com/matty-v/google-drive-mcp",
   },
   {
-    title: "Project Three",
-    description: "Description of your third project. Highlight the interesting technical challenges you solved.",
-    tech: ["Python", "FastAPI", "Redis"],
-    link: "#",
-    github: "#",
+    title: "Budget Tracker",
+    description: "Personal finance app with Google Sheets backend. Track expenses, manage accounts, and import transactions from bank CSV exports.",
+    tech: ["React", "TypeScript", "Tailwind", "Google Sheets API"],
+    link: "https://budget.voget.io",
+    github: "https://github.com/matty-v/budget-app",
   },
 ]
 
