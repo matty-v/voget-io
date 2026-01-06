@@ -21,7 +21,7 @@ const projects = [
     title: "Disc Golf Tracker",
     description: "Track disc golf rounds, scores, and stats across courses.",
     tech: ["React", "TypeScript", "Tailwind"],
-    link: "#",
+    link: "https://disc-golf.voget.io",
     github: "https://github.com/matty-v/disc-golf-tracker",
   },
 ]
