@@ -9,8 +9,10 @@ PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
 BACKEND_BUCKET_NAME="voget-io-backend"
 URL_MAP_NAME="voget-io-url-map"
 HTTPS_PROXY_NAME="voget-io-https-proxy"
+HTTP_PROXY_NAME="voget-io-http-proxy"
 SSL_CERT_NAME="voget-io-ssl-cert"
-FORWARDING_RULE_NAME="voget-io-https-rule"
+HTTPS_FORWARDING_RULE_NAME="voget-io-https-rule"
+HTTP_FORWARDING_RULE_NAME="voget-io-http-rule"
 IP_NAME="voget-io-ip"
 
 # Colors
@@ -66,16 +68,36 @@ if ! gcloud compute target-https-proxies describe $HTTPS_PROXY_NAME &>/dev/null;
         --global
 fi
 
-# 6. Create the forwarding rule
-echo -e "\n${GREEN}6. Creating forwarding rule...${NC}"
-if ! gcloud compute forwarding-rules describe $FORWARDING_RULE_NAME --global &>/dev/null; then
-    gcloud compute forwarding-rules create $FORWARDING_RULE_NAME \
+# 6. Create the HTTPS forwarding rule
+echo -e "\n${GREEN}6. Creating HTTPS forwarding rule (port 443)...${NC}"
+if ! gcloud compute forwarding-rules describe $HTTPS_FORWARDING_RULE_NAME --global &>/dev/null; then
+    gcloud compute forwarding-rules create $HTTPS_FORWARDING_RULE_NAME \
         --load-balancing-scheme=EXTERNAL_MANAGED \
         --network-tier=PREMIUM \
         --address=$IP_NAME \
         --target-https-proxy=$HTTPS_PROXY_NAME \
         --global \
         --ports=443
+fi
+
+# 7. Create HTTP target proxy (needed for SSL cert validation)
+echo -e "\n${GREEN}7. Creating HTTP target proxy...${NC}"
+if ! gcloud compute target-http-proxies describe $HTTP_PROXY_NAME &>/dev/null; then
+    gcloud compute target-http-proxies create $HTTP_PROXY_NAME \
+        --url-map=$URL_MAP_NAME \
+        --global
+fi
+
+# 8. Create HTTP forwarding rule (port 80 - required for SSL cert provisioning)
+echo -e "\n${GREEN}8. Creating HTTP forwarding rule (port 80)...${NC}"
+if ! gcloud compute forwarding-rules describe $HTTP_FORWARDING_RULE_NAME --global &>/dev/null; then
+    gcloud compute forwarding-rules create $HTTP_FORWARDING_RULE_NAME \
+        --load-balancing-scheme=EXTERNAL_MANAGED \
+        --network-tier=PREMIUM \
+        --address=$IP_NAME \
+        --target-http-proxy=$HTTP_PROXY_NAME \
+        --global \
+        --ports=80
 fi
 
 # Print DNS instructions
