@@ -8,7 +8,7 @@ const projects = [
     description: "Personal finance app with Google Sheets backend. Track expenses, manage accounts, and import transactions from bank CSV exports.",
     tech: ["React", "TypeScript", "Tailwind", "Google Sheets API"],
     link: "https://budget.voget.io",
-    github: "https://github.com/voget/budget-app",
+    github: "https://github.com/matty-v/budget-app",
   },
   {
     title: "Project Two",
@@ -106,7 +106,7 @@ function Contact() {
       </p>
       <div className="flex gap-4 justify-center">
         <Button variant="outline" size="icon" asChild>
-          <a href="https://github.com/voget" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <a href="https://github.com/matty-v" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
             <Github className="h-5 w-5" />
           </a>
         </Button>
