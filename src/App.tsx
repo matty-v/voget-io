@@ -18,11 +18,11 @@ const projects = [
     github: "https://github.com/matty-v/google-drive-mcp",
   },
   {
-    title: "Budget Tracker",
-    description: "Personal finance app with Google Sheets backend. Track expenses, manage accounts, and import transactions from bank CSV exports.",
-    tech: ["React", "TypeScript", "Tailwind", "Google Sheets API"],
-    link: "https://budget.voget.io",
-    github: "https://github.com/matty-v/budget-app",
+    title: "Disc Golf Tracker",
+    description: "Track disc golf rounds, scores, and stats across courses.",
+    tech: ["React", "TypeScript", "Tailwind"],
+    link: "#",
+    github: "https://github.com/matty-v/disc-golf-tracker",
   },
 ]
 
