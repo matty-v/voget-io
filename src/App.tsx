@@ -116,7 +116,7 @@ function Contact() {
           </a>
         </Button>
         <Button variant="outline" size="icon" asChild>
-          <a href="mailto:matt@voget.io" aria-label="Email">
+          <a href="mailto:matt.voget@gmail.com" aria-label="Email">
             <Mail className="h-5 w-5" />
           </a>
         </Button>
