@@ -111,7 +111,7 @@ function Contact() {
           </a>
         </Button>
         <Button variant="outline" size="icon" asChild>
-          <a href="https://linkedin.com/in/voget" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <a href="https://www.linkedin.com/in/matthew-voget-47a225a1/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
             <Linkedin className="h-5 w-5" />
           </a>
         </Button>
