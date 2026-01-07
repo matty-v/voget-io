@@ -8,7 +8,7 @@ const projects = [
     title: "Google Drive MCP Server",
     description: "MCP server enabling Claude to interact with Google Drive. Browse, search, read, create, and edit files with full OAuth2 authentication.",
     tech: ["TypeScript", "Google Cloud", "OAuth2", "Docker"],
-    link: "https://google-drive-mcp-201158295757.us-central1.run.app",
+    link: "https://google-drive-mcp-xpl65co6pa-uc.a.run.app",
     github: "https://github.com/matty-v/google-drive-mcp",
   },
   {
