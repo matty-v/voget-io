@@ -8,14 +8,14 @@ const projects = [
     title: "Google Drive MCP Server",
     description: "MCP server enabling Claude to interact with Google Drive. Browse, search, read, create, and edit files with full OAuth2 authentication.",
     tech: ["TypeScript", "Google Cloud", "OAuth2", "Docker"],
-    link: "#",
+    link: "https://google-drive-mcp-201158295757.us-central1.run.app",
     github: "https://github.com/matty-v/google-drive-mcp",
   },
   {
     title: "Sheets DB API",
     description: "REST API that uses Google Sheets as a lightweight database backend. Simple data persistence without managing infrastructure.",
     tech: ["TypeScript", "Google Cloud", "OpenAPI"],
-    link: "#",
+    link: "https://sheetsapi-g56q77hy2a-uc.a.run.app",
     github: "https://github.com/matty-v/sheets-db-api",
   },
   {
