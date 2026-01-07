@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
@@ -170,17 +170,110 @@ function Contact() {
   )
 }
 
+function PrivacyPolicy() {
+  return (
+    <section className="py-12 max-w-2xl mx-auto">
+      <h1 className="text-3xl font-semibold tracking-tight mb-8">
+        <span className="glow-cyan">Privacy Policy</span>
+      </h1>
+      <div className="space-y-6 text-muted-foreground font-light">
+        <p>Last updated: {new Date().toLocaleDateString()}</p>
+        <p>
+          This website is a personal portfolio site. We do not collect, store, or process any personal information from visitors.
+        </p>
+        <p>
+          This site does not use cookies, analytics, or any tracking technologies.
+        </p>
+        <p>
+          If you contact me via email, I will only use your information to respond to your inquiry.
+        </p>
+        <p>
+          For questions about this policy, contact me at matt.voget@gmail.com.
+        </p>
+      </div>
+      <div className="mt-8">
+        <Button variant="outline" asChild className="border-[var(--accent-cyan)]/50 hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10">
+          <a href="#">Back to Home</a>
+        </Button>
+      </div>
+    </section>
+  )
+}
+
+function TermsAndConditions() {
+  return (
+    <section className="py-12 max-w-2xl mx-auto">
+      <h1 className="text-3xl font-semibold tracking-tight mb-8">
+        <span className="glow-purple">Terms and Conditions</span>
+      </h1>
+      <div className="space-y-6 text-muted-foreground font-light">
+        <p>Last updated: {new Date().toLocaleDateString()}</p>
+        <p>
+          This is a personal portfolio website. By accessing this site, you agree to these terms.
+        </p>
+        <p>
+          All content on this site, including text, graphics, and code samples, is provided for informational purposes only.
+        </p>
+        <p>
+          The projects showcased are my personal work. External links to demos and repositories are provided as-is.
+        </p>
+        <p>
+          This site is provided "as is" without warranties of any kind.
+        </p>
+        <p>
+          For questions, contact me at matt.voget@gmail.com.
+        </p>
+      </div>
+      <div className="mt-8">
+        <Button variant="outline" asChild className="border-[var(--accent-purple)]/50 hover:border-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/10">
+          <a href="#">Back to Home</a>
+        </Button>
+      </div>
+    </section>
+  )
+}
+
 function App() {
+  const [page, setPage] = useState(() => window.location.hash.slice(1) || 'home')
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setPage(window.location.hash.slice(1) || 'home')
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  const renderContent = () => {
+    switch (page) {
+      case 'privacy':
+        return <PrivacyPolicy />
+      case 'terms':
+        return <TermsAndConditions />
+      default:
+        return (
+          <>
+            <Hero />
+            <Projects />
+            <Contact />
+          </>
+        )
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] relative">
       <Background />
       <main className="container max-w-4xl mx-auto px-4 py-8 space-y-16 relative z-10">
-        <Hero />
-        <Projects />
-        <Contact />
+        {renderContent()}
       </main>
       <footer className="border-t border-[var(--accent-cyan)]/10 py-6 text-center text-sm text-muted-foreground relative z-10">
         <p className="font-light">&copy; {new Date().getFullYear()} Matt Voget. Built with React + Tailwind.</p>
+        <div className="mt-2 space-x-4">
+          <a href="#privacy" className="hover:text-[var(--accent-cyan)] transition-colors">Privacy Policy</a>
+          <a href="#terms" className="hover:text-[var(--accent-purple)] transition-colors">Terms and Conditions</a>
+        </div>
       </footer>
     </div>
   )
