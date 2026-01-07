@@ -170,7 +170,7 @@ function Contact() {
   )
 }
 
-function PrivacyPolicy() {
+function PrivacyPolicy({ onNavigate }: { onNavigate: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
   return (
     <section className="py-12 max-w-2xl mx-auto">
       <h1 className="text-3xl font-semibold tracking-tight mb-8">
@@ -193,14 +193,14 @@ function PrivacyPolicy() {
       </div>
       <div className="mt-8">
         <Button variant="outline" asChild className="border-[var(--accent-cyan)]/50 hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10">
-          <a href="#">Back to Home</a>
+          <a href="/" onClick={(e) => onNavigate(e, '/')}>Back to Home</a>
         </Button>
       </div>
     </section>
   )
 }
 
-function TermsAndConditions() {
+function TermsAndConditions({ onNavigate }: { onNavigate: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
   return (
     <section className="py-12 max-w-2xl mx-auto">
       <h1 className="text-3xl font-semibold tracking-tight mb-8">
@@ -226,7 +226,7 @@ function TermsAndConditions() {
       </div>
       <div className="mt-8">
         <Button variant="outline" asChild className="border-[var(--accent-purple)]/50 hover:border-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/10">
-          <a href="#">Back to Home</a>
+          <a href="/" onClick={(e) => onNavigate(e, '/')}>Back to Home</a>
         </Button>
       </div>
     </section>
@@ -234,23 +234,35 @@ function TermsAndConditions() {
 }
 
 function App() {
-  const [page, setPage] = useState(() => window.location.hash.slice(1) || 'home')
+  const getPageFromPath = () => {
+    const path = window.location.pathname.replace(/^\//, '')
+    return path || 'home'
+  }
+
+  const [page, setPage] = useState(getPageFromPath)
 
   useEffect(() => {
-    const handleHashChange = () => {
-      setPage(window.location.hash.slice(1) || 'home')
+    const handlePopState = () => {
+      setPage(getPageFromPath())
       window.scrollTo(0, 0)
     }
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
   }, [])
+
+  const navigate = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    e.preventDefault()
+    window.history.pushState({}, '', path)
+    setPage(path.replace(/^\//, '') || 'home')
+    window.scrollTo(0, 0)
+  }
 
   const renderContent = () => {
     switch (page) {
       case 'privacy':
-        return <PrivacyPolicy />
+        return <PrivacyPolicy onNavigate={navigate} />
       case 'terms':
-        return <TermsAndConditions />
+        return <TermsAndConditions onNavigate={navigate} />
       default:
         return (
           <>
@@ -271,8 +283,8 @@ function App() {
       <footer className="border-t border-[var(--accent-cyan)]/10 py-6 text-center text-sm text-muted-foreground relative z-10">
         <p className="font-light">&copy; {new Date().getFullYear()} Matt Voget. Built with React + Tailwind.</p>
         <div className="mt-2 space-x-4">
-          <a href="#privacy" className="hover:text-[var(--accent-cyan)] transition-colors">Privacy Policy</a>
-          <a href="#terms" className="hover:text-[var(--accent-purple)] transition-colors">Terms and Conditions</a>
+          <a href="/privacy" onClick={(e) => navigate(e, '/privacy')} className="hover:text-[var(--accent-cyan)] transition-colors">Privacy Policy</a>
+          <a href="/terms" onClick={(e) => navigate(e, '/terms')} className="hover:text-[var(--accent-purple)] transition-colors">Terms and Conditions</a>
         </div>
       </footer>
     </div>
