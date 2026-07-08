@@ -95,16 +95,21 @@ function MyWork() {
       </h2>
 
       <div className="space-y-10">
-        <div className="flex items-center gap-3">
-          <Gem
-            className="h-8 w-8 shrink-0"
-            strokeWidth={1.5}
-            aria-hidden
-            style={{ color: 'var(--accent-cyan)', filter: 'drop-shadow(0 0 10px color-mix(in srgb, var(--accent-cyan) 55%, transparent))' }}
-          />
-          <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-            <span className="glow-cyan">Kyber</span> — A Kubernetes Native Agent Platform
-          </h3>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Gem
+              className="h-8 w-8 shrink-0"
+              strokeWidth={1.5}
+              aria-hidden
+              style={{ color: 'var(--accent-cyan)', filter: 'drop-shadow(0 0 10px color-mix(in srgb, var(--accent-cyan) 55%, transparent))' }}
+            />
+            <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+              <span className="glow-cyan">Kyber</span> — A Kubernetes Native Agent Platform
+            </h3>
+          </div>
+          <p className="text-sm sm:text-base text-muted-foreground font-light leading-relaxed max-w-3xl">
+            Kyber runs AI agents as first-class Kubernetes workloads, each in its own pod with persistent memory. I can restart sessions, manage agent identities, inject secrets, trigger actions on cron schedules, and hold two-way conversations with each one. Kyber&apos;s first use case is the Falcon Dev Team, a team of AI agents that ship real software end to end.
+          </p>
         </div>
 
         <div className="grid gap-x-16 gap-y-10 md:grid-cols-2 items-start">
