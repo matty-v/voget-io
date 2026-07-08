@@ -21,7 +21,8 @@ test.describe('Home Page', () => {
     // agent names also appear in the Kyber diagram pods, so match the first
     await expect(page.getByText('Obi-Wan').first()).toBeVisible()
     await expect(page.getByText('Boba-Fett').first()).toBeVisible()
-    await expect(page.getByText(/SNAP-142/i)).toBeVisible()
+    // SNAP-142 also appears in the Kyber diagram's terminal, so match the first
+    await expect(page.getByText(/SNAP-142/i).first()).toBeVisible()
     await expect(page.getByText('Orchestrator').first()).toBeVisible()
     await expect(page.getByText(/Merged & deployed/i)).toBeVisible()
   })
