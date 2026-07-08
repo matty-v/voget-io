@@ -26,18 +26,9 @@ test.describe('Home Page', () => {
     await expect(page.getByText('Shipped', { exact: true })).toBeVisible()
   })
 
-  test('displays contact section', async ({ page }) => {
+  test('displays contact section with social links', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Get in Touch' })).toBeVisible()
-  })
-
-  test('has working navigation to My Work section', async ({ page }) => {
-    await page.getByRole('link', { name: 'My Work' }).click()
-    await expect(page.locator('#work')).toBeInViewport()
-  })
-
-  test('has working navigation to Contact section', async ({ page }) => {
-    await page.getByRole('link', { name: 'Get in Touch' }).click()
-    await expect(page.locator('#contact')).toBeInViewport()
+    await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible()
   })
 })
 

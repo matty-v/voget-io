@@ -46,7 +46,7 @@ function Background() {
 
 function Hero() {
   return (
-    <section className="space-y-6 text-center py-16">
+    <section className="space-y-5 text-center pt-12 pb-0">
       <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
         <span className="text-foreground">Matt </span>
         <span className="glow-cyan">Voget</span>
@@ -55,27 +55,16 @@ function Hero() {
         I lead engineering teams, but still love to build!
         Passionate about good architecture, managing functional teams, and creating software that solves problems.
       </p>
-      <div className="flex gap-4 justify-center">
-        <Button variant="default" asChild className="bg-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/80 text-black font-medium">
-          <a href="#work">My Work</a>
-        </Button>
-        <Button variant="outline" asChild className="border-[var(--accent-purple)]/50 hover:border-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/10">
-          <a href="#contact">Get in Touch</a>
-        </Button>
-      </div>
     </section>
   )
 }
 
 function Contact() {
   return (
-    <section id="contact" className="space-y-6 text-center py-6">
+    <section id="contact" className="space-y-4 text-center py-0">
       <h2 className="text-2xl font-semibold tracking-tight">
         <span className="glow-cyan">Get in Touch</span>
       </h2>
-      <p className="text-muted-foreground font-light">
-        Feel free to reach out for collaborations, a Snapdex invite, or just a friendly hello
-      </p>
       <div className="flex gap-4 justify-center">
         <Button variant="outline" size="icon" asChild className="border-[var(--accent-cyan)]/30 hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10 hover:text-[var(--accent-cyan)]">
           <a href="https://github.com/matty-v" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
@@ -254,8 +243,10 @@ function App() {
       default:
         return (
           <>
-            <Hero />
-            <Contact />
+            <div className="space-y-8">
+              <Hero />
+              <Contact />
+            </div>
             <MyWork />
           </>
         )
