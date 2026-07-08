@@ -10,7 +10,8 @@ test.describe('Home Page', () => {
     await expect(page.getByText(/I lead engineering teams/i)).toBeVisible()
   })
 
-  test('displays Kyber, the team, and Snapdex', async ({ page }) => {
+  test('displays the What I\'m Building section with Kyber, the team, and Snapdex', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: /What I'm Building/i })).toBeVisible()
     await expect(page.getByRole('heading', { name: /Kubernetes Native Agent Platform/i })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'The Falcon Dev Team' })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Snapdex' })).toBeVisible()
@@ -31,9 +32,7 @@ test.describe('Home Page', () => {
     await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible()
   })
 
-  test('navigates to the live dashboard', async ({ page }) => {
-    await page.getByRole('link', { name: /live dashboard/i }).click()
-    await expect(page).toHaveURL('/live')
+  test('shows the Falcon Dev Team dashboard inline', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /falcon dev team dashboard/i })).toBeVisible()
     await expect(page.getByText(/Last 5 shipped/i)).toBeVisible()
     await expect(page.getByText('#443')).toBeVisible()

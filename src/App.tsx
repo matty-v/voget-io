@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Github, Linkedin, Mail } from 'lucide-react'
+import { Github, Linkedin, Mail, Gem } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FalconTeam } from '@/components/falcon-team'
 import { KyberDiagram } from '@/components/kyber-diagram'
@@ -89,23 +89,36 @@ function Contact() {
 
 function MyWork() {
   return (
-    <section id="work" className="space-y-14">
-      <div className="flex items-center gap-3">
-        <img src="/kyber-logo.png" alt="Kyber" className="h-10 w-10 shrink-0" />
-        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
-          <span className="glow-cyan">Kyber</span> — A Kubernetes Native Agent Platform
-        </h2>
-      </div>
+    <section id="work" className="space-y-16">
+      <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
+        <span className="glow-purple">What I&apos;m Building&hellip;</span>
+      </h2>
 
-      <div className="grid gap-10 md:grid-cols-2 items-start">
-        <div className="space-y-4">
-          <h3 className="text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold">Architecture</h3>
-          <KyberDiagram />
+      <div className="space-y-10">
+        <div className="flex items-center gap-3">
+          <Gem
+            className="h-8 w-8 shrink-0"
+            strokeWidth={1.5}
+            aria-hidden
+            style={{ color: 'var(--accent-cyan)', filter: 'drop-shadow(0 0 10px color-mix(in srgb, var(--accent-cyan) 55%, transparent))' }}
+          />
+          <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+            <span className="glow-cyan">Kyber</span> — A Kubernetes Native Agent Platform
+          </h3>
         </div>
-        <div className="space-y-4">
-          <h3 className="text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold">The Falcon Dev Team</h3>
-          <FalconTeam />
+
+        <div className="grid gap-10 md:grid-cols-2 items-start">
+          <div className="space-y-4">
+            <h4 className="text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold">Architecture</h4>
+            <KyberDiagram />
+          </div>
+          <div className="space-y-4">
+            <h4 className="text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold">The Falcon Dev Team</h4>
+            <FalconTeam />
+          </div>
         </div>
+
+        <LiveBoard />
       </div>
 
       <SnapdexShowcase />
@@ -206,8 +219,6 @@ function App() {
         return <PrivacyPolicy onNavigate={navigate} />
       case 'terms':
         return <TermsAndConditions onNavigate={navigate} />
-      case 'live':
-        return <LiveBoard onNavigate={navigate} />
       default:
         return (
           <>
@@ -216,11 +227,6 @@ function App() {
               <Contact />
             </div>
             <MyWork />
-            <div className="text-center">
-              <Button asChild className="bg-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/80 text-black font-medium">
-                <a href="/live" onClick={(e) => navigate(e, '/live')}>See the team's live dashboard &rarr;</a>
-              </Button>
-            </div>
           </>
         )
     }

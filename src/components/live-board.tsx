@@ -18,12 +18,14 @@ const LAST_SHIPPED: Shipped[] = [
 // Issues shipped per week, oldest -> newest (5w, 4w, 3w, 2w, now).
 const WEEKLY_SHIPPED = [3, 13, 60, 52, 36]
 
-export function LiveBoard({ onNavigate }: { onNavigate: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
+export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
   return (
     <section className={`py-10 ${styles.wrap}`}>
-      <a href="/" onClick={(e) => onNavigate(e, '/')} className={styles.back}>
-        &larr; Home
-      </a>
+      {onNavigate && (
+        <a href="/" onClick={(e) => onNavigate(e, '/')} className={styles.back}>
+          &larr; Home
+        </a>
+      )}
 
       <div className={styles.head}>
         <h1>
