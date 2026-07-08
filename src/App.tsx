@@ -87,49 +87,25 @@ function Contact() {
   )
 }
 
-function SectionHeading({ title, badge, badgeColor, children }: { title: string; badge?: string; badgeColor?: string; children: React.ReactNode }) {
-  return (
-    <div className="text-center space-y-2">
-      <div className="flex items-center justify-center gap-2 flex-wrap">
-        <h3 className="text-xl font-semibold tracking-tight text-foreground">{title}</h3>
-        {badge && (
-          <span
-            className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-md"
-            style={{
-              color: badgeColor,
-              background: `color-mix(in srgb, ${badgeColor} 10%, transparent)`,
-              border: `1px solid color-mix(in srgb, ${badgeColor} 25%, transparent)`,
-            }}
-          >
-            {badge}
-          </span>
-        )}
-      </div>
-      <p className="text-sm text-muted-foreground font-light max-w-2xl mx-auto">{children}</p>
-    </div>
-  )
-}
-
 function MyWork() {
   return (
     <section id="work" className="space-y-14">
-      <div className="space-y-1">
+      <div className="flex items-center gap-3">
+        <img src="/kyber-logo.png" alt="Kyber" className="h-10 w-10 shrink-0" />
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
-          <span className="glow-purple">My Work</span>
+          <span className="glow-cyan">Kyber</span> — A Kubernetes Native Agent Platform
         </h2>
-        <p className="text-base text-muted-foreground font-light">
-          Kyber: A Kubernetes Agent Management Platform
-        </p>
       </div>
 
-      <KyberDiagram />
-
-      <div className="space-y-8">
-        <SectionHeading title="The Falcon Dev Team">
-          Eight agents, each with a role a human team would recognize &mdash; shipping real software on Kyber,
-          autonomously.
-        </SectionHeading>
-        <FalconTeam />
+      <div className="grid gap-10 md:grid-cols-2 items-start">
+        <div className="space-y-4">
+          <h3 className="text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold">Architecture</h3>
+          <KyberDiagram />
+        </div>
+        <div className="space-y-4">
+          <h3 className="text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold">The Falcon Dev Team</h3>
+          <FalconTeam />
+        </div>
       </div>
 
       <SnapdexShowcase />
@@ -253,7 +229,7 @@ function App() {
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] relative">
       <Background />
-      <main className="container max-w-4xl mx-auto px-4 py-8 space-y-16 relative z-10">
+      <main className="container max-w-6xl mx-auto px-4 py-8 space-y-16 relative z-10">
         {renderContent()}
       </main>
       <footer className="border-t border-[var(--accent-cyan)]/10 py-6 text-center text-sm text-muted-foreground relative z-10">

@@ -10,9 +10,8 @@ test.describe('Home Page', () => {
     await expect(page.getByText(/I lead engineering teams/i)).toBeVisible()
   })
 
-  test('displays the My Work section with Kyber, the team, and Snapdex', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'My Work' })).toBeVisible()
-    await expect(page.getByText(/Kyber: A Kubernetes Agent Management Platform/i)).toBeVisible()
+  test('displays Kyber, the team, and Snapdex', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: /Kubernetes Native Agent Platform/i })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'The Falcon Dev Team' })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Snapdex' })).toBeVisible()
   })
