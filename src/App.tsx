@@ -1,7 +1,29 @@
 import { useEffect, useState } from 'react'
-import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react'
+import { Github, Linkedin, Mail, ExternalLink, Boxes, Sparkles, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { FalconTeam } from '@/components/falcon-team'
+
+const flagships = [
+  {
+    name: 'Kyber',
+    tagline: 'Kubernetes-native agent platform',
+    body: 'The platform behind the Falcon Dev Team. Autonomous agents run as first-class workloads on Kubernetes — with dispatch, persistent memory, code review, and deploy built into the fabric. The team above runs entirely on it.',
+    tags: ['Kubernetes', 'Go', 'Autonomous agents', 'k3s'],
+    icon: Boxes,
+    accent: 'var(--accent-cyan)',
+    status: 'Private',
+  },
+  {
+    name: 'Snapdex',
+    tagline: 'Built end-to-end by the Falcon team',
+    body: 'An AI-powered capture-and-collect app — every feature designed, built, reviewed, and shipped by the autonomous team above, on Kyber. Currently invite-only.',
+    tags: ['React', 'AI', 'Product'],
+    icon: Sparkles,
+    accent: 'var(--accent-purple)',
+    status: 'Invite-only',
+  },
+]
 
 const projects = [
   {
@@ -170,6 +192,80 @@ function Contact() {
   )
 }
 
+function Flagships() {
+  return (
+    <section id="flagships" className="space-y-8">
+      <div className="text-center">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          <span className="glow-cyan">Flagship work</span>
+        </h2>
+        <p className="text-sm text-muted-foreground mt-2 font-light">The platform, and the product it builds</p>
+      </div>
+      <div className="grid gap-6 sm:grid-cols-2">
+        {flagships.map((f) => {
+          const Icon = f.icon
+          return (
+            <Card key={f.name} className="flex flex-col tech-card rounded-xl">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <span
+                    className="grid place-items-center h-10 w-10 rounded-lg shrink-0"
+                    style={{
+                      background: `color-mix(in srgb, ${f.accent} 12%, transparent)`,
+                      border: `1px solid color-mix(in srgb, ${f.accent} 35%, transparent)`,
+                    }}
+                  >
+                    <Icon className="h-5 w-5" style={{ color: f.accent }} />
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-foreground flex items-center gap-2 flex-wrap">
+                      {f.name}
+                      <span
+                        className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-md font-normal"
+                        style={{
+                          color: f.accent,
+                          background: `color-mix(in srgb, ${f.accent} 10%, transparent)`,
+                          border: `1px solid color-mix(in srgb, ${f.accent} 25%, transparent)`,
+                        }}
+                      >
+                        {f.status}
+                      </span>
+                    </CardTitle>
+                    <CardDescription className="font-light mt-1" style={{ color: f.accent, opacity: 0.85 }}>
+                      {f.tagline}
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="flex-1 space-y-4">
+                <p className="text-sm text-muted-foreground font-light leading-relaxed">{f.body}</p>
+                <div className="flex flex-wrap gap-2">
+                  {f.tags.map((tg) => (
+                    <span key={tg} className="text-xs tech-badge px-2 py-1 rounded-md">
+                      {tg}
+                    </span>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })}
+      </div>
+      <div className="text-center">
+        <Button
+          asChild
+          className="bg-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/80 text-black font-medium"
+        >
+          <a href="mailto:matt.voget@gmail.com?subject=Snapdex%20invite%20request">
+            Request a Snapdex invite
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        </Button>
+      </div>
+    </section>
+  )
+}
+
 function PrivacyPolicy({ onNavigate }: { onNavigate: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
   return (
     <section className="py-12 max-w-2xl mx-auto">
@@ -267,6 +363,8 @@ function App() {
         return (
           <>
             <Hero />
+            <FalconTeam />
+            <Flagships />
             <Projects />
             <Contact />
           </>
