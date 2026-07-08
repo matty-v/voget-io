@@ -73,13 +73,7 @@ export function FalconTeam() {
   return (
     <div className={styles.wrap}>
       <div className={styles.flow}>
-        <div className={`${styles.cap} ${styles.issue}`}>
-          <span aria-hidden="true">◉</span> <b>Issue</b>{' '}
-          <span className={styles.tk}>SNAP-142 &middot; &ldquo;Streak counter on the profile page&rdquo;</span>
-        </div>
-        <Conn />
-
-        {AGENTS.map((agent) => (
+        {AGENTS.map((agent, i) => (
           <Fragment key={agent.name}>
             <div className={styles.agent} style={{ ['--ac' as string]: agent.ac }}>
               <div className={styles.ahead}>
@@ -96,13 +90,9 @@ export function FalconTeam() {
                 ))}
               </div>
             </div>
-            <Conn />
+            {i < AGENTS.length - 1 && <Conn />}
           </Fragment>
         ))}
-
-        <div className={`${styles.cap} ${styles.done}`}>
-          <span aria-hidden="true">✓</span> Merged &amp; deployed to prod
-        </div>
       </div>
     </div>
   )

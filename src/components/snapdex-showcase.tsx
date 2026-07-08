@@ -84,17 +84,12 @@ export function SnapdexShowcase() {
 
   return (
     <div className={styles.snap}>
-      <p className={styles.eyebrow}>My Work · 03</p>
       <h2 className={styles.heading}>
         <DexScannerLogo className={styles.logo} idPrefix={`${uid}-heading`} />
         <span>
           <span className={styles.name}>Snapdex</span> — a Pokédex for the real world
         </span>
       </h2>
-      <p className={styles.lede}>
-        Snap a photo of any wild animal and an AI identifies the species, writes its field-guide entry, and drops it
-        in your dex. Level up, track your catalog, and collect witty AI-named badges for everything you find.
-      </p>
 
       <div className={styles.claim}>
         <div className={styles.claimBig}>

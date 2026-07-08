@@ -3,12 +3,6 @@ import { render, screen } from '@testing-library/react'
 import { FalconTeam } from './falcon-team'
 
 describe('FalconTeam', () => {
-  it('renders the issue and shipped end caps', () => {
-    render(<FalconTeam />)
-    expect(screen.getByText(/SNAP-142/i)).toBeInTheDocument()
-    expect(screen.getByText(/merged & deployed to prod/i)).toBeInTheDocument()
-  })
-
   it('renders every agent in handoff order', () => {
     render(<FalconTeam />)
     for (const name of ['Lando', 'Yoda', 'Obi-Wan', 'Han', 'Chewie', 'Boba-Fett', 'Ackbar']) {
