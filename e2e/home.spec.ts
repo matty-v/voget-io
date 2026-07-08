@@ -30,6 +30,13 @@ test.describe('Home Page', () => {
     await expect(page.getByRole('heading', { name: 'Get in Touch' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible()
   })
+
+  test('navigates to the live board', async ({ page }) => {
+    await page.getByRole('link', { name: /live board/i }).click()
+    await expect(page).toHaveURL('/live')
+    await expect(page.getByRole('heading', { name: /live board/i })).toBeVisible()
+    await expect(page.getByText('Shipped', { exact: true })).toBeVisible()
+  })
 })
 
 test.describe('Privacy Policy Page', () => {

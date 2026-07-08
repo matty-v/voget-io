@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { FalconTeam } from '@/components/falcon-team'
 import { KyberDiagram } from '@/components/kyber-diagram'
 import { SnapdexShowcase } from '@/components/snapdex-showcase'
+import { LiveBoard } from '@/components/live-board'
 
 function Particles() {
   useEffect(() => {
@@ -234,6 +235,8 @@ function App() {
         return <PrivacyPolicy onNavigate={navigate} />
       case 'terms':
         return <TermsAndConditions onNavigate={navigate} />
+      case 'live':
+        return <LiveBoard onNavigate={navigate} />
       default:
         return (
           <>
@@ -242,6 +245,11 @@ function App() {
               <Contact />
             </div>
             <MyWork />
+            <div className="text-center">
+              <Button asChild className="bg-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/80 text-black font-medium">
+                <a href="/live" onClick={(e) => navigate(e, '/live')}>See the team's live board &rarr;</a>
+              </Button>
+            </div>
           </>
         )
     }

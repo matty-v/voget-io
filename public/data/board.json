@@ -1,0 +1,118 @@
+{
+  "generatedAt": "2026-07-08T18:47:39.838Z",
+  "repo": "snapdex",
+  "columns": [
+    {
+      "key": "triage",
+      "name": "Triage",
+      "cards": [
+        {
+          "id": "445",
+          "kind": "issue",
+          "agent": null,
+          "tag": "draft"
+        },
+        {
+          "id": "444",
+          "kind": "issue",
+          "agent": null,
+          "tag": "draft"
+        },
+        {
+          "id": "418",
+          "kind": "issue",
+          "agent": null,
+          "tag": "draft"
+        }
+      ]
+    },
+    {
+      "key": "building",
+      "name": "Building",
+      "cards": [
+        {
+          "id": "443",
+          "kind": "issue",
+          "agent": "luke",
+          "tag": "deploy"
+        },
+        {
+          "id": "395",
+          "kind": "issue",
+          "agent": "ackbar",
+          "tag": "deploy"
+        },
+        {
+          "id": "428",
+          "kind": "issue",
+          "agent": null,
+          "tag": "deploy"
+        },
+        {
+          "id": "426",
+          "kind": "issue",
+          "agent": null,
+          "tag": "deploy"
+        }
+      ]
+    },
+    {
+      "key": "review",
+      "name": "In review",
+      "cards": [
+        {
+          "id": "446",
+          "kind": "pr",
+          "agent": null,
+          "tag": "pr"
+        }
+      ]
+    },
+    {
+      "key": "shipped",
+      "name": "Shipped",
+      "cards": [
+        {
+          "id": "440",
+          "kind": "issue",
+          "agent": "han",
+          "tag": "bug"
+        },
+        {
+          "id": "326",
+          "kind": "issue",
+          "agent": "han",
+          "tag": "deploy"
+        },
+        {
+          "id": "435",
+          "kind": "issue",
+          "agent": "luke",
+          "tag": "feature"
+        },
+        {
+          "id": "394",
+          "kind": "issue",
+          "agent": "ackbar",
+          "tag": "deploy"
+        },
+        {
+          "id": "424",
+          "kind": "issue",
+          "agent": "luke",
+          "tag": "feature"
+        },
+        {
+          "id": "427",
+          "kind": "issue",
+          "agent": "han",
+          "tag": "feature"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "shippedThisWeek": 39,
+    "agents": 5
+  }
+}
