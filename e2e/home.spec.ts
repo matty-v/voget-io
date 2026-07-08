@@ -34,7 +34,7 @@ test.describe('Home Page', () => {
   test('navigates to the live board', async ({ page }) => {
     await page.getByRole('link', { name: /live board/i }).click()
     await expect(page).toHaveURL('/live')
-    await expect(page.getByRole('heading', { name: /live board/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /falcon dev team board/i })).toBeVisible()
     await expect(page.getByText('Shipped', { exact: true })).toBeVisible()
   })
 })

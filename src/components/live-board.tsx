@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 type Card = { id: string; kind: 'issue' | 'pr'; agent: string | null; tag: string }
 type Column = { key: string; name: string; cards: Card[] }
-type Board = { generatedAt: string; repo: string; columns: Column[]; stats: { shippedThisWeek: number; agents: number } }
+type Board = { generatedAt: string; repo: string; columns: Column[]; stats: { agents: number } }
 
 const AGENT_COLOR: Record<string, string> = {
   yoda: 'var(--accent-cyan)',
@@ -27,17 +27,7 @@ const FALLBACK: Board = {
     { key: 'review', name: 'In review', cards: [{ id: '446', kind: 'pr', agent: null, tag: 'pr' }] },
     { key: 'shipped', name: 'Shipped', cards: [{ id: '442', kind: 'pr', agent: 'han', tag: 'pr' }] },
   ],
-  stats: { shippedThisWeek: 0, agents: 0 },
-}
-
-function ago(iso: string): string {
-  const ms = Date.now() - Date.parse(iso)
-  if (!Number.isFinite(ms) || ms < 0) return 'just now'
-  const m = Math.floor(ms / 60000)
-  if (m < 1) return 'just now'
-  if (m < 60) return `${m}m ago`
-  const h = Math.floor(m / 60)
-  return h < 24 ? `${h}h ago` : `${Math.floor(h / 24)}d ago`
+  stats: { agents: 0 },
 }
 
 export function LiveBoard({ onNavigate }: { onNavigate: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
@@ -83,18 +73,13 @@ export function LiveBoard({ onNavigate }: { onNavigate: (e: React.MouseEvent<HTM
         </a>
         <div className="lb-title-row">
           <h1 className="text-3xl font-semibold tracking-tight">
-            <span className="glow-cyan">Live board</span>
+            <span className="glow-cyan">Falcon Dev Team Board</span>
           </h1>
           <span className={'lb-live' + (live ? '' : ' off')}>
             <span className="lb-live-dot" />
             {live ? 'live' : 'sample'}
           </span>
         </div>
-        <p className="text-sm text-muted-foreground font-light">
-          The Falcon Dev Team's real work on <span className="text-foreground">{b.repo}</span>, sanitized &mdash; issue
-          and PR numbers only, no titles. {b.stats.shippedThisWeek} shipped this week &middot; {b.stats.agents} agents
-          active &middot; updated {ago(b.generatedAt)}
-        </p>
       </div>
 
       <div className="lb-board">

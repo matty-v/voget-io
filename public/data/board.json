@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-08T18:47:39.838Z",
+  "generatedAt": "2026-07-08T19:10:20.529Z",
   "repo": "snapdex",
   "columns": [
     {
@@ -7,64 +7,57 @@
       "name": "Triage",
       "cards": [
         {
-          "id": "445",
+          "id": "389",
           "kind": "issue",
-          "agent": null,
-          "tag": "draft"
+          "agent": "yoda",
+          "tag": "feature"
         },
         {
-          "id": "444",
+          "id": "396",
           "kind": "issue",
-          "agent": null,
-          "tag": "draft"
+          "agent": "yoda",
+          "tag": "feature"
         },
         {
-          "id": "418",
+          "id": "388",
           "kind": "issue",
-          "agent": null,
-          "tag": "draft"
+          "agent": "yoda",
+          "tag": "feature"
+        },
+        {
+          "id": "385",
+          "kind": "issue",
+          "agent": "yoda",
+          "tag": "feature"
+        },
+        {
+          "id": "374",
+          "kind": "issue",
+          "agent": "yoda",
+          "tag": "feature"
+        },
+        {
+          "id": "324",
+          "kind": "issue",
+          "agent": "boba-fett",
+          "tag": "feature"
         }
       ]
     },
     {
       "key": "building",
       "name": "Building",
-      "cards": [
-        {
-          "id": "443",
-          "kind": "issue",
-          "agent": "luke",
-          "tag": "deploy"
-        },
-        {
-          "id": "395",
-          "kind": "issue",
-          "agent": "ackbar",
-          "tag": "deploy"
-        },
-        {
-          "id": "428",
-          "kind": "issue",
-          "agent": null,
-          "tag": "deploy"
-        },
-        {
-          "id": "426",
-          "kind": "issue",
-          "agent": null,
-          "tag": "deploy"
-        }
-      ]
+      "cards": []
     },
     {
       "key": "review",
       "name": "In review",
       "cards": [
         {
-          "id": "446",
-          "kind": "pr",
-          "agent": null,
-          "tag": "pr"
+          "id": "395",
+          "kind": "issue",
+          "agent": "ackbar",
+          "tag": "deploy"
         }
       ]
     },
@@ -72,6 +65,12 @@
       "key": "shipped",
       "name": "Shipped",
       "cards": [
+        {
+          "id": "443",
+          "kind": "issue",
+          "agent": "ackbar",
+          "tag": "deploy"
+        },
         {
           "id": "440",
           "kind": "issue",
@@ -95,24 +94,11 @@
           "kind": "issue",
           "agent": "ackbar",
           "tag": "deploy"
-        },
-        {
-          "id": "424",
-          "kind": "issue",
-          "agent": "luke",
-          "tag": "feature"
-        },
-        {
-          "id": "427",
-          "kind": "issue",
-          "agent": "han",
-          "tag": "feature"
         }
       ]
     }
   ],
   "stats": {
-    "shippedThisWeek": 39,
     "agents": 5
   }
 }

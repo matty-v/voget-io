@@ -5,7 +5,7 @@ import { LiveBoard } from './live-board'
 describe('LiveBoard', () => {
   it('renders the four columns and the heading (falls back to sample data)', () => {
     render(<LiveBoard onNavigate={() => {}} />)
-    expect(screen.getByRole('heading', { name: /live board/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /falcon dev team board/i })).toBeInTheDocument()
     for (const col of ['Triage', 'Building', 'In review', 'Shipped']) {
       expect(screen.getByText(col)).toBeInTheDocument()
     }
