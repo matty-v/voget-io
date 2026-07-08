@@ -18,8 +18,9 @@ test.describe('Home Page', () => {
   })
 
   test('shows the Falcon team roster and live kanban', async ({ page }) => {
-    await expect(page.getByText('Obi-Wan')).toBeVisible()
-    await expect(page.getByText('Boba-Fett')).toBeVisible()
+    // agent names also appear in the Kyber diagram pods, so match the first
+    await expect(page.getByText('Obi-Wan').first()).toBeVisible()
+    await expect(page.getByText('Boba-Fett').first()).toBeVisible()
     await expect(page.getByText(/live work/i)).toBeVisible()
     await expect(page.getByText('Triage')).toBeVisible()
     await expect(page.getByText('Shipped')).toBeVisible()
