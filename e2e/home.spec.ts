@@ -17,13 +17,13 @@ test.describe('Home Page', () => {
     await expect(page.getByRole('heading', { name: 'Snapdex' })).toBeVisible()
   })
 
-  test('shows the Falcon team roster and live kanban', async ({ page }) => {
+  test('shows the Falcon Dev Team issue flow', async ({ page }) => {
     // agent names also appear in the Kyber diagram pods, so match the first
     await expect(page.getByText('Obi-Wan').first()).toBeVisible()
     await expect(page.getByText('Boba-Fett').first()).toBeVisible()
-    await expect(page.getByText(/live work/i)).toBeVisible()
-    await expect(page.getByText('Triage', { exact: true })).toBeVisible()
-    await expect(page.getByText('Shipped', { exact: true })).toBeVisible()
+    await expect(page.getByText(/SNAP-142/i)).toBeVisible()
+    await expect(page.getByText('Orchestrator').first()).toBeVisible()
+    await expect(page.getByText(/Merged & deployed/i)).toBeVisible()
   })
 
   test('displays contact section with social links', async ({ page }) => {

@@ -1,33 +1,32 @@
-import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import { FalconTeam } from './falcon-team'
 
 describe('FalconTeam', () => {
-  it('renders the roster and live-work headings', () => {
+  it('renders the issue and shipped end caps', () => {
     render(<FalconTeam />)
-    expect(screen.getByText(/who's on the team/i)).toBeInTheDocument()
-    expect(screen.getByText(/live work/i)).toBeInTheDocument()
+    expect(screen.getByText(/SNAP-142/i)).toBeInTheDocument()
+    expect(screen.getByText(/merged & deployed to prod/i)).toBeInTheDocument()
   })
 
-  it('lists every agent in the roster', () => {
+  it('renders every agent in handoff order', () => {
     render(<FalconTeam />)
-    // some agents (Yoda, Han, Chewie, Ackbar) also appear as kanban column owners,
-    // so assert presence rather than uniqueness
-    for (const name of ['Yoda', 'Obi-Wan', 'Lando', 'Han', 'Luke', 'Boba-Fett', 'Chewie', 'Ackbar']) {
+    for (const name of ['Lando', 'Yoda', 'Obi-Wan', 'Han', 'Chewie', 'Boba-Fett', 'Ackbar']) {
       expect(screen.getAllByText(name).length).toBeGreaterThan(0)
     }
   })
 
-  it('renders the kanban columns', () => {
+  it('renders role labels', () => {
     render(<FalconTeam />)
-    for (const col of ['Triage', 'Building', 'In review', 'Shipped']) {
-      expect(screen.getByText(col)).toBeInTheDocument()
+    for (const role of ['Orchestrator', 'Engineer', 'Deploy']) {
+      expect(screen.getAllByText(role).length).toBeGreaterThan(0)
     }
   })
 
-  it('has a pause control and the sanitized-data disclaimer', () => {
+  it('renders skill chips as slash commands with no leading star', () => {
     render(<FalconTeam />)
-    expect(screen.getByRole('button', { name: /pause or resume/i })).toBeInTheDocument()
-    expect(screen.getByText(/illustrative, sanitized/i)).toBeInTheDocument()
+    expect(screen.getAllByText('/implement').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('/deploy-to-dev').length).toBeGreaterThan(0)
+    expect(screen.queryByText('✦')).not.toBeInTheDocument()
   })
 })

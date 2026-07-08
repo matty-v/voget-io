@@ -1,0 +1,157 @@
+/* Falcon Dev Team — issue flow. Colors reuse the site's global tokens
+   (src/index.css) where they match: --accent-cyan, --accent-purple,
+   --accent-pink, --accent-green, --accent-amber, --muted-foreground,
+   --foreground. The card panel/border rgba values have no matching token
+   (the rest of the app inlines these same literals too, e.g. .tech-card,
+   .kan-col in src/index.css), so they're hardcoded here. */
+
+.wrap {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.flow {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.conn {
+  align-self: center;
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(var(--accent-cyan), color-mix(in srgb, var(--accent-cyan) 25%, transparent));
+  position: relative;
+}
+
+.conn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -3px;
+  border: 4px solid transparent;
+  border-top-color: var(--accent-cyan);
+}
+
+/* issue + shipped end caps */
+.cap {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-size: 12.5px;
+}
+
+.issue {
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 40%, transparent);
+  background: color-mix(in srgb, var(--accent-amber) 8%, transparent);
+}
+
+.issue b {
+  color: var(--accent-amber);
+}
+
+.done {
+  border: 1px solid color-mix(in srgb, var(--accent-green) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-green) 9%, transparent);
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+.tk {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+/* agent card */
+.agent {
+  background: rgba(18, 24, 33, 0.7);
+  border: 1px solid rgba(100, 150, 255, 0.16);
+  border-left: 3px solid var(--ac);
+  border-radius: 12px;
+  padding: 13px 15px;
+  backdrop-filter: blur(6px);
+  transition: transform 0.25s, border-color 0.25s;
+}
+
+.agent:hover {
+  transform: translateX(3px);
+}
+
+.ahead {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.aglyph {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ac);
+  border: 1px solid var(--ac);
+  background: color-mix(in srgb, var(--ac) 10%, transparent);
+  flex: 0 0 auto;
+}
+
+.aname {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.arole {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ac);
+}
+
+.adoes {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-weight: 300;
+  text-align: right;
+  max-width: 44%;
+}
+
+.askills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 11px;
+  padding-left: 45px;
+}
+
+.skill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  color: #c3d0e0;
+  background: linear-gradient(color-mix(in srgb, var(--ac) 7%, transparent), transparent);
+  border: 1px solid color-mix(in srgb, var(--ac) 28%, transparent);
+}
+
+.cmd {
+  color: var(--ac);
+}
+
+@media (max-width: 520px) {
+  .adoes {
+    display: none;
+  }
+  .askills {
+    padding-left: 0;
+  }
+}
