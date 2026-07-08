@@ -132,12 +132,7 @@ function MyWork() {
         <FalconTeam />
       </div>
 
-      <div className="space-y-8">
-        <SectionHeading title="Snapdex" badge="Invite-only" badgeColor="var(--accent-purple)">
-          The first product the Falcon Dev Team shipped end-to-end.
-        </SectionHeading>
-        <SnapdexShowcase />
-      </div>
+      <SnapdexShowcase />
     </section>
   )
 }
