@@ -242,7 +242,7 @@ function App() {
             <MyWork />
             <div className="text-center">
               <Button asChild className="bg-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/80 text-black font-medium">
-                <a href="/live" onClick={(e) => navigate(e, '/live')}>See the team's live board &rarr;</a>
+                <a href="/live" onClick={(e) => navigate(e, '/live')}>See the team's live dashboard &rarr;</a>
               </Button>
             </div>
           </>

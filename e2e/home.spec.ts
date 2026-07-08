@@ -32,11 +32,12 @@ test.describe('Home Page', () => {
     await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible()
   })
 
-  test('navigates to the live board', async ({ page }) => {
-    await page.getByRole('link', { name: /live board/i }).click()
+  test('navigates to the live dashboard', async ({ page }) => {
+    await page.getByRole('link', { name: /live dashboard/i }).click()
     await expect(page).toHaveURL('/live')
-    await expect(page.getByRole('heading', { name: /falcon dev team board/i })).toBeVisible()
-    await expect(page.getByText('Shipped', { exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /falcon dev team dashboard/i })).toBeVisible()
+    await expect(page.getByText(/Last 5 shipped/i)).toBeVisible()
+    await expect(page.getByText('#443')).toBeVisible()
   })
 })
 

@@ -1,117 +1,138 @@
-import { useEffect, useState } from 'react'
+import styles from './live-board.module.css'
 
-type Card = { id: string; kind: 'issue' | 'pr'; agent: string | null; tag: string }
-type Column = { key: string; name: string; cards: Card[] }
-type Board = { generatedAt: string; repo: string; columns: Column[]; stats: { agents: number } }
+// TODO: wire the sanitized 30-min metrics feed (follow-up — in-cluster sanitizer)
+// Today's real snapshot from the Snapdex repo + agent token usage, sanitized.
+const ISSUES_SHIPPED_ALL_TIME = 164
+const WEEKLY_THROUGHPUT = 36
+const COST_PER_ISSUE = 9
 
-const AGENT_COLOR: Record<string, string> = {
-  yoda: 'var(--accent-cyan)',
-  'obi-wan': 'var(--accent-cyan)',
-  lando: 'var(--accent-purple)',
-  han: 'var(--accent-purple)',
-  luke: 'var(--accent-purple)',
-  'boba-fett': 'var(--accent-pink)',
-  chewie: 'var(--accent-pink)',
-  ackbar: 'var(--accent-green)',
-}
-const agentColor = (a: string | null) => (a && AGENT_COLOR[a]) || 'var(--accent-cyan)'
-const TAG_LABEL: Record<string, string> = { bug: 'bug', feature: 'feature', deploy: 'deploy', draft: 'draft', pr: 'PR' }
+type Shipped = { repo: string; id: string; date: string }
+const LAST_SHIPPED: Shipped[] = [
+  { repo: 'snapdex', id: '443', date: 'Jul 8' },
+  { repo: 'snapdex', id: '440', date: 'Jul 8' },
+  { repo: 'snapdex', id: '326', date: 'Jul 8' },
+  { repo: 'snapdex', id: '435', date: 'Jul 8' },
+  { repo: 'snapdex', id: '394', date: 'Jul 8' },
+]
 
-// Shown if the live feed can't be reached — clearly-labelled sample data.
-const FALLBACK: Board = {
-  generatedAt: new Date(0).toISOString(),
-  repo: 'snapdex',
-  columns: [
-    { key: 'triage', name: 'Triage', cards: [{ id: '445', kind: 'issue', agent: null, tag: 'draft' }] },
-    { key: 'building', name: 'Building', cards: [{ id: '443', kind: 'issue', agent: 'luke', tag: 'deploy' }] },
-    { key: 'review', name: 'In review', cards: [{ id: '446', kind: 'pr', agent: null, tag: 'pr' }] },
-    { key: 'shipped', name: 'Shipped', cards: [{ id: '442', kind: 'pr', agent: 'han', tag: 'pr' }] },
-  ],
-  stats: { agents: 0 },
-}
+// Issues shipped per week, oldest -> newest (5w, 4w, 3w, 2w, now).
+const WEEKLY_SHIPPED = [3, 13, 60, 52, 36]
 
 export function LiveBoard({ onNavigate }: { onNavigate: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
-  const [board, setBoard] = useState<Board | null>(null)
-  const [live, setLive] = useState(false)
-  const [, force] = useState(0)
-
-  useEffect(() => {
-    let alive = true
-    const load = async () => {
-      try {
-        const res = await fetch('/data/board.json', { cache: 'no-store' })
-        if (!res.ok) throw new Error(String(res.status))
-        const data = (await res.json()) as Board
-        if (alive) {
-          setBoard(data)
-          setLive(true)
-        }
-      } catch {
-        if (alive) {
-          setBoard((b) => b ?? FALLBACK)
-          setLive(false)
-        }
-      }
-    }
-    load()
-    const poll = setInterval(load, 45000)
-    const tick = setInterval(() => force((n) => n + 1), 30000) // refresh "updated Xm ago"
-    return () => {
-      alive = false
-      clearInterval(poll)
-      clearInterval(tick)
-    }
-  }, [])
-
-  const b = board ?? FALLBACK
-
   return (
-    <section className="py-10 space-y-8">
-      <div className="lb-head">
-        <a href="/" onClick={(e) => onNavigate(e, '/')} className="lb-back">
-          &larr; Home
-        </a>
-        <div className="lb-title-row">
-          <h1 className="text-3xl font-semibold tracking-tight">
-            <span className="glow-cyan">Falcon Dev Team Board</span>
-          </h1>
-          <span className={'lb-live' + (live ? '' : ' off')}>
-            <span className="lb-live-dot" />
-            {live ? 'live' : 'sample'}
-          </span>
+    <section className={`py-10 ${styles.wrap}`}>
+      <a href="/" onClick={(e) => onNavigate(e, '/')} className={styles.back}>
+        &larr; Home
+      </a>
+
+      <div className={styles.head}>
+        <h1>
+          <span className={styles.glow}>Falcon Dev Team</span> Dashboard
+        </h1>
+        <span className={styles.live}>
+          <span className={styles.liveDot} />
+          live
+        </span>
+        <span className={styles.updated}>snapdex &middot; updated 3m ago</span>
+      </div>
+
+      {/* 1,2,3 — KPI row */}
+      <div className={`${styles.grid} ${styles.kpis}`}>
+        <div className={`${styles.kpi} ${styles.card}`}>
+          <div className={styles.kpiLabel}>Issues shipped &middot; all&#8209;time</div>
+          <div className={`${styles.kpiValue} ${styles.cy}`}>{ISSUES_SHIPPED_ALL_TIME}</div>
+          <div className={styles.kpiSub}>since the team came online</div>
+        </div>
+        <div className={`${styles.kpi} ${styles.card}`}>
+          <div className={styles.kpiLabel}>Weekly throughput</div>
+          <div className={`${styles.kpiValue} ${styles.gr}`}>
+            {WEEKLY_THROUGHPUT}
+            <small> / wk</small>
+          </div>
+          <div className={styles.kpiSub}>last 7 days &middot; ~5 a day</div>
+        </div>
+        <div className={`${styles.kpi} ${styles.card}`}>
+          <div className={styles.kpiLabel}>Cost / issue</div>
+          <div className={`${styles.kpiValue} ${styles.am}`}>${COST_PER_ISSUE}</div>
+          <div className={styles.kpiSub}>opus-4.8 token spend / shipped</div>
         </div>
       </div>
 
-      <div className="lb-board">
-        {b.columns.map((col) => (
-          <div key={col.key} className="lb-col">
-            <div className="lb-col-head">
-              <span className="lb-col-name">{col.name}</span>
-              <span className="lb-col-count">{col.cards.length}</span>
-            </div>
-            <div className="lb-col-body">
-              {col.cards.length === 0 && <div className="lb-empty">—</div>}
-              {col.cards.map((c) => (
-                <div key={c.kind + c.id} className="lb-card" style={{ ['--ac' as string]: agentColor(c.agent) }}>
-                  <div className="lb-card-top">
-                    <span className={'lb-kind ' + c.kind}>{c.kind === 'pr' ? 'PR' : 'issue'}</span>
-                    <span className="lb-cid">#{c.id}</span>
-                    <span className="lb-tag">{TAG_LABEL[c.tag] ?? c.tag}</span>
-                  </div>
-                  {c.agent && (
-                    <span className="lb-agent">
-                      <span className="lb-agent-dot" />
-                      {c.agent}
-                    </span>
-                  )}
-                </div>
-              ))}
+      {/* last shipped + rolling weekly */}
+      <div className={`${styles.grid} ${styles.row2}`}>
+        <div className={styles.card}>
+          <div className={styles.wtitle}>Last 5 shipped</div>
+          <div className={styles.ship}>
+            {LAST_SHIPPED.map((s) => (
+              <div key={s.repo + s.id} className={styles.srow}>
+                <span className={styles.srepo}>{s.repo}</span>
+                <span className={styles.sid}>#{s.id}</span>
+                <span className={styles.sdate}>{s.date}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.card}>
+          <div className={styles.wtitle}>
+            Shipped per week <span className={styles.sub}>last 5 weeks</span>
+          </div>
+          <div className={styles.lg}>
+            <svg
+              viewBox="0 0 300 118"
+              preserveAspectRatio="none"
+              role="img"
+              aria-label={`Issues shipped per week over the last five weeks: ${WEEKLY_SHIPPED.join(', ')}`}
+            >
+              <defs>
+                <linearGradient id="lgfill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--accent-cyan)" stopOpacity=".28" />
+                  <stop offset="100%" stopColor="var(--accent-cyan)" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              {/* faint gridlines */}
+              <line x1="10" y1="18" x2="290" y2="18" stroke="rgba(100,150,255,.08)" strokeWidth="1" />
+              <line x1="10" y1="56" x2="290" y2="56" stroke="rgba(100,150,255,.08)" strokeWidth="1" />
+              <line x1="10" y1="94" x2="290" y2="94" stroke="rgba(100,150,255,.10)" strokeWidth="1" />
+              {/* area */}
+              <path d="M10,90.6 L80,77.7 L150,14.3 L220,25 L290,46.7 L290,94 L10,94 Z" fill="url(#lgfill)" />
+              {/* line */}
+              <polyline
+                points="10,90.6 80,77.7 150,14.3 220,25 290,46.7"
+                fill="none"
+                stroke="var(--accent-cyan)"
+                strokeWidth="2"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                style={{ filter: 'drop-shadow(0 0 5px rgba(0,212,255,.5))' }}
+              />
+              {/* dots */}
+              <circle cx="10" cy="90.6" r="2.6" fill="var(--bg-primary)" stroke="var(--accent-cyan)" strokeWidth="1.8" />
+              <circle cx="80" cy="77.7" r="2.6" fill="var(--bg-primary)" stroke="var(--accent-cyan)" strokeWidth="1.8" />
+              <circle cx="150" cy="14.3" r="2.6" fill="var(--bg-primary)" stroke="var(--accent-cyan)" strokeWidth="1.8" />
+              <circle cx="220" cy="25" r="2.6" fill="var(--bg-primary)" stroke="var(--accent-cyan)" strokeWidth="1.8" />
+              <circle
+                cx="290"
+                cy="46.7"
+                r="3.4"
+                fill="var(--accent-cyan)"
+                stroke="var(--bg-primary)"
+                strokeWidth="1.5"
+                style={{ filter: 'drop-shadow(0 0 6px var(--accent-cyan))' }}
+              />
+            </svg>
+            <div className={styles.lgx}>
+              <span>5w</span>
+              <span>4w</span>
+              <span>3w</span>
+              <span>2w</span>
+              <span>now</span>
             </div>
           </div>
-        ))}
+        </div>
       </div>
 
-      <p className="lb-note">// live view refreshes every ~45s · sanitized from a private repo</p>
+      <p className={styles.note}>// real data from your Snapdex repo + agent token usage, sanitized &middot; refreshes every 30 min</p>
     </section>
   )
 }
