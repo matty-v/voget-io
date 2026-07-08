@@ -107,13 +107,13 @@ function MyWork() {
           </h3>
         </div>
 
-        <div className="grid gap-10 md:grid-cols-2 items-start">
+        <div className="grid gap-x-16 gap-y-10 md:grid-cols-2 items-start">
           <div className="space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold">Architecture</h4>
+            <h4 className="text-sm font-semibold tracking-tight text-foreground/90">Architecture</h4>
             <KyberDiagram />
           </div>
-          <div className="space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.14em] text-muted-foreground font-semibold">The Falcon Dev Team</h4>
+          <div className="mx-auto w-full max-w-[400px] space-y-4">
+            <h4 className="text-sm font-semibold tracking-tight text-foreground/90">The Falcon Dev Team — AI Agents Running on Kyber</h4>
             <FalconTeam />
           </div>
         </div>
