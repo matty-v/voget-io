@@ -1,241 +1,132 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-type Agent = { glyph: string; name: string; role: string; ac: string }
-type Ticket = { id: string; title: string; lines: string[] }
-type Row = { key: string; who: string; color: string; msg: string; ok: boolean; t: string }
+type Agent = { glyph: string; name: string; role: string; blurb: string; ac: string }
+type Card = { id: string; title: string; col: number }
 
 const AGENTS: Agent[] = [
-  { glyph: 'Y', name: 'Yoda', role: 'Product', ac: 'var(--accent-cyan)' },
-  { glyph: 'L', name: 'Lando', role: 'Dispatch', ac: 'var(--accent-purple)' },
-  { glyph: 'H', name: 'Han', role: 'Engineer', ac: 'var(--accent-cyan)' },
-  { glyph: 'C', name: 'Chewie', role: 'Review', ac: 'var(--accent-pink)' },
-  { glyph: 'A', name: 'Ackbar', role: 'Deploy', ac: 'var(--accent-green)' },
+  { glyph: 'Y', name: 'Yoda', role: 'Product', blurb: 'Turns intent into crisp acceptance criteria.', ac: 'var(--accent-cyan)' },
+  { glyph: 'O', name: 'Obi-Wan', role: 'Architect', blurb: 'Plans the approach and threat-models the risky bits.', ac: 'var(--accent-cyan)' },
+  { glyph: 'L', name: 'Lando', role: 'Orchestrator', blurb: 'Routes every ticket to the right agent.', ac: 'var(--accent-purple)' },
+  { glyph: 'H', name: 'Han', role: 'Engineer', blurb: 'Ships features test-first.', ac: 'var(--accent-purple)' },
+  { glyph: 'K', name: 'Luke', role: 'Engineer', blurb: 'Ships features test-first.', ac: 'var(--accent-purple)' },
+  { glyph: 'B', name: 'Boba-Fett', role: 'QA', blurb: 'Hunts regressions and perf cliffs.', ac: 'var(--accent-pink)' },
+  { glyph: 'C', name: 'Chewie', role: 'Review', blurb: 'Reviews for correctness and security.', ac: 'var(--accent-pink)' },
+  { glyph: 'A', name: 'Ackbar', role: 'Deploy', blurb: 'Ships to prod and verifies it went out.', ac: 'var(--accent-green)' },
 ]
 
-const TICKETS: Ticket[] = [
-  {
-    id: 'SNAP-142',
-    title: 'Streak counter on the profile page',
-    lines: [
-      'wrote 4 acceptance criteria',
-      'dispatched → Han',
-      'opened PR #487 · +214 / −38',
-      'review passed · 0 findings · approved',
-      'deployed to prod · 1m 12s',
-    ],
-  },
-  {
-    id: 'SNAP-148',
-    title: 'De-dup captures on rapid scanning',
-    lines: [
-      'clarified edge cases · 3 AC',
-      'dispatched → Han',
-      'opened PR #491 · +96 / −12',
-      'requested changes · 1 finding',
-      'deployed to prod · 58s',
-    ],
-  },
-  {
-    id: 'SNAP-153',
-    title: 'Dark mode for the dex grid',
-    lines: [
-      'scoped acceptance criteria',
-      'dispatched → Han',
-      'opened PR #494 · +301 / −44',
-      'review passed · approved',
-      'deployed to prod · 1m 04s',
-    ],
-  },
-  {
-    id: 'KYBER-88',
-    title: 'Rotate dispatch HMAC keys',
-    lines: [
-      'hardening AC + threat notes',
-      'dispatched → Han',
-      'opened PR #262 · +71 / −9',
-      'security review · approved',
-      'deployed to prod · 1m 40s',
-    ],
-  },
+const COLUMNS = [
+  { name: 'Triage', owner: 'Yoda', ac: 'var(--accent-cyan)' },
+  { name: 'Building', owner: 'Han', ac: 'var(--accent-purple)' },
+  { name: 'In review', owner: 'Chewie', ac: 'var(--accent-pink)' },
+  { name: 'Shipped', owner: 'Ackbar', ac: 'var(--accent-green)' },
+]
+const LAST = COLUMNS.length - 1
+
+const SEED: Card[] = [
+  { id: 'SNAP-151', title: 'Dark mode for the dex grid', col: 0 },
+  { id: 'SNAP-148', title: 'De-dup rapid-scan captures', col: 1 },
+  { id: 'SNAP-142', title: 'Streak counter on the profile page', col: 2 },
+  { id: 'SNAP-139', title: 'Trade-request notifications', col: 3 },
 ]
 
-const STAGE_LABELS = [
-  '◆ acceptance criteria',
-  '◆ dispatching',
-  '◆ implementing',
-  '◆ reviewing',
-  '◆ deploying',
+const BACKLOG = [
+  'Offline capture queue',
+  'Shiny variant badges',
+  'Profile share cards',
+  'Search the dex by attribute',
+  'Batch import from camera roll',
+  'Weekly recap digest',
+  'Haptics on a new capture',
 ]
-
-const EMPH = /(#\d+|prod|approved|\d+ finding(?:s)?|\d+m \d+s|\d+s)/g
-
-function pad(n: number) {
-  return (n < 10 ? '0' : '') + n
-}
-
-function clock() {
-  const d = new Date()
-  return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds())
-}
-
-function emphasize(s: string) {
-  return s.split(EMPH).map((part, i) =>
-    EMPH.test(part) ? <b key={i}>{part}</b> : <span key={i}>{part}</span>,
-  )
-}
 
 export function FalconTeam() {
-  const [ticketIdx, setTicketIdx] = useState(0)
-  const [stageIdx, setStageIdx] = useState(-1)
-  const [rows, setRows] = useState<Row[]>([])
-  const [prs, setPrs] = useState(47)
+  const [cards, setCards] = useState<Card[]>(SEED)
   const [paused, setPaused] = useState(false)
+  const seq = useRef(160)
+  const backlogPtr = useRef(0)
 
-  // Timeline driver. All state changes happen inside timeout callbacks (never
-  // synchronously in the effect body), so pausing/resuming just reschedules.
   useEffect(() => {
     if (paused) return
-    const t = TICKETS[ticketIdx]
-    const logStage = (stage: number) => {
-      const a = AGENTS[stage]
-      const key = t.id + ':' + stage
-      setRows((prev) =>
-        prev.length && prev[prev.length - 1].key === key
-          ? prev
-          : [
-              ...prev,
-              { key, who: a.name, color: a.ac, msg: t.lines[stage], ok: stage === AGENTS.length - 1, t: clock() },
-            ].slice(-9),
-      )
-    }
-    // freshly loaded ticket → start stage 0 and log it
-    if (stageIdx === -1) {
-      const id = setTimeout(() => {
-        logStage(0)
-        setStageIdx(0)
-      }, 700)
-      return () => clearTimeout(id)
-    }
-    // advance through the pipeline, logging each stage as it begins
-    if (stageIdx < AGENTS.length - 1) {
-      const id = setTimeout(() => {
-        logStage(stageIdx + 1)
-        setStageIdx(stageIdx + 1)
-      }, 1650)
-      return () => clearTimeout(id)
-    }
-    // last agent finished → mark shipped
-    if (stageIdx === AGENTS.length - 1) {
-      const id = setTimeout(() => setStageIdx(AGENTS.length), 1650)
-      return () => clearTimeout(id)
-    }
-    // shipped → bump the counter and load the next ticket
-    const id = setTimeout(() => {
-      setPrs((p) => p + 1)
-      setTicketIdx((i) => (i + 1) % TICKETS.length)
-      setStageIdx(-1)
-    }, 1300)
-    return () => clearTimeout(id)
-  }, [stageIdx, ticketIdx, paused])
-
-  const t = TICKETS[ticketIdx]
-  const shipped = stageIdx >= AGENTS.length
-  const lastStage = AGENTS.length - 1
-  const clamped = Math.max(0, Math.min(stageIdx, lastStage))
-  const packetLeft = stageIdx < 0 ? 10 : 10 + 80 * (clamped / lastStage)
-  const fillW = stageIdx < 0 ? 0 : (clamped / lastStage) * 100
-  const stageLabel = stageIdx < 0 ? STAGE_LABELS[0] : shipped ? '◆ shipped ✓' : STAGE_LABELS[stageIdx]
-  const stageColor = shipped ? 'var(--accent-green)' : stageIdx < 0 ? 'var(--accent-cyan)' : AGENTS[stageIdx].ac
+    const timer = setTimeout(() => {
+      setCards((prev) => {
+        const next = [...prev]
+        const shippedIdx = next.findIndex((c) => c.col >= LAST)
+        if (shippedIdx !== -1) {
+          // a shipped ticket clears the board; a fresh one enters triage
+          next.splice(shippedIdx, 1)
+          const title = BACKLOG[backlogPtr.current % BACKLOG.length]
+          backlogPtr.current += 1
+          seq.current += 1
+          next.push({ id: 'SNAP-' + seq.current, title, col: 0 })
+          return next
+        }
+        // otherwise advance the furthest-along ticket one column forward
+        let lead = -1
+        let leadCol = -1
+        next.forEach((c, i) => {
+          if (c.col < LAST && c.col > leadCol) {
+            leadCol = c.col
+            lead = i
+          }
+        })
+        if (lead !== -1) next[lead] = { ...next[lead], col: next[lead].col + 1 }
+        return next
+      })
+    }, 1900)
+    return () => clearTimeout(timer)
+  }, [cards, paused])
 
   return (
-    <section id="team" className="falcon">
-      <p className="falcon-eyebrow">
-        <span className="falcon-live" /> Kyber &middot; Falcon Dev Team
-      </p>
-      <h2 className="falcon-title">
-        A team of AI engineers that <span className="falcon-grad">ships on its own</span>.
-      </h2>
-      <p className="falcon-lede">
-        Kyber is a Kubernetes-native platform where autonomous agents run as a real dev team &mdash; product,
-        engineering, review, and deploy &mdash; turning ideas into shipped software. Here they are building Snapdex,
-        live.
-      </p>
+    <section id="team" className="team">
+      <div className="team-head">
+        <h3 className="team-sub">Who's on the team</h3>
+      </div>
+      <div className="roster">
+        {AGENTS.map((a) => (
+          <div key={a.name} className="roster-card" style={{ ['--ac' as string]: a.ac }}>
+            <span className="roster-glyph">{a.glyph}</span>
+            <div className="roster-meta">
+              <span className="roster-name">{a.name}</span>
+              <span className="roster-role">{a.role}</span>
+            </div>
+            <p className="roster-blurb">{a.blurb}</p>
+          </div>
+        ))}
+      </div>
 
-      <div className="falcon-now">
-        <span className="falcon-now-tag">Now building</span>
-        <span className="falcon-now-id">{t.id}</span>
-        <span className="falcon-now-title">{t.title}</span>
-        <span className="falcon-now-stage" style={{ color: stageColor }}>
-          {stageLabel}
+      <div className="team-head team-head-board">
+        <h3 className="team-sub">Live work</h3>
+        <span className="team-spacer" />
+        <span className="team-live-tag">
+          <span className="team-live-dot" /> building now
         </span>
+        <button className="team-btn" onClick={() => setPaused((p) => !p)} aria-label="Pause or resume the board">
+          {paused ? '▶ resume' : '⏸ pause'}
+        </button>
       </div>
 
-      <div className="falcon-pipe">
-        <div className="falcon-track">
-          <div className="falcon-fill" style={{ width: fillW + '%' }} />
-        </div>
-        <div className={'falcon-packet' + (shipped ? ' ship' : '')} style={{ left: packetLeft + '%' }}>
-          {t.id}
-        </div>
-        {AGENTS.map((a, i) => {
-          const isActive = i === stageIdx && stageIdx < AGENTS.length
-          const isDone = i < stageIdx
-          return (
-            <div
-              key={a.name}
-              className={'falcon-node' + (isActive ? ' active' : '') + (isDone ? ' done' : '')}
-              style={{ ['--ac' as string]: a.ac }}
-            >
-              <div className="falcon-orb">{a.glyph}</div>
-              <div className="falcon-name">{a.name}</div>
-              <div className="falcon-role">{a.role}</div>
+      <div className="kanban">
+        {COLUMNS.map((col, ci) => (
+          <div key={col.name} className="kan-col" style={{ ['--ac' as string]: col.ac }}>
+            <div className="kan-col-head">
+              <span className="kan-col-name">{col.name}</span>
+              <span className="kan-col-owner">{col.owner}</span>
             </div>
-          )
-        })}
+            <div className="kan-col-body">
+              {cards
+                .filter((c) => c.col === ci)
+                .map((c) => (
+                  <div key={c.id} className={'kan-card' + (ci === LAST ? ' shipped' : '')}>
+                    <span className="kan-card-id">{c.id}</span>
+                    <span className="kan-card-title">{c.title}</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="falcon-lower">
-        <div className="falcon-card">
-          <div className="falcon-hd">
-            <h3>Activity</h3>
-            <span className="falcon-spacer" />
-            <button className="falcon-btn" onClick={() => setPaused((p) => !p)} aria-label="Pause or resume the demo">
-              {paused ? '▶ resume' : '⏸ pause'}
-            </button>
-          </div>
-          <div className="falcon-log">
-            {rows.map((r) => (
-              <div key={r.key} className={'falcon-row' + (r.ok ? ' ok' : '')}>
-                <span className="falcon-t">{r.t}</span>
-                <span className="falcon-who" style={{ color: r.color }}>
-                  {r.who}
-                </span>
-                <span className="falcon-msg">{emphasize(r.msg)}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="falcon-card falcon-stats">
-          <div className="falcon-stat">
-            <div className="falcon-k">PRs merged &middot; this week</div>
-            <div className="falcon-v cy">{prs}</div>
-          </div>
-          <div className="falcon-stat">
-            <div className="falcon-k">Median cycle time</div>
-            <div className="falcon-v pu">
-              34<small> min</small>
-            </div>
-          </div>
-          <div className="falcon-stat">
-            <div className="falcon-k">Human commits</div>
-            <div className="falcon-v gr">
-              0<small> &mdash; fully autonomous</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <p className="falcon-note">// illustrative, sanitized view of a real workflow</p>
+      <p className="team-note">// illustrative, sanitized view &mdash; wiring live GitHub activity next</p>
     </section>
   )
 }

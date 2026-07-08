@@ -3,28 +3,31 @@ import { describe, it, expect } from 'vitest'
 import { FalconTeam } from './falcon-team'
 
 describe('FalconTeam', () => {
-  it('renders the section heading and lede', () => {
+  it('renders the roster and live-work headings', () => {
     render(<FalconTeam />)
-    expect(screen.getByRole('heading', { name: /ships on its own/i })).toBeInTheDocument()
-    expect(screen.getByText(/Kubernetes-native platform/i)).toBeInTheDocument()
+    expect(screen.getByText(/who's on the team/i)).toBeInTheDocument()
+    expect(screen.getByText(/live work/i)).toBeInTheDocument()
   })
 
-  it('renders every agent in the pipeline', () => {
+  it('lists every agent in the roster', () => {
     render(<FalconTeam />)
-    for (const name of ['Yoda', 'Lando', 'Han', 'Chewie', 'Ackbar']) {
-      expect(screen.getByText(name)).toBeInTheDocument()
+    // some agents (Yoda, Han, Chewie, Ackbar) also appear as kanban column owners,
+    // so assert presence rather than uniqueness
+    for (const name of ['Yoda', 'Obi-Wan', 'Lando', 'Han', 'Luke', 'Boba-Fett', 'Chewie', 'Ackbar']) {
+      expect(screen.getAllByText(name).length).toBeGreaterThan(0)
     }
   })
 
-  it('shows the first ticket and a pause control', () => {
+  it('renders the kanban columns', () => {
     render(<FalconTeam />)
-    // ticket id appears in both the status bar and the traveling packet
-    expect(screen.getAllByText('SNAP-142').length).toBeGreaterThan(0)
-    expect(screen.getByRole('button', { name: /pause or resume/i })).toBeInTheDocument()
+    for (const col of ['Triage', 'Building', 'In review', 'Shipped']) {
+      expect(screen.getByText(col)).toBeInTheDocument()
+    }
   })
 
-  it('keeps the sanitized-data disclaimer visible', () => {
+  it('has a pause control and the sanitized-data disclaimer', () => {
     render(<FalconTeam />)
+    expect(screen.getByRole('button', { name: /pause or resume/i })).toBeInTheDocument()
     expect(screen.getByText(/illustrative, sanitized/i)).toBeInTheDocument()
   })
 })

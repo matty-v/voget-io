@@ -10,20 +10,28 @@ test.describe('Home Page', () => {
     await expect(page.getByText(/I lead engineering teams/i)).toBeVisible()
   })
 
-  test('displays projects section', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible()
-    await expect(page.getByText('Google Drive MCP Server', { exact: true })).toBeVisible()
-    await expect(page.getByText('Sheets DB API', { exact: true })).toBeVisible()
-    await expect(page.getByText('Lifting Tracker', { exact: true })).toBeVisible()
+  test('displays the My Work section with Kyber, the team, and Snapdex', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'My Work' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Kyber' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'The Falcon Dev Team' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Snapdex' })).toBeVisible()
+  })
+
+  test('shows the Falcon team roster and live kanban', async ({ page }) => {
+    await expect(page.getByText('Obi-Wan')).toBeVisible()
+    await expect(page.getByText('Boba-Fett')).toBeVisible()
+    await expect(page.getByText(/live work/i)).toBeVisible()
+    await expect(page.getByText('Triage')).toBeVisible()
+    await expect(page.getByText('Shipped')).toBeVisible()
   })
 
   test('displays contact section', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Get in Touch' })).toBeVisible()
   })
 
-  test('has working navigation to Projects section', async ({ page }) => {
-    await page.getByRole('link', { name: 'View Projects' }).click()
-    await expect(page.locator('#projects')).toBeInViewport()
+  test('has working navigation to My Work section', async ({ page }) => {
+    await page.getByRole('link', { name: 'My Work' }).click()
+    await expect(page.locator('#work')).toBeInViewport()
   })
 
   test('has working navigation to Contact section', async ({ page }) => {

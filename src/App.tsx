@@ -1,53 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Github, Linkedin, Mail, ExternalLink, Boxes, Sparkles, ArrowRight } from 'lucide-react'
+import { Github, Linkedin, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { FalconTeam } from '@/components/falcon-team'
-
-const flagships = [
-  {
-    name: 'Kyber',
-    tagline: 'Kubernetes-native agent platform',
-    body: 'The platform behind the Falcon Dev Team. Autonomous agents run as first-class workloads on Kubernetes — with dispatch, persistent memory, code review, and deploy built into the fabric. The team above runs entirely on it.',
-    tags: ['Kubernetes', 'Go', 'Autonomous agents', 'k3s'],
-    icon: Boxes,
-    accent: 'var(--accent-cyan)',
-    status: 'Private',
-  },
-  {
-    name: 'Snapdex',
-    tagline: 'Built end-to-end by the Falcon team',
-    body: 'An AI-powered capture-and-collect app — every feature designed, built, reviewed, and shipped by the autonomous team above, on Kyber. Currently invite-only.',
-    tags: ['React', 'AI', 'Product'],
-    icon: Sparkles,
-    accent: 'var(--accent-purple)',
-    status: 'Invite-only',
-  },
-]
-
-const projects = [
-  {
-    title: "Google Drive MCP Server",
-    description: "MCP server enabling Claude to interact with Google Drive. Browse, search, read, create, and edit files with full OAuth2 authentication.",
-    tech: ["TypeScript", "Google Cloud", "OAuth2", "Docker"],
-    link: "https://google-drive-mcp-xpl65co6pa-uc.a.run.app",
-    github: "https://github.com/matty-v/google-drive-mcp",
-  },
-  {
-    title: "Sheets DB API",
-    description: "REST API that uses Google Sheets as a lightweight database backend. Simple data persistence without managing infrastructure.",
-    tech: ["TypeScript", "Google Cloud", "OpenAPI"],
-    link: "https://sheetsapi-g56q77hy2a-uc.a.run.app",
-    github: "https://github.com/matty-v/sheets-db-api",
-  },
-  {
-    title: "Lifting Tracker",
-    description: "Workout logging app to track lifts, log sessions, and monitor progress over time. Uses the Sheets DB API.",
-    tech: ["React", "TypeScript", "Tailwind"],
-    link: "https://lifting.voget.io",
-    github: "https://github.com/matty-v/lifting",
-  },
-]
+import { KyberDiagram } from '@/components/kyber-diagram'
+import { SnapdexShowcase } from '@/components/snapdex-showcase'
 
 function Particles() {
   useEffect(() => {
@@ -90,7 +46,7 @@ function Background() {
 
 function Hero() {
   return (
-    <section className="space-y-6 text-center py-20">
+    <section className="space-y-6 text-center py-16">
       <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
         <span className="text-foreground">Matt </span>
         <span className="glow-cyan">Voget</span>
@@ -101,7 +57,7 @@ function Hero() {
       </p>
       <div className="flex gap-4 justify-center">
         <Button variant="default" asChild className="bg-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/80 text-black font-medium">
-          <a href="#projects">View Projects</a>
+          <a href="#work">My Work</a>
         </Button>
         <Button variant="outline" asChild className="border-[var(--accent-purple)]/50 hover:border-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/10">
           <a href="#contact">Get in Touch</a>
@@ -111,65 +67,14 @@ function Hero() {
   )
 }
 
-function Projects() {
-  return (
-    <section id="projects" className="space-y-8">
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          <span className="glow-purple">Projects</span>
-        </h2>
-        <p className="text-sm text-muted-foreground mt-2 font-light">
-          Things I've built
-        </p>
-      </div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <Card key={project.title} className="flex flex-col tech-card rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-foreground">{project.title}</CardTitle>
-              <CardDescription className="font-light">{project.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-1">
-              <div className="flex flex-wrap gap-2">
-                {project.tech.map((t) => (
-                  <span
-                    key={t}
-                    className="text-xs tech-badge px-2 py-1 rounded-md"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </CardContent>
-            <CardFooter className="gap-2">
-              <Button variant="ghost" size="sm" asChild className="hover:text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10">
-                <a href={project.github} target="_blank" rel="noopener noreferrer">
-                  <Github className="h-4 w-4" />
-                  Code
-                </a>
-              </Button>
-              <Button variant="ghost" size="sm" asChild className="hover:text-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/10">
-                <a href={project.link} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4" />
-                  Demo
-                </a>
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    </section>
-  )
-}
-
 function Contact() {
   return (
-    <section id="contact" className="space-y-6 text-center py-12">
+    <section id="contact" className="space-y-6 text-center py-6">
       <h2 className="text-2xl font-semibold tracking-tight">
         <span className="glow-cyan">Get in Touch</span>
       </h2>
       <p className="text-muted-foreground font-light">
-        Feel free to reach out for collaborations or just a friendly hello
+        Feel free to reach out for collaborations, a Snapdex invite, or just a friendly hello
       </p>
       <div className="flex gap-4 justify-center">
         <Button variant="outline" size="icon" asChild className="border-[var(--accent-cyan)]/30 hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10 hover:text-[var(--accent-cyan)]">
@@ -192,75 +97,62 @@ function Contact() {
   )
 }
 
-function Flagships() {
+function SectionHeading({ title, badge, badgeColor, children }: { title: string; badge?: string; badgeColor?: string; children: React.ReactNode }) {
   return (
-    <section id="flagships" className="space-y-8">
+    <div className="text-center space-y-2">
+      <div className="flex items-center justify-center gap-2 flex-wrap">
+        <h3 className="text-xl font-semibold tracking-tight text-foreground">{title}</h3>
+        {badge && (
+          <span
+            className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-md"
+            style={{
+              color: badgeColor,
+              background: `color-mix(in srgb, ${badgeColor} 10%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${badgeColor} 25%, transparent)`,
+            }}
+          >
+            {badge}
+          </span>
+        )}
+      </div>
+      <p className="text-sm text-muted-foreground font-light max-w-2xl mx-auto">{children}</p>
+    </div>
+  )
+}
+
+function MyWork() {
+  return (
+    <section id="work" className="space-y-16">
       <div className="text-center">
         <h2 className="text-2xl font-semibold tracking-tight">
-          <span className="glow-cyan">Flagship work</span>
+          <span className="glow-purple">My Work</span>
         </h2>
-        <p className="text-sm text-muted-foreground mt-2 font-light">The platform, and the product it builds</p>
+        <p className="text-sm text-muted-foreground mt-2 font-light">
+          A platform for autonomous AI dev teams &mdash; and the product they're building on it
+        </p>
       </div>
-      <div className="grid gap-6 sm:grid-cols-2">
-        {flagships.map((f) => {
-          const Icon = f.icon
-          return (
-            <Card key={f.name} className="flex flex-col tech-card rounded-xl">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <span
-                    className="grid place-items-center h-10 w-10 rounded-lg shrink-0"
-                    style={{
-                      background: `color-mix(in srgb, ${f.accent} 12%, transparent)`,
-                      border: `1px solid color-mix(in srgb, ${f.accent} 35%, transparent)`,
-                    }}
-                  >
-                    <Icon className="h-5 w-5" style={{ color: f.accent }} />
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <CardTitle className="text-foreground flex items-center gap-2 flex-wrap">
-                      {f.name}
-                      <span
-                        className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-md font-normal"
-                        style={{
-                          color: f.accent,
-                          background: `color-mix(in srgb, ${f.accent} 10%, transparent)`,
-                          border: `1px solid color-mix(in srgb, ${f.accent} 25%, transparent)`,
-                        }}
-                      >
-                        {f.status}
-                      </span>
-                    </CardTitle>
-                    <CardDescription className="font-light mt-1" style={{ color: f.accent, opacity: 0.85 }}>
-                      {f.tagline}
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-1 space-y-4">
-                <p className="text-sm text-muted-foreground font-light leading-relaxed">{f.body}</p>
-                <div className="flex flex-wrap gap-2">
-                  {f.tags.map((tg) => (
-                    <span key={tg} className="text-xs tech-badge px-2 py-1 rounded-md">
-                      {tg}
-                    </span>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )
-        })}
+
+      <div className="space-y-8">
+        <SectionHeading title="Kyber" badge="Private" badgeColor="var(--accent-cyan)">
+          A Kubernetes-native platform that runs autonomous agents as a real software team &mdash; dispatch, persistent
+          memory, code review, and deploy built into the fabric.
+        </SectionHeading>
+        <KyberDiagram />
       </div>
-      <div className="text-center">
-        <Button
-          asChild
-          className="bg-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/80 text-black font-medium"
-        >
-          <a href="mailto:matt.voget@gmail.com?subject=Snapdex%20invite%20request">
-            Request a Snapdex invite
-            <ArrowRight className="h-4 w-4" />
-          </a>
-        </Button>
+
+      <div className="space-y-8">
+        <SectionHeading title="The Falcon Dev Team">
+          Eight agents, each with a role a human team would recognize &mdash; shipping real software on Kyber,
+          autonomously.
+        </SectionHeading>
+        <FalconTeam />
+      </div>
+
+      <div className="space-y-8">
+        <SectionHeading title="Snapdex" badge="Invite-only" badgeColor="var(--accent-purple)">
+          The first product the Falcon Dev Team shipped end-to-end.
+        </SectionHeading>
+        <SnapdexShowcase />
       </div>
     </section>
   )
@@ -363,10 +255,8 @@ function App() {
         return (
           <>
             <Hero />
-            <FalconTeam />
-            <Flagships />
-            <Projects />
             <Contact />
+            <MyWork />
           </>
         )
     }
