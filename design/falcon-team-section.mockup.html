@@ -1,0 +1,101 @@
+<title>Falcon Dev Team — issue flow</title>
+<style>
+  :root{
+    --bg:#0a0e14;--panel:rgba(18,24,33,.7);--brd:rgba(100,150,255,.16);
+    --cyan:#00d4ff;--purple:#a78bfa;--pink:#ec4899;--green:#34d399;--amber:#fbbf24;
+    --text:#dbe4f0;--muted:#8494a8;--dim:#516175;
+    --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:
+    radial-gradient(1000px 600px at 82% -10%,rgba(167,139,250,.10),transparent 60%),
+    radial-gradient(800px 500px at 10% 4%,rgba(0,212,255,.07),transparent 55%),var(--bg);
+    color:var(--text);font-family:var(--mono);-webkit-font-smoothing:antialiased;line-height:1.5}
+  .gridbg{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(rgba(100,150,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(100,150,255,.05) 1px,transparent 1px);
+    background-size:52px 52px;-webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 20%,#000 45%,transparent 100%);mask-image:radial-gradient(ellipse 90% 70% at 50% 20%,#000 45%,transparent 100%)}
+  .wrap{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:38px 20px 70px}
+  h2{font-size:24px;font-weight:600;margin:0}
+  h2 .g{color:var(--purple);text-shadow:0 0 24px rgba(167,139,250,.35)}
+  .sub{color:var(--muted);font-size:13px;font-weight:300;margin:3px 0 26px}
+
+  .flow{display:flex;flex-direction:column;align-items:stretch;gap:0}
+  .conn{align-self:center;width:2px;height:20px;background:linear-gradient(var(--cyan),color-mix(in srgb,var(--cyan) 25%,transparent));position:relative}
+  .conn::after{content:"";position:absolute;bottom:0;left:-3px;border:4px solid transparent;border-top-color:var(--cyan)}
+
+  /* issue + shipped end caps */
+  .cap{align-self:center;display:inline-flex;align-items:center;gap:9px;padding:8px 15px;border-radius:10px;font-size:12.5px}
+  .cap.issue{border:1px solid color-mix(in srgb,var(--amber) 40%,transparent);background:color-mix(in srgb,var(--amber) 8%,transparent)}
+  .cap.issue b{color:var(--amber)}
+  .cap.done{border:1px solid color-mix(in srgb,var(--green) 45%,transparent);background:color-mix(in srgb,var(--green) 9%,transparent);color:var(--green);font-weight:600}
+  .cap .tk{color:var(--muted);font-size:11px}
+
+  /* agent card */
+  .agent{background:var(--panel);border:1px solid var(--brd);border-left:3px solid var(--ac);border-radius:12px;padding:13px 15px;backdrop-filter:blur(6px);transition:transform .25s,border-color .25s}
+  .agent:hover{transform:translateX(3px)}
+  .ahead{display:flex;align-items:center;gap:11px}
+  .aglyph{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:15px;font-weight:700;color:var(--ac);border:1px solid var(--ac);background:color-mix(in srgb,var(--ac) 10%,transparent);flex:0 0 auto}
+  .aname{font-size:15px;font-weight:600;color:var(--text)}
+  .arole{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ac)}
+  .adoes{margin-left:auto;font-size:11px;color:var(--muted);font-weight:300;text-align:right;max-width:44%}
+  .askills{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px;padding-left:45px}
+  .skill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;padding:3px 10px;border-radius:20px;color:#c3d0e0;
+    background:linear-gradient(color-mix(in srgb,var(--ac) 7%,transparent),transparent);border:1px solid color-mix(in srgb,var(--ac) 28%,transparent)}
+  .skill .spk{color:var(--ac);font-size:9px}
+  .skill .cmd{color:var(--ac)}
+  @media(max-width:520px){.adoes{display:none}.askills{padding-left:0}}
+</style>
+<div class="gridbg"></div>
+<div class="wrap">
+  <h2><span class="g">The Falcon Dev Team</span></h2>
+  <p class="sub">How one issue moves through the team &mdash; each agent picks it up, runs its skills, and hands off.</p>
+
+  <div class="flow">
+    <div class="cap issue">&#x25C9; <b>Issue</b> <span class="tk">SNAP-142 &middot; "Streak counter on the profile page"</span></div>
+    <div class="conn"></div>
+
+    <div class="agent" style="--ac:var(--purple)">
+      <div class="ahead"><span class="aglyph">L</span><span class="aname">Lando</span><span class="arole">Orchestrator</span><span class="adoes">routes the issue to the right agent</span></div>
+      <div class="askills"><span class="skill"><span class="cmd">/classify-intent</span></span><span class="skill"><span class="cmd">/dispatch</span></span><span class="skill"><span class="cmd">/recover-stalls</span></span></div>
+    </div>
+    <div class="conn"></div>
+
+    <div class="agent" style="--ac:var(--cyan)">
+      <div class="ahead"><span class="aglyph">Y</span><span class="aname">Yoda</span><span class="arole">Product</span><span class="adoes">turns it into clear acceptance criteria</span></div>
+      <div class="askills"><span class="skill"><span class="cmd">/triage</span></span><span class="skill"><span class="cmd">/acceptance-criteria</span></span><span class="skill"><span class="cmd">/file-spec</span></span></div>
+    </div>
+    <div class="conn"></div>
+
+    <div class="agent" style="--ac:var(--cyan)">
+      <div class="ahead"><span class="aglyph">O</span><span class="aname">Obi-Wan</span><span class="arole">Architect</span><span class="adoes">plans the approach, flags the risks</span></div>
+      <div class="askills"><span class="skill"><span class="cmd">/plan</span></span><span class="skill"><span class="cmd">/spec</span></span><span class="skill"><span class="cmd">/threat-model</span></span></div>
+    </div>
+    <div class="conn"></div>
+
+    <div class="agent" style="--ac:var(--purple)">
+      <div class="ahead"><span class="aglyph">H</span><span class="aname">Han</span><span class="arole">Engineer</span><span class="adoes">builds it test-first, opens the PR</span></div>
+      <div class="askills"><span class="skill"><span class="cmd">/implement</span></span><span class="skill"><span class="cmd">/tdd</span></span><span class="skill"><span class="cmd">/test</span></span></div>
+    </div>
+    <div class="conn"></div>
+
+    <div class="agent" style="--ac:var(--pink)">
+      <div class="ahead"><span class="aglyph">C</span><span class="aname">Chewie</span><span class="arole">Review</span><span class="adoes">reviews for correctness &amp; security</span></div>
+      <div class="askills"><span class="skill"><span class="cmd">/review</span></span><span class="skill"><span class="cmd">/security-review</span></span></div>
+    </div>
+    <div class="conn"></div>
+
+    <div class="agent" style="--ac:var(--pink)">
+      <div class="ahead"><span class="aglyph">B</span><span class="aname">Boba-Fett</span><span class="arole">QA</span><span class="adoes">hunts regressions before ship</span></div>
+      <div class="askills"><span class="skill"><span class="cmd">/repro-bug</span></span><span class="skill"><span class="cmd">/perf-test</span></span><span class="skill"><span class="cmd">/test-e2e</span></span></div>
+    </div>
+    <div class="conn"></div>
+
+    <div class="agent" style="--ac:var(--green)">
+      <div class="ahead"><span class="aglyph">A</span><span class="aname">Ackbar</span><span class="arole">Deploy</span><span class="adoes">ships to prod &amp; verifies it's live</span></div>
+      <div class="askills"><span class="skill"><span class="cmd">/deploy-to-dev</span></span><span class="skill"><span class="cmd">/deliver-deploy</span></span><span class="skill"><span class="cmd">/verify-operational</span></span></div>
+    </div>
+    <div class="conn"></div>
+
+    <div class="cap done">&#x2713; Merged &amp; deployed to prod</div>
+  </div>
+</div>

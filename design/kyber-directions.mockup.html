@@ -1,0 +1,180 @@
+<title>Kyber section — mockups</title>
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#121821; --panel:rgba(18,24,33,.66); --brd:rgba(100,150,255,.16);
+    --cyan:#00d4ff; --purple:#a78bfa; --pink:#ec4899; --green:#34d399; --amber:#fbbf24;
+    --text:#dbe4f0; --muted:#8494a8; --dim:#48566c;
+    --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:
+     radial-gradient(1000px 600px at 82% -10%,rgba(167,139,250,.10),transparent 60%),
+     radial-gradient(800px 500px at 10% 5%,rgba(0,212,255,.07),transparent 55%),var(--bg);
+     color:var(--text);font-family:var(--mono);-webkit-font-smoothing:antialiased;line-height:1.5}
+  .gridbg{position:fixed;inset:0;z-index:0;pointer-events:none;
+     background-image:linear-gradient(rgba(100,150,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(100,150,255,.05) 1px,transparent 1px);
+     background-size:52px 52px;-webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 20%,#000 45%,transparent 100%);mask-image:radial-gradient(ellipse 90% 60% at 50% 20%,#000 45%,transparent 100%)}
+  .wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:40px 22px 80px}
+  .lead{color:var(--muted);font-size:14px;font-weight:300;max-width:70ch;margin:0 0 8px}
+  h1{font-size:23px;letter-spacing:-.01em;margin:0 0 10px}
+  h1 .g{background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .opt{margin:44px 0 0;border-top:1px solid var(--brd);padding-top:26px}
+  .optlabel{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
+  .optlabel .n{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:color-mix(in srgb,var(--purple) 14%,transparent);border:1px solid color-mix(in srgb,var(--purple) 40%,transparent);color:var(--purple);font-weight:700}
+  .opttitle{font-size:17px;margin:0 0 4px;color:var(--text)}
+  .optdesc{color:var(--muted);font-size:12.5px;font-weight:300;margin:0 0 18px;max-width:66ch}
+
+  /* section label used inside every mockup, matching the site */
+  .kyb-h{font-size:24px;font-weight:600;letter-spacing:-.01em;margin:0}
+  .kyb-h .g{color:var(--purple);text-shadow:0 0 24px rgba(167,139,250,.35)}
+  .kyb-sub{color:var(--muted);font-size:13px;font-weight:300;margin:3px 0 20px}
+
+  .card{background:var(--panel);border:1px solid var(--brd);border-radius:14px;backdrop-filter:blur(6px)}
+
+  /* ---------- A: Fleet console ---------- */
+  .fc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+  .fc-stat{padding:13px 15px}
+  .fc-stat .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .fc-stat .v{font-size:22px;font-weight:700;margin-top:2px}
+  .fc-stat .v.cy{color:var(--cyan)} .fc-stat .v.gr{color:var(--green)} .fc-stat .v.pu{color:var(--purple)}
+  .fc-tbl{overflow:hidden}
+  .fc-row{display:grid;grid-template-columns:1.4fr 1fr .9fr 1.2fr .8fr;gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid rgba(100,150,255,.08);font-size:12.5px}
+  .fc-row.head{color:var(--muted);font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--brd)}
+  .fc-row:last-child{border-bottom:none}
+  .fc-name{display:flex;align-items:center;gap:9px}
+  .fc-glyph{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--cyan);border:1px solid var(--cyan);background:color-mix(in srgb,var(--cyan) 10%,transparent)}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:2px 9px;border-radius:20px;color:var(--green);background:color-mix(in srgb,var(--green) 10%,transparent);border:1px solid color-mix(in srgb,var(--green) 30%,transparent)}
+  .pill .d{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+  .muted{color:var(--muted)}
+
+  /* ---------- B: architecture ---------- */
+  .arch{display:flex;flex-direction:column;align-items:center;gap:0;padding:24px 18px}
+  .arch .cp{padding:10px 18px;border-radius:11px;background:color-mix(in srgb,var(--purple) 8%,transparent);border:1px solid color-mix(in srgb,var(--purple) 40%,transparent);font-size:13px;box-shadow:0 0 26px -8px var(--purple)}
+  .arch .cp b{color:var(--purple)}
+  .arrow{width:1px;height:26px;background:linear-gradient(var(--cyan),transparent);position:relative;margin:4px 0}
+  .arrow::after{content:"";position:absolute;bottom:0;left:-3px;border:4px solid transparent;border-top-color:var(--cyan)}
+  .arch .cr{font-size:11.5px;color:var(--cyan);border:1px dashed color-mix(in srgb,var(--cyan) 45%,transparent);border-radius:8px;padding:7px 12px;background:rgba(0,212,255,.03)}
+  .pod{border:1px solid var(--brd);border-radius:12px;background:rgba(18,24,33,.7);width:min(420px,100%);overflow:hidden}
+  .pod-bar{display:flex;gap:5px;align-items:center;padding:6px 10px;background:rgba(100,150,255,.06);border-bottom:1px solid var(--brd);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .pod-bar i{width:5px;height:5px;border-radius:50%;background:rgba(148,163,184,.4)}
+  .pod-bar span{margin-left:auto}
+  .pod-body{padding:12px;display:flex;flex-direction:column;gap:7px}
+  .ctr{display:flex;align-items:center;gap:10px;padding:8px 11px;border-radius:8px;font-size:12px;border:1px solid var(--brd);background:rgba(10,14,20,.6)}
+  .ctr.main{border-color:color-mix(in srgb,var(--cyan) 40%,transparent);color:var(--text)}
+  .ctr .tag{margin-left:auto;font-size:9.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+  .ctr .dotc{width:8px;height:8px;border-radius:2px}
+  .webhook{margin-top:2px;font-size:11px;color:var(--muted)}
+  .webhook b{color:var(--pink)}
+
+  /* ---------- C: how it works ---------- */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .step{padding:16px 14px;position:relative}
+  .step .num{font-size:12px;font-weight:700;color:var(--cyan);border:1px solid var(--cyan);border-radius:6px;width:24px;height:24px;display:grid;place-items:center;background:color-mix(in srgb,var(--cyan) 10%,transparent);margin-bottom:10px}
+  .step h4{margin:0 0 5px;font-size:13px;color:var(--text)}
+  .step p{margin:0;font-size:11.5px;color:var(--muted);font-weight:300;line-height:1.5}
+
+  /* ---------- D: capabilities ---------- */
+  .caps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .cap{padding:15px}
+  .cap .ic{font-size:16px;margin-bottom:8px}
+  .cap h4{margin:0 0 4px;font-size:13px;color:var(--text)}
+  .cap p{margin:0;font-size:11px;color:var(--muted);font-weight:300;line-height:1.45}
+
+  @media(max-width:680px){
+    .fc-stats,.steps{grid-template-columns:repeat(2,1fr)}
+    .caps{grid-template-columns:1fr 1fr}
+    .fc-row{grid-template-columns:1.4fr .9fr .9fr;font-size:11.5px}
+    .fc-row .hide{display:none}
+  }
+</style>
+<div class="gridbg"></div>
+<div class="wrap">
+  <h1>Kyber section — <span class="g">four directions</span></h1>
+  <p class="lead">Same content, four ways to present "what Kyber is + how it works." All match voget.io's look. A uses live fleet data (10 real agents across your two clusters); B–D describe the platform without leaning on the specific team. Pick one, or a combo (e.g. A + C).</p>
+
+  <!-- OPTION A -->
+  <div class="opt">
+    <div class="optlabel"><span class="n">A</span> Fleet console · live data</div>
+    <div class="opttitle">A real read-only view of the running fleet</div>
+    <p class="optdesc">Mirrors Kyber's own "Agent Fleet Platform" console, in your site's skin. Pulls the actual agents Kyber is running right now — this is the strongest "it's a real platform" proof, and it's the live-data view you were after.</p>
+
+    <h3 class="kyb-h"><span class="g">Kyber</span></h3>
+    <p class="kyb-sub">A Kubernetes Agent Management Platform · live fleet</p>
+    <div class="fc-stats">
+      <div class="fc-stat card"><div class="k">Agents</div><div class="v cy">10</div></div>
+      <div class="fc-stat card"><div class="k">Clusters</div><div class="v pu">2</div></div>
+      <div class="fc-stat card"><div class="k">Healthy</div><div class="v gr">100%</div></div>
+      <div class="fc-stat card"><div class="k">Runtime</div><div class="v" style="font-size:14px;padding-top:6px">claude-code</div></div>
+    </div>
+    <div class="fc-tbl card">
+      <div class="fc-row head"><span>Agent</span><span>Role</span><span>Status</span><span class="hide">Model</span><span class="hide">Cluster</span></div>
+      <div class="fc-row"><span class="fc-name"><span class="fc-glyph">Y</span>Yoda</span><span class="muted">Product</span><span><span class="pill"><span class="d"></span>Running</span></span><span class="muted hide">opus-4.8</span><span class="muted hide">falcon</span></div>
+      <div class="fc-row"><span class="fc-name"><span class="fc-glyph">L</span>Lando</span><span class="muted">Orchestrator</span><span><span class="pill"><span class="d"></span>Running</span></span><span class="muted hide">opus-4.8</span><span class="muted hide">falcon</span></div>
+      <div class="fc-row"><span class="fc-name"><span class="fc-glyph">H</span>Han</span><span class="muted">Engineer</span><span><span class="pill"><span class="d"></span>Running</span></span><span class="muted hide">opus-4.8</span><span class="muted hide">falcon</span></div>
+      <div class="fc-row"><span class="fc-name"><span class="fc-glyph">C</span>Chewie</span><span class="muted">Review</span><span><span class="pill"><span class="d"></span>Running</span></span><span class="muted hide">opus-4.8</span><span class="muted hide">falcon</span></div>
+      <div class="fc-row"><span class="fc-name"><span class="fc-glyph">A</span>Ackbar</span><span class="muted">Deploy</span><span><span class="pill"><span class="d"></span>Running</span></span><span class="muted hide">opus-4.8</span><span class="muted hide">falcon</span></div>
+      <div class="fc-row"><span class="fc-name"><span class="fc-glyph" style="color:var(--purple);border-color:var(--purple);background:color-mix(in srgb,var(--purple) 10%,transparent)">D</span>Dave</span><span class="muted">Principal eng</span><span><span class="pill"><span class="d"></span>Running</span></span><span class="muted hide">opus-4.8</span><span class="muted hide">razer</span></div>
+      <div class="fc-row"><span class="muted" style="font-size:11px">+ 4 more · obi-wan, luke, boba-fett, r2-d2</span><span></span><span></span><span class="hide"></span><span class="hide"></span></div>
+    </div>
+  </div>
+
+  <!-- OPTION B -->
+  <div class="opt">
+    <div class="optlabel"><span class="n">B</span> Architecture · genericized</div>
+    <div class="opttitle">How an agent actually runs, as machinery</div>
+    <p class="optdesc">The current diagram, re-pitched to the platform level: no named team — one representative agent pod, expanded to show the sidecars Kyber gives every agent. Shows the "how," not the "who."</p>
+
+    <h3 class="kyb-h"><span class="g">Kyber</span></h3>
+    <p class="kyb-sub">A Kubernetes Agent Management Platform</p>
+    <div class="card arch">
+      <div class="cp"><b>&#x2B22; Control plane</b> — reconciles Agent resources → pods</div>
+      <div class="arrow"></div>
+      <div class="cr">apiVersion: kyber.io/v1 · kind: <b style="color:var(--cyan)">Agent</b></div>
+      <div class="arrow"></div>
+      <div class="pod">
+        <div class="pod-bar"><i></i><i></i><i></i><span>pod</span></div>
+        <div class="pod-body">
+          <div class="ctr main"><span class="dotc" style="background:var(--cyan)"></span>agent — your harness (Claude Code, …)<span class="tag">container</span></div>
+          <div class="ctr"><span class="dotc" style="background:var(--purple)"></span>persistent-memory saver<span class="tag">sidecar</span></div>
+          <div class="ctr"><span class="dotc" style="background:var(--green)"></span>status / heartbeat<span class="tag">sidecar</span></div>
+          <div class="ctr"><span class="dotc" style="background:var(--pink)"></span>transcript tailer<span class="tag">sidecar</span></div>
+        </div>
+      </div>
+      <div class="webhook">↑ work arrives as a <b>signed webhook</b> · pods self-heal on failure</div>
+    </div>
+  </div>
+
+  <!-- OPTION C -->
+  <div class="opt">
+    <div class="optlabel"><span class="n">C</span> How it works · 4 steps</div>
+    <div class="opttitle">The platform as a simple narrative</div>
+    <p class="optdesc">Reads left-to-right; no diagram literacy required. Pairs well under Option A.</p>
+
+    <h3 class="kyb-h"><span class="g">Kyber</span></h3>
+    <p class="kyb-sub">A Kubernetes Agent Management Platform</p>
+    <div class="steps">
+      <div class="step card"><div class="num">1</div><h4>Declare an agent</h4><p>Write a short Kubernetes manifest — identity, model, permissions.</p></div>
+      <div class="step card"><div class="num">2</div><h4>Kyber runs it</h4><p>It reconciles into a pod with persistent memory + status sidecars.</p></div>
+      <div class="step card"><div class="num">3</div><h4>Work arrives</h4><p>Tickets are dispatched to the agent as signed webhooks.</p></div>
+      <div class="step card"><div class="num">4</div><h4>It ships</h4><p>The agent runs in its harness, commits, reviews, and deploys.</p></div>
+    </div>
+  </div>
+
+  <!-- OPTION D -->
+  <div class="opt">
+    <div class="optlabel"><span class="n">D</span> Capability strip</div>
+    <div class="opttitle">What the platform gives you, at a glance</div>
+    <p class="optdesc">Dense and scannable. Works as a strip beneath A or B.</p>
+
+    <h3 class="kyb-h"><span class="g">Kyber</span></h3>
+    <p class="kyb-sub">A Kubernetes Agent Management Platform</p>
+    <div class="caps">
+      <div class="cap card"><div class="ic">&#x2699;</div><h4>Agents as k8s resources</h4><p>Each agent is a first-class custom resource, reconciled like any workload.</p></div>
+      <div class="cap card"><div class="ic">&#x1F9E0;</div><h4>Persistent memory</h4><p>A sidecar saves each agent's memory so it survives restarts and moves.</p></div>
+      <div class="cap card"><div class="ic">&#x1F517;</div><h4>Signed webhook dispatch</h4><p>Work is routed to agents as HMAC-signed webhook envelopes.</p></div>
+      <div class="cap card"><div class="ic">&#x267B;</div><h4>Self-healing pods</h4><p>Crashed or OOM'd agents come back on their own, state intact.</p></div>
+      <div class="cap card"><div class="ic">&#x1F9E9;</div><h4>Harness-agnostic</h4><p>Claude Code today; any agent runtime the same way.</p></div>
+      <div class="cap card"><div class="ic">&#x1F30D;</div><h4>Multi-cluster fleet</h4><p>One platform across clusters — home lab to cloud.</p></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-07-08T19:10:20.529Z",
+  "repo": "snapdex",
+  "columns": [
+    {
+      "key": "triage",
+      "name": "Triage",
+      "cards": [
+        {
+          "id": "389",
+          "kind": "issue",
+          "agent": "yoda",
+          "tag": "feature"
+        },
+        {
+          "id": "396",
+          "kind": "issue",
+          "agent": "yoda",
+          "tag": "feature"
+        },
+        {
+          "id": "388",
+          "kind": "issue",
+          "agent": "yoda",
+          "tag": "feature"
+        },
+        {
+          "id": "385",
+          "kind": "issue",
+          "agent": "yoda",
+          "tag": "feature"
+        },
+        {
+          "id": "374",
+          "kind": "issue",
+          "agent": "yoda",
+          "tag": "feature"
+        },
+        {
+          "id": "324",
+          "kind": "issue",
+          "agent": "boba-fett",
+          "tag": "feature"
+        }
+      ]
+    },
+    {
+      "key": "building",
+      "name": "Building",
+      "cards": []
+    },
+    {
+      "key": "review",
+      "name": "In review",
+      "cards": [
+        {
+          "id": "395",
+          "kind": "issue",
+          "agent": "ackbar",
+          "tag": "deploy"
+        }
+      ]
+    },
+    {
+      "key": "shipped",
+      "name": "Shipped",
+      "cards": [
+        {
+          "id": "443",
+          "kind": "issue",
+          "agent": "ackbar",
+          "tag": "deploy"
+        },
+        {
+          "id": "440",
+          "kind": "issue",
+          "agent": "han",
+          "tag": "bug"
+        },
+        {
+          "id": "326",
+          "kind": "issue",
+          "agent": "han",
+          "tag": "deploy"
+        },
+        {
+          "id": "435",
+          "kind": "issue",
+          "agent": "luke",
+          "tag": "feature"
+        },
+        {
+          "id": "394",
+          "kind": "issue",
+          "agent": "ackbar",
+          "tag": "deploy"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "agents": 5
+  }
+}

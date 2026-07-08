@@ -1,31 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react'
+import { Github, Linkedin, Mail, Gem } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
-
-const projects = [
-  {
-    title: "Google Drive MCP Server",
-    description: "MCP server enabling Claude to interact with Google Drive. Browse, search, read, create, and edit files with full OAuth2 authentication.",
-    tech: ["TypeScript", "Google Cloud", "OAuth2", "Docker"],
-    link: "https://google-drive-mcp-xpl65co6pa-uc.a.run.app",
-    github: "https://github.com/matty-v/google-drive-mcp",
-  },
-  {
-    title: "Sheets DB API",
-    description: "REST API that uses Google Sheets as a lightweight database backend. Simple data persistence without managing infrastructure.",
-    tech: ["TypeScript", "Google Cloud", "OpenAPI"],
-    link: "https://sheetsapi-g56q77hy2a-uc.a.run.app",
-    github: "https://github.com/matty-v/sheets-db-api",
-  },
-  {
-    title: "Lifting Tracker",
-    description: "Workout logging app to track lifts, log sessions, and monitor progress over time. Uses the Sheets DB API.",
-    tech: ["React", "TypeScript", "Tailwind"],
-    link: "https://lifting.voget.io",
-    github: "https://github.com/matty-v/lifting",
-  },
-]
+import { FalconTeam } from '@/components/falcon-team'
+import { KyberDiagram } from '@/components/kyber-diagram'
+import { SnapdexShowcase } from '@/components/snapdex-showcase'
+import { LiveBoard } from '@/components/live-board'
 
 function Particles() {
   useEffect(() => {
@@ -68,7 +47,7 @@ function Background() {
 
 function Hero() {
   return (
-    <section className="space-y-6 text-center py-20">
+    <section className="space-y-5 text-center pt-12 pb-0">
       <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
         <span className="text-foreground">Matt </span>
         <span className="glow-cyan">Voget</span>
@@ -77,78 +56,16 @@ function Hero() {
         I lead engineering teams, but still love to build!
         Passionate about good architecture, managing functional teams, and creating software that solves problems.
       </p>
-      <div className="flex gap-4 justify-center">
-        <Button variant="default" asChild className="bg-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/80 text-black font-medium">
-          <a href="#projects">View Projects</a>
-        </Button>
-        <Button variant="outline" asChild className="border-[var(--accent-purple)]/50 hover:border-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/10">
-          <a href="#contact">Get in Touch</a>
-        </Button>
-      </div>
-    </section>
-  )
-}
-
-function Projects() {
-  return (
-    <section id="projects" className="space-y-8">
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          <span className="glow-purple">Projects</span>
-        </h2>
-        <p className="text-sm text-muted-foreground mt-2 font-light">
-          Things I've built
-        </p>
-      </div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <Card key={project.title} className="flex flex-col tech-card rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-foreground">{project.title}</CardTitle>
-              <CardDescription className="font-light">{project.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-1">
-              <div className="flex flex-wrap gap-2">
-                {project.tech.map((t) => (
-                  <span
-                    key={t}
-                    className="text-xs tech-badge px-2 py-1 rounded-md"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </CardContent>
-            <CardFooter className="gap-2">
-              <Button variant="ghost" size="sm" asChild className="hover:text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10">
-                <a href={project.github} target="_blank" rel="noopener noreferrer">
-                  <Github className="h-4 w-4" />
-                  Code
-                </a>
-              </Button>
-              <Button variant="ghost" size="sm" asChild className="hover:text-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/10">
-                <a href={project.link} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4" />
-                  Demo
-                </a>
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
     </section>
   )
 }
 
 function Contact() {
   return (
-    <section id="contact" className="space-y-6 text-center py-12">
+    <section id="contact" className="space-y-4 text-center py-0">
       <h2 className="text-2xl font-semibold tracking-tight">
         <span className="glow-cyan">Get in Touch</span>
       </h2>
-      <p className="text-muted-foreground font-light">
-        Feel free to reach out for collaborations or just a friendly hello
-      </p>
       <div className="flex gap-4 justify-center">
         <Button variant="outline" size="icon" asChild className="border-[var(--accent-cyan)]/30 hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10 hover:text-[var(--accent-cyan)]">
           <a href="https://github.com/matty-v" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
@@ -166,6 +83,50 @@ function Contact() {
           </a>
         </Button>
       </div>
+    </section>
+  )
+}
+
+function MyWork() {
+  return (
+    <section id="work" className="space-y-16">
+      <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
+        <span className="glow-purple">What I&apos;m Building&hellip;</span>
+      </h2>
+
+      <div className="space-y-10">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Gem
+              className="h-8 w-8 shrink-0"
+              strokeWidth={1.5}
+              aria-hidden
+              style={{ color: 'var(--accent-cyan)', filter: 'drop-shadow(0 0 10px color-mix(in srgb, var(--accent-cyan) 55%, transparent))' }}
+            />
+            <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+              <span className="glow-cyan">Kyber</span> — A Kubernetes Native Agent Platform
+            </h3>
+          </div>
+          <p className="text-sm sm:text-base text-muted-foreground font-light leading-relaxed max-w-3xl">
+            Kyber runs AI agents as first-class Kubernetes workloads, each in its own pod with persistent memory. I can restart sessions, manage agent identities, inject secrets, trigger actions on cron schedules, and hold two-way conversations with each one. Kyber&apos;s first use case is the Falcon Dev Team, a team of AI agents that ship real software end to end.
+          </p>
+        </div>
+
+        <div className="grid gap-x-16 gap-y-10 md:grid-cols-2 items-start">
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold tracking-tight text-foreground/90">Architecture</h4>
+            <KyberDiagram />
+          </div>
+          <div className="mx-auto w-full max-w-[400px] space-y-4">
+            <h4 className="text-sm font-semibold tracking-tight text-foreground/90">The Falcon Dev Team — AI Agents Running on Kyber</h4>
+            <FalconTeam />
+          </div>
+        </div>
+
+        <LiveBoard />
+      </div>
+
+      <SnapdexShowcase />
     </section>
   )
 }
@@ -266,9 +227,11 @@ function App() {
       default:
         return (
           <>
-            <Hero />
-            <Projects />
-            <Contact />
+            <div className="space-y-8">
+              <Hero />
+              <Contact />
+            </div>
+            <MyWork />
           </>
         )
     }
@@ -277,7 +240,7 @@ function App() {
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] relative">
       <Background />
-      <main className="container max-w-4xl mx-auto px-4 py-8 space-y-16 relative z-10">
+      <main className="container max-w-6xl mx-auto px-4 py-8 space-y-16 relative z-10">
         {renderContent()}
       </main>
       <footer className="border-t border-[var(--accent-cyan)]/10 py-6 text-center text-sm text-muted-foreground relative z-10">

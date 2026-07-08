@@ -10,25 +10,30 @@ test.describe('Home Page', () => {
     await expect(page.getByText(/I lead engineering teams/i)).toBeVisible()
   })
 
-  test('displays projects section', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible()
-    await expect(page.getByText('Google Drive MCP Server', { exact: true })).toBeVisible()
-    await expect(page.getByText('Sheets DB API', { exact: true })).toBeVisible()
-    await expect(page.getByText('Lifting Tracker', { exact: true })).toBeVisible()
+  test('displays the What I\'m Building section with Kyber, the team, and Snapdex', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: /What I'm Building/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Kubernetes Native Agent Platform/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'The Falcon Dev Team' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Snapdex' })).toBeVisible()
   })
 
-  test('displays contact section', async ({ page }) => {
+  test('shows the Falcon Dev Team agents', async ({ page }) => {
+    // agent names / roles; some also appear in the Kyber diagram, so match the first
+    await expect(page.getByText('Obi-Wan').first()).toBeVisible()
+    await expect(page.getByText('Boba-Fett').first()).toBeVisible()
+    await expect(page.getByText('Orchestrator').first()).toBeVisible()
+    await expect(page.getByText('Ackbar').first()).toBeVisible()
+  })
+
+  test('displays contact section with social links', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Get in Touch' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible()
   })
 
-  test('has working navigation to Projects section', async ({ page }) => {
-    await page.getByRole('link', { name: 'View Projects' }).click()
-    await expect(page.locator('#projects')).toBeInViewport()
-  })
-
-  test('has working navigation to Contact section', async ({ page }) => {
-    await page.getByRole('link', { name: 'Get in Touch' }).click()
-    await expect(page.locator('#contact')).toBeInViewport()
+  test('shows the Falcon Dev Team dashboard inline', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: /falcon dev team dashboard/i })).toBeVisible()
+    await expect(page.getByText(/Last 5 shipped/i)).toBeVisible()
+    await expect(page.getByText('#443')).toBeVisible()
   })
 })
 

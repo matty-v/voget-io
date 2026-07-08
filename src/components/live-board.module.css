@@ -1,0 +1,245 @@
+/* Falcon Dev Team Dashboard (/live). Ported from design/falcon-dashboard.mockup.html.
+   Colors reuse the site's global tokens (src/index.css) where they match:
+   --accent-cyan, --accent-green, --accent-purple, --accent-amber, --foreground,
+   --muted-foreground (used unwrapped, matching the convention already used in
+   falcon-team.module.css / snapdex-showcase.module.css). Panel/border rgba
+   values and the dimmer greys (--dim/--muted in the mockup) have no matching
+   token, so they're hardcoded here — same approach the rest of the app takes
+   for its own one-off rgba literals (e.g. .tech-card, .kan-col in index.css). */
+
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.back {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.back:hover {
+  color: var(--accent-cyan);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  margin-bottom: 22px;
+}
+
+.head h1 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.glow {
+  color: var(--accent-cyan);
+  text-shadow: 0 0 24px rgba(0, 212, 255, 0.3);
+}
+
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-green);
+  border: 1px solid color-mix(in srgb, var(--accent-green) 35%, transparent);
+  background: color-mix(in srgb, var(--accent-green) 8%, transparent);
+  padding: 2px 9px;
+  border-radius: 20px;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liveDot {
+    animation: none;
+  }
+}
+
+.updated {
+  margin-left: auto;
+  font-size: 11px;
+  color: #4a5769;
+}
+
+.card {
+  background: rgba(18, 24, 33, 0.66);
+  border: 1px solid rgba(100, 150, 255, 0.16);
+  border-radius: 14px;
+  backdrop-filter: blur(6px);
+}
+
+.grid {
+  display: grid;
+  gap: 14px;
+}
+
+.kpis {
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 14px;
+}
+
+.kpi {
+  padding: 16px 18px;
+}
+
+.kpiLabel {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.kpiValue {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.kpiValue small {
+  font-size: 15px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.kpiSub {
+  font-size: 10.5px;
+  color: #4a5769;
+  margin-top: 6px;
+}
+
+.cy {
+  color: var(--accent-cyan);
+}
+
+.gr {
+  color: var(--accent-green);
+}
+
+.am {
+  color: var(--accent-amber);
+}
+
+.wtitle {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  font-weight: 600;
+  padding: 14px 18px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.wtitle .sub {
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: #4a5769;
+  margin-left: auto;
+}
+
+.row2 {
+  grid-template-columns: 1fr 1.25fr;
+  margin-top: 14px;
+}
+
+.ship {
+  padding: 6px 18px 14px;
+}
+
+.srow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(100, 150, 255, 0.08);
+  font-size: 12.5px;
+}
+
+.srow:last-child {
+  border-bottom: none;
+}
+
+.srepo {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.sid {
+  color: var(--foreground);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.sdate {
+  color: #4a5769;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.lg {
+  padding: 8px 14px 12px;
+}
+
+.lg svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.lgx {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 6px 0;
+  font-size: 9.5px;
+  color: #4a5769;
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  margin-top: 22px;
+  font-size: 11px;
+  color: #4a5769;
+  text-align: center;
+  line-height: 1.7;
+}
+
+@media (max-width: 680px) {
+  .kpis {
+    grid-template-columns: 1fr;
+  }
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+}
