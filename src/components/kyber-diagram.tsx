@@ -11,11 +11,6 @@ const PODS = [
 export function KyberDiagram() {
   return (
     <div className="kyber-diagram">
-      <p className="kyber-cap">
-        Each agent is a container running in its own pod. Lando, the orchestrator, routes work to them as signed
-        webhook dispatches over the cluster network &mdash; the same way a human team hands off tickets.
-      </p>
-
       <div className="kyber-cluster">
         <span className="kyber-cluster-tab">Kubernetes cluster</span>
 

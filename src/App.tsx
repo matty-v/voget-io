@@ -111,23 +111,17 @@ function SectionHeading({ title, badge, badgeColor, children }: { title: string;
 
 function MyWork() {
   return (
-    <section id="work" className="space-y-16">
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold tracking-tight">
+    <section id="work" className="space-y-14">
+      <div className="space-y-1">
+        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
           <span className="glow-purple">My Work</span>
         </h2>
-        <p className="text-sm text-muted-foreground mt-2 font-light">
-          A platform for autonomous AI dev teams &mdash; and the product they're building on it
+        <p className="text-base text-muted-foreground font-light">
+          Kyber: A Kubernetes Agent Management Platform
         </p>
       </div>
 
-      <div className="space-y-8">
-        <SectionHeading title="Kyber" badge="Private" badgeColor="var(--accent-cyan)">
-          A Kubernetes-native platform that runs autonomous agents as a real software team &mdash; dispatch, persistent
-          memory, code review, and deploy built into the fabric.
-        </SectionHeading>
-        <KyberDiagram />
-      </div>
+      <KyberDiagram />
 
       <div className="space-y-8">
         <SectionHeading title="The Falcon Dev Team">
