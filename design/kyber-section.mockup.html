@@ -1,0 +1,211 @@
+<title>Kyber — enhanced B</title>
+<style>
+  :root{
+    --bg:#0a0e14;--panel:rgba(18,24,33,.72);--brd:rgba(100,150,255,.16);
+    --cyan:#00d4ff;--purple:#a78bfa;--pink:#ec4899;--green:#34d399;--amber:#fbbf24;
+    --tg:#29b6f6;--dc:#8b93f8;--sl:#e9a13b;
+    --text:#dbe4f0;--muted:#8494a8;--dim:#516175;
+    --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:
+    radial-gradient(1000px 600px at 82% -10%,rgba(167,139,250,.10),transparent 60%),
+    radial-gradient(800px 500px at 10% 4%,rgba(0,212,255,.07),transparent 55%),var(--bg);
+    color:var(--text);font-family:var(--mono);-webkit-font-smoothing:antialiased;line-height:1.5}
+  .gridbg{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(rgba(100,150,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(100,150,255,.05) 1px,transparent 1px);
+    background-size:52px 52px;-webkit-mask-image:radial-gradient(ellipse 90% 65% at 50% 25%,#000 45%,transparent 100%);mask-image:radial-gradient(ellipse 90% 65% at 50% 25%,#000 45%,transparent 100%)}
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:36px 20px 70px}
+  h2{font-size:24px;font-weight:600;margin:0;display:inline-flex;align-items:center;gap:11px}
+  h2 .g{color:var(--purple);text-shadow:0 0 24px rgba(167,139,250,.35)}
+  .klogo{width:30px;height:30px;border-radius:7px;flex:0 0 auto}
+  .sub{color:var(--muted);font-size:13px;font-weight:300;margin:3px 0 4px}
+  .note{color:var(--dim);font-size:11.5px;margin:0 0 22px}
+
+  .stage{display:flex;flex-direction:column;align-items:center;gap:0}
+  .card{background:var(--panel);border:1px solid var(--brd);border-radius:12px;backdrop-filter:blur(6px)}
+
+  /* operator */
+  .op{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:11px 16px}
+  .op .who{font-size:13px;color:var(--text);font-weight:600}
+  .op .lbl{font-size:11px;color:var(--muted)}
+  .chip{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid;display:inline-flex;align-items:center;gap:6px}
+  .chip .d{width:6px;height:6px;border-radius:50%}
+  .chip.tg{color:var(--tg);border-color:color-mix(in srgb,var(--tg) 45%,transparent);background:color-mix(in srgb,var(--tg) 9%,transparent)}
+  .chip.tg .d{background:var(--tg)}
+  .chip.dc{color:var(--dc);border-color:color-mix(in srgb,var(--dc) 45%,transparent);background:color-mix(in srgb,var(--dc) 9%,transparent)}
+  .chip.dc .d{background:var(--dc)}
+  .chip.sl{color:var(--sl);border-color:color-mix(in srgb,var(--sl) 45%,transparent);background:color-mix(in srgb,var(--sl) 9%,transparent)}
+  .chip.sl .d{background:var(--sl)}
+  .ci{width:13px;height:13px;flex:0 0 auto}
+
+  .conn{width:1px;height:26px;background:linear-gradient(var(--cyan),color-mix(in srgb,var(--cyan) 20%,transparent));position:relative}
+  .conn.dn::after{content:"";position:absolute;bottom:0;left:-3px;border:4px solid transparent;border-top-color:var(--cyan)}
+  .conn.up::before{content:"";position:absolute;top:0;left:-3px;border:4px solid transparent;border-bottom-color:var(--cyan)}
+  .conn.both::after{content:"";position:absolute;bottom:0;left:-3px;border:4px solid transparent;border-top-color:var(--cyan)}
+  .conn.both::before{content:"";position:absolute;top:0;left:-3px;border:4px solid transparent;border-bottom-color:var(--cyan)}
+  .connlbl{font-size:10px;color:var(--dim);margin:2px 0}
+
+  /* kyber UI window */
+  .kyui{width:min(620px,100%);overflow:hidden}
+  .kyui-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(10,14,20,.85);border-bottom:1px solid var(--brd)}
+  .kyui-bar .dots{display:flex;gap:5px}
+  .kyui-bar .dots i{width:9px;height:9px;border-radius:50%;background:rgba(148,163,184,.35)}
+  .kyui-bar .ttl{font-size:11.5px;color:var(--muted);margin-left:4px}
+  .kyui-bar .ttl b{color:var(--purple)}
+  .kyui-bar .tabs{margin-left:auto;display:flex;gap:4px}
+  .kyui-bar .tab{font-size:10px;padding:2px 9px;border-radius:6px;color:var(--dim)}
+  .kyui-bar .tab.on{color:var(--cyan);background:color-mix(in srgb,var(--cyan) 10%,transparent);border:1px solid color-mix(in srgb,var(--cyan) 30%,transparent)}
+  .kyui-body{display:grid;grid-template-columns:1fr 1.25fr;gap:0}
+  .kyui-fleet{padding:12px 14px;border-right:1px solid var(--brd)}
+  .kyui-cap{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 11px}
+  .brow{margin:0 0 11px}
+  .bt{display:flex;align-items:baseline;gap:7px;font-size:11px;margin-bottom:5px}
+  .bn{color:var(--text);font-weight:600}
+  .bu{color:var(--dim);font-size:9.5px}
+  .bp{margin-left:auto;font-weight:700;font-size:10.5px}
+  .bp.gr{color:var(--green)} .bp.am{color:var(--amber)}
+  .bar{height:5px;border-radius:4px;background:rgba(148,163,184,.14);overflow:hidden}
+  .bf{display:block;height:100%;border-radius:4px}
+  .frow{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px}
+  .fg{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--cyan);border:1px solid var(--cyan);background:color-mix(in srgb,var(--cyan) 10%,transparent)}
+  .frow .rn{color:var(--text)} .frow .rr{color:var(--dim);font-size:10.5px;margin-left:2px}
+  .frow .st{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--green)}
+  .frow .st .d{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green)}
+  .spark{width:56px;height:18px;margin-left:auto;flex:0 0 auto;overflow:visible}
+  /* xterm */
+  .kyui-term{background:#05070c;padding:11px 13px;font-size:11px;line-height:1.55;overflow:hidden}
+  .term-top{display:flex;align-items:center;gap:8px;margin-bottom:7px;color:var(--dim);font-size:10px}
+  .term-top .agent{color:var(--purple)}
+  .t{white-space:pre-wrap;margin:0}
+  .t .p{color:var(--green)} .t .c{color:var(--cyan)} .t .m{color:var(--muted)} .t .a{color:var(--amber)} .t .pk{color:var(--pink)}
+  .cursor{display:inline-block;width:7px;height:13px;background:var(--green);vertical-align:-2px;animation:bl 1.1s steps(1) infinite}
+  @keyframes bl{50%{opacity:0}}
+
+  /* cluster */
+  .cluster{position:relative;width:min(620px,100%);border:1px dashed color-mix(in srgb,var(--cyan) 30%,transparent);border-radius:14px;padding:30px 18px 18px;background:rgba(0,212,255,.02)}
+  .cltab{position:absolute;top:-10px;left:16px;background:var(--bg);padding:0 9px;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--cyan)}
+  .cp{width:max-content;max-width:100%;margin:0 auto;padding:8px 15px;border-radius:10px;font-size:12px;background:color-mix(in srgb,var(--purple) 8%,transparent);border:1px solid color-mix(in srgb,var(--purple) 40%,transparent)}
+  .cp b{color:var(--purple)}
+  .cr{width:max-content;margin:0 auto;font-size:11px;color:var(--cyan);border:1px dashed color-mix(in srgb,var(--cyan) 45%,transparent);border-radius:7px;padding:5px 11px;background:rgba(0,212,255,.03)}
+  .pod{width:min(400px,100%);margin:0 auto;border:1px solid var(--brd);border-radius:11px;background:rgba(18,24,33,.75);overflow:hidden}
+  .pbar{display:flex;gap:5px;align-items:center;padding:5px 10px;background:rgba(100,150,255,.06);border-bottom:1px solid var(--brd);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .pbar i{width:5px;height:5px;border-radius:50%;background:rgba(148,163,184,.4)} .pbar span{margin-left:auto}
+  .pbody{padding:10px;display:flex;flex-direction:column;gap:6px}
+  .ctr{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:7px;font-size:11.5px;border:1px solid var(--brd);background:rgba(10,14,20,.6)}
+  .ctr.main{border-color:color-mix(in srgb,var(--cyan) 40%,transparent);color:var(--text)}
+  .ctr .dc{width:8px;height:8px;border-radius:2px} .ctr .tag{margin-left:auto;font-size:9px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+  .wh{text-align:center;font-size:11px;color:var(--muted);margin-top:10px}
+  .wh b{color:var(--pink)}
+  /* control plane sits outside the cluster now */
+  .cp.card{margin:0 auto}
+  /* API/Webhook gateway on the cluster boundary */
+  .gw{position:absolute;top:-11px;right:16px;background:var(--bg);padding:2px 10px;font-size:10px;letter-spacing:.04em;color:var(--cyan);border:1px solid color-mix(in srgb,var(--cyan) 45%,transparent);border-radius:20px}
+  /* multiple agent pods */
+  .pods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .mpod{border:1px solid var(--brd);border-radius:10px;background:rgba(18,24,33,.75);overflow:hidden}
+  .mpod.healing{border-color:color-mix(in srgb,var(--green) 40%,transparent);box-shadow:0 0 22px -10px var(--green)}
+  .mpod.running{border-color:color-mix(in srgb,var(--green) 45%,transparent);box-shadow:0 0 22px -10px var(--green)}
+  .mpod-bar .run{margin-left:auto;color:var(--green);font-weight:600;font-size:8.5px;animation:runpulse 1.3s ease-in-out infinite}
+  @keyframes runpulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .mpod-bar{display:flex;align-items:center;gap:4px;padding:5px 9px;background:rgba(100,150,255,.06);border-bottom:1px solid var(--brd);font-size:9.5px;color:var(--muted)}
+  .mpod-bar i{width:4px;height:4px;border-radius:50%;background:rgba(148,163,184,.4)}
+  .mpod-bar span{margin-left:4px}
+  .mpod-bar .heal{margin-left:auto;color:var(--green);font-weight:600;font-size:8.5px;animation:healpulse 1.8s ease-in-out infinite}
+  @keyframes healpulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .mpod-body{padding:8px 9px;display:flex;flex-direction:column;gap:5px}
+  .srow{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted)}
+  .srow.main{color:var(--text)}
+  .srow .dc{width:7px;height:7px;border-radius:2px;flex:0 0 auto}
+  .srow .stag{margin-left:auto;font-size:8.5px;color:var(--dim)}
+  @media(max-width:560px){.kyui-body{grid-template-columns:1fr}.kyui-fleet{border-right:none;border-bottom:1px solid var(--brd)}.pods{grid-template-columns:1fr}}
+</style>
+<div class="gridbg"></div>
+<div class="wrap">
+  <h2><img class="klogo" src="data:image/png;base64,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" alt="Kyber logo"><span class="g">Kyber</span></h2>
+  <p class="sub">A Kubernetes Agent Management Platform</p>
+  <p class="note">// enhanced B — operator comms + a Kyber-UI panel (condensed fleet + a live Claude Code terminal). Option A's full fleet console still sits below this in the section.</p>
+
+  <div class="stage">
+    <!-- operator -->
+    <div class="op card">
+      <span class="who">&#x1F464; You</span>
+      <span class="lbl">talk to agents over</span>
+      <span class="chip tg"><svg viewBox="0 0 24 24" class="ci"><path fill="currentColor" d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.27 1.37.18 1.09 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>Telegram</span>
+      <span class="chip dc"><svg viewBox="0 0 24 24" class="ci"><path fill="currentColor" d="M20.317 4.37a19.79 19.79 0 00-4.885-1.515.074.074 0 00-.079.037 13.6 13.6 0 00-.608 1.25 18.27 18.27 0 00-5.487 0 12.6 12.6 0 00-.617-1.25.077.077 0 00-.079-.037A19.74 19.74 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.2 14.2 0 001.226-1.994.076.076 0 00-.041-.106 13.1 13.1 0 01-1.872-.892.077.077 0 01-.008-.128 10 10 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01q.181.149.373.292a.077.077 0 01-.006.127 12.3 12.3 0 01-1.873.892.077.077 0 00-.041.107 13.9 13.9 0 001.225 1.993.076.076 0 00.084.028 19.84 19.84 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418m7.975 0c-1.183 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418"/></svg>Discord</span>
+      <span class="chip sl"><svg viewBox="0 0 24 24" class="ci"><path fill="currentColor" d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52zM6.313 15.165a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522zM8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.528 2.528 0 012.521 2.522v2.52zM8.834 6.313a2.528 2.528 0 012.521 2.521 2.528 2.528 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521zM18.956 8.834a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.528 2.528 0 01-2.522 2.521h-2.522zM17.688 8.834a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522zM15.165 18.956a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522zM15.165 17.688a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523z"/></svg>Slack</span>
+    </div>
+
+    <div class="conn both"></div>
+    <div class="connlbl">drive &amp; watch the fleet</div>
+
+    <!-- kyber UI window -->
+    <div class="kyui card">
+      <div class="kyui-bar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="ttl"><b>Kyber</b> — Agent Fleet Platform</span>
+        <span class="tabs"><span class="tab">Fleet</span><span class="tab on">Terminal</span></span>
+      </div>
+      <div class="kyui-body">
+        <div class="kyui-fleet">
+          <p class="kyui-cap">Agents · context budget</p>
+          <div class="brow"><div class="bt"><span class="bn">Yoda</span><span class="bu">308k/1M</span><span class="bp gr">31%</span></div><div class="bar"><span class="bf" style="width:31%;background:var(--green)"></span></div></div>
+          <div class="brow"><div class="bt"><span class="bn">Lando</span><span class="bu">343k/1M</span><span class="bp gr">34%</span></div><div class="bar"><span class="bf" style="width:34%;background:var(--green)"></span></div></div>
+          <div class="brow"><div class="bt"><span class="bn">Han</span><span class="bu">578k/1M</span><span class="bp gr">58%</span></div><div class="bar"><span class="bf" style="width:58%;background:var(--green)"></span></div></div>
+          <div class="brow"><div class="bt"><span class="bn">Chewie</span><span class="bu">671k/1M</span><span class="bp am">67%</span></div><div class="bar"><span class="bf" style="width:67%;background:var(--amber)"></span></div></div>
+          <div class="brow"><div class="bt"><span class="bn">Ackbar</span><span class="bu">824k/1M</span><span class="bp am">82%</span></div><div class="bar"><span class="bf" style="width:82%;background:var(--amber)"></span></div></div>
+        </div>
+        <div class="kyui-term">
+          <div class="term-top">&#x2B24; <span class="agent">agent: Han</span> · claude-code</div>
+<pre class="t"><span class="m">~/dev/snapdex on </span><span class="c">main</span>
+<span class="p">&#x25CF;</span> Implementing <span class="c">SNAP-142</span> &middot; streak counter
+  <span class="m">&#x239C; edited profile.tsx, streak.ts</span>
+<span class="p">&#x25CF;</span> Bash<span class="m">(npm test)</span>
+  <span class="m">&#x239C;</span> <span class="p">14 passed</span>
+<span class="p">&#x25CF;</span> Opened PR <span class="c">#487</span> &rarr; review: <span class="pk">Chewie</span>
+<span class="a">&#x2713;</span> approved &middot; deploying&hellip; <span class="cursor"></span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="conn both"></div>
+    <div class="connlbl">API / Webhook &middot; interact with the control plane</div>
+
+    <!-- control plane: OUTSIDE the cluster -->
+    <div class="cp card">&#x2B22; <b>Control plane</b> &middot; reconciles agents &middot; heals pods</div>
+    <div class="conn dn"></div>
+    <div class="connlbl">reconcile</div>
+
+    <!-- cluster with multiple pods -->
+    <div class="cluster">
+      <span class="cltab">Kubernetes cluster</span>
+      <span class="gw">&#x21C5; API / Webhook</span>
+      <div class="pods">
+        <div class="mpod">
+          <div class="mpod-bar"><i></i><i></i><i></i><span>Yoda &middot; pod</span></div>
+          <div class="mpod-body">
+            <div class="srow main"><span class="dc" style="background:var(--cyan)"></span>agent<span class="stag">Codex</span></div>
+            <div class="srow"><span class="dc" style="background:var(--purple)"></span>memory</div>
+            <div class="srow"><span class="dc" style="background:var(--green)"></span>status</div>
+          </div>
+        </div>
+        <div class="mpod running">
+          <div class="mpod-bar"><i></i><i></i><i></i><span>Han &middot; pod</span><b class="run">&#x25CF; running</b></div>
+          <div class="mpod-body">
+            <div class="srow main"><span class="dc" style="background:var(--cyan)"></span>agent<span class="stag">Claude Code</span></div>
+            <div class="srow"><span class="dc" style="background:var(--purple)"></span>memory</div>
+            <div class="srow"><span class="dc" style="background:var(--green)"></span>status</div>
+          </div>
+        </div>
+        <div class="mpod">
+          <div class="mpod-bar"><i></i><i></i><i></i><span>Chewie &middot; pod</span></div>
+          <div class="mpod-body">
+            <div class="srow main"><span class="dc" style="background:var(--cyan)"></span>agent<span class="stag">OpenClaw</span></div>
+            <div class="srow"><span class="dc" style="background:var(--purple)"></span>memory</div>
+            <div class="srow"><span class="dc" style="background:var(--green)"></span>status</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
