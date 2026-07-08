@@ -9,3 +9,7 @@ These are the spec — port them into `src/` React components + wire live data w
   To build: enhanced-B diagram, then the full live fleet console ("Option A") below it.
 - `kyber-directions.mockup.html` — the four original directions (A fleet console / B architecture /
   C how-it-works / D capabilities) for reference.
+- `falcon-team-section.mockup.html` — APPROVED Falcon Dev Team section (2026-07-08): a vertical
+  "one issue flows through the team" graphic — Issue → Lando → Yoda → Obi-Wan → Han → Chewie →
+  Boba-Fett → Ackbar → Merged & deployed. Each agent = glyph + name + role + a "what they do" line
+  + real skills as slash-command chips (no star).
