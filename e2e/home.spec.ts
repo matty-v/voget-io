@@ -22,8 +22,8 @@ test.describe('Home Page', () => {
     await expect(page.getByText('Obi-Wan').first()).toBeVisible()
     await expect(page.getByText('Boba-Fett').first()).toBeVisible()
     await expect(page.getByText(/live work/i)).toBeVisible()
-    await expect(page.getByText('Triage')).toBeVisible()
-    await expect(page.getByText('Shipped')).toBeVisible()
+    await expect(page.getByText('Triage', { exact: true })).toBeVisible()
+    await expect(page.getByText('Shipped', { exact: true })).toBeVisible()
   })
 
   test('displays contact section', async ({ page }) => {
