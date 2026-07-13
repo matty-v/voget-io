@@ -14,19 +14,26 @@ type Board = {
   weeklyShipped: number[]
 }
 
-// Fallback snapshot (used until the live feed loads, or if it's unreachable).
+// localStorage key for the last successful feed (last-known-good), so a returning
+// visitor — or one whose fetch fails — sees recent real numbers instead of a stale
+// hardcoded snapshot that never moves.
+const CACHE_KEY = 'voget-board-v1'
+
+// First-visit fallback (used only before the very first successful fetch, when there's
+// no cached last-known-good yet). Kept roughly current so even this never shows a wildly
+// stale number; the live feed + the localStorage cache take over immediately after.
 const FALLBACK: Board = {
-  allTimeShipped: 164,
+  allTimeShipped: 207,
   weeklyThroughput: 36,
-  costPerIssue: 9,
+  costPerIssue: 12,
   lastShipped: [
-    { repo: 'snapdex', id: '443', date: 'Jul 8' },
-    { repo: 'snapdex', id: '440', date: 'Jul 8' },
-    { repo: 'snapdex', id: '326', date: 'Jul 8' },
-    { repo: 'snapdex', id: '435', date: 'Jul 8' },
-    { repo: 'snapdex', id: '394', date: 'Jul 8' },
+    { repo: 'snapdex', id: '548', date: 'Jul 13' },
+    { repo: 'snapdex', id: '547', date: 'Jul 13' },
+    { repo: 'snapdex', id: '543', date: 'Jul 13' },
+    { repo: 'snapdex', id: '539', date: 'Jul 13' },
+    { repo: 'snapdex', id: '526', date: 'Jul 13' },
   ],
-  weeklyShipped: [3, 13, 60, 52, 36], // oldest -> newest
+  weeklyShipped: [12, 57, 70, 29, 36], // oldest -> newest
 }
 
 // Build the line/area chart geometry from the weekly values (viewBox 0 0 300 118).
@@ -59,6 +66,18 @@ export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HT
 
   useEffect(() => {
     let active = true
+    // Show the last successful fetch immediately (better than a stale hardcoded
+    // snapshot) while the live feed loads or if it's unreachable. Read in an effect
+    // (not initial state) to stay SSR/hydration-safe.
+    try {
+      const raw = window.localStorage.getItem(CACHE_KEY)
+      if (raw) {
+        const cached = JSON.parse(raw) as Board
+        if (cached && typeof cached.allTimeShipped === 'number') setBoard(cached)
+      }
+    } catch {
+      /* ignore — no/blocked localStorage */
+    }
     const load = () => {
       fetch(FEED_URL, { cache: 'no-store' })
         .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
@@ -66,9 +85,14 @@ export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HT
           if (!active || !d || typeof d.allTimeShipped !== 'number') return
           setBoard(d)
           setLive(true)
+          try {
+            window.localStorage.setItem(CACHE_KEY, JSON.stringify(d))
+          } catch {
+            /* ignore — no/blocked localStorage */
+          }
         })
         .catch(() => {
-          /* keep fallback snapshot */
+          /* keep last-known-good (cache) or the first-visit fallback */
         })
     }
     load()
