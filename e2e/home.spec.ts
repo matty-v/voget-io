@@ -37,9 +37,10 @@ test.describe('Home Page', () => {
     // '#443', which broke as soon as the team shipped past it — the test was
     // coupled to live data that moves every day.
     await expect(page.getByText(/^#\d+$/).first()).toBeVisible()
-    // The token tile should render a magnitude-formatted figure (e.g. "99M"),
-    // never a raw token count or an empty cell.
-    await expect(page.getByText(/^\d+(\.\d+)?[KMB]$/).first()).toBeVisible()
+    // Cost tile renders with cents (the figure is around $1), never blank.
+    await expect(page.getByText(/^\$\d+\.\d{2}$/).first()).toBeVisible()
+    // The subscription price it is derived from must never reach the client.
+    await expect(page.getByText(/\$200/)).toHaveCount(0)
   })
 })
 

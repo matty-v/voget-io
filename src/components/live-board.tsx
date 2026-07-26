@@ -22,6 +22,14 @@ type Board = {
    * it for a full cache cycle.
    */
   tokensPerIssue?: number
+  /**
+   * What it actually costs to run the team, per shipped issue, in USD.
+   *
+   * The divisor (a flat monthly subscription) is deliberately NOT in this feed —
+   * the sanitizer does the division in-cluster and uploads only the quotient, so
+   * the input never reaches the browser. Don't reintroduce it client-side.
+   */
+  costPerIssue?: number
   lastShipped: Shipped[]
   weeklyShipped: number[]
 }
@@ -41,12 +49,11 @@ function readCachedBoard(): Board {
   }
 }
 
-/** 98_958_000 → "99M". Tokens run to billions; raw digits are unreadable. */
-function formatTokens(n: number): string {
-  if (n >= 1e9) return `${(n / 1e9).toFixed(1)}B`
-  if (n >= 1e6) return `${Math.round(n / 1e6)}M`
-  if (n >= 1e3) return `${Math.round(n / 1e3)}K`
-  return String(n)
+/** 0.92 → "$0.92", 63 → "$63". Cents below $10; the figure lives down there. */
+function formatUsd(n: number): string {
+  if (n >= 1e3) return `$${Math.round(n / 1e3)}K`
+  if (n >= 10) return `$${Math.round(n)}`
+  return `$${n.toFixed(2)}`
 }
 
 // localStorage key for the last successful feed (last-known-good), so a returning
@@ -64,6 +71,7 @@ const FALLBACK: Board = {
   allTimeShipped: 207,
   weeklyThroughput: 36,
   tokensPerIssue: 99_000_000,
+  costPerIssue: 0.92,
   lastShipped: [
     { repo: 'snapdex', id: '548', date: 'Jul 13' },
     { repo: 'snapdex', id: '547', date: 'Jul 13' },
@@ -175,11 +183,11 @@ export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HT
           <div className={styles.kpiSub}>last 7 days</div>
         </div>
         <div className={`${styles.kpi} ${styles.card}`}>
-          <div className={styles.kpiLabel}>Tokens / issue</div>
+          <div className={styles.kpiLabel}>Cost / issue</div>
           <div className={`${styles.kpiValue} ${styles.am}`}>
-            {formatTokens(board.tokensPerIssue ?? FALLBACK.tokensPerIssue!)}
+            {formatUsd(board.costPerIssue ?? FALLBACK.costPerIssue!)}
           </div>
-          <div className={styles.kpiSub}>team token spend / shipped</div>
+          <div className={styles.kpiSub}>all&#8209;in run cost &divide; shipped</div>
         </div>
       </div>
 

@@ -20,14 +20,14 @@ describe('LiveBoard', () => {
 
   it('labels the KPI tiles', () => {
     render(<LiveBoard onNavigate={() => {}} />)
-    expect(screen.getByText(/tokens \/ issue/i)).toBeInTheDocument()
-    expect(screen.getByText(/team token spend \/ shipped/i)).toBeInTheDocument()
+    expect(screen.getByText(/cost \/ issue/i)).toBeInTheDocument()
+    expect(screen.getByText(/run cost/i)).toBeInTheDocument()
   })
 
-  it('renders the token tile as a formatted magnitude, not a raw count', () => {
+  it('renders the cost tile with cents, not a rounded dollar', () => {
     render(<LiveBoard onNavigate={() => {}} />)
-    // "99M" / "1.2B" — never "98958000", and never blank.
-    expect(screen.getByText(/^\d+(\.\d+)?[KMB]$/)).toBeInTheDocument()
+    // The figure is around $1, so whole dollars would round most of it away.
+    expect(screen.getByText(/^\$\d+\.\d{2}$/)).toBeInTheDocument()
   })
 
   it('renders Last 5 shipped with issue-shaped ids', () => {
@@ -36,8 +36,15 @@ describe('LiveBoard', () => {
     expect(screen.getAllByText(/^#\d+$/).length).toBeGreaterThan(0)
   })
 
-  it('shows no dollar figure — the fleet runs on a subscription, not per-token billing', () => {
+  /**
+   * The cost figure is the subscription price divided by issues shipped. Matt
+   * wants the quotient public but not the input, and the division happens
+   * server-side for exactly that reason. If anyone ever moves it client-side,
+   * the monthly price lands in the JS bundle — this guards against that.
+   */
+  it('never exposes the subscription price to the client', () => {
     render(<LiveBoard onNavigate={() => {}} />)
-    expect(screen.queryByText(/^\$\d/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/\$200/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/subscription/i)).not.toBeInTheDocument()
   })
 })
