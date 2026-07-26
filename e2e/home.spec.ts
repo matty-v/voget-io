@@ -33,7 +33,14 @@ test.describe('Home Page', () => {
   test('shows the Falcon Dev Team dashboard inline', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /falcon dev team dashboard/i })).toBeVisible()
     await expect(page.getByText(/Last 5 shipped/i)).toBeVisible()
-    await expect(page.getByText('#443')).toBeVisible()
+    // Assert the shape, not a specific issue number. This previously pinned
+    // '#443', which broke as soon as the team shipped past it — the test was
+    // coupled to live data that moves every day.
+    await expect(page.getByText(/^#\d+$/).first()).toBeVisible()
+    // Cost tile renders with cents (the figure is around $1), never blank.
+    await expect(page.getByText(/^\$\d+\.\d{2}$/).first()).toBeVisible()
+    // The subscription price it is derived from must never reach the client.
+    await expect(page.getByText(/\$200/)).toHaveCount(0)
   })
 })
 

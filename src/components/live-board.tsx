@@ -9,24 +9,77 @@ type Board = {
   generatedAt?: string
   allTimeShipped: number
   weeklyThroughput: number
-  costPerIssue: number
+  /**
+   * Total tokens the team consumed per shipped issue, over a rolling 7 days.
+   *
+   * This replaced a dollar figure. The agents run on a Claude subscription, not
+   * per-token API billing, so pricing their tokens produced a number that read
+   * as money and wasn't. Tokens are what we actually measure, so tokens are what
+   * we show.
+   *
+   * Optional because the feed briefly served only the old field; the fallback
+   * below covers the gap. Safe to make required once a deployed feed has carried
+   * it for a full cache cycle.
+   */
+  tokensPerIssue?: number
+  /**
+   * What it actually costs to run the team, per shipped issue, in USD.
+   *
+   * The divisor (a flat monthly subscription) is deliberately NOT in this feed —
+   * the sanitizer does the division in-cluster and uploads only the quotient, so
+   * the input never reaches the browser. Don't reintroduce it client-side.
+   */
+  costPerIssue?: number
   lastShipped: Shipped[]
   weeklyShipped: number[]
 }
 
-// Fallback snapshot (used until the live feed loads, or if it's unreachable).
+/**
+ * Last-known-good feed from localStorage, or the first-visit fallback.
+ * Never throws — a blocked or corrupt store just means we start from FALLBACK.
+ */
+function readCachedBoard(): Board {
+  try {
+    const raw = window.localStorage.getItem(CACHE_KEY)
+    if (!raw) return FALLBACK
+    const cached = JSON.parse(raw) as Board
+    return cached && typeof cached.allTimeShipped === 'number' ? cached : FALLBACK
+  } catch {
+    return FALLBACK
+  }
+}
+
+/** 0.92 → "$0.92", 63 → "$63". Cents below $10; the figure lives down there. */
+function formatUsd(n: number): string {
+  if (n >= 1e3) return `$${Math.round(n / 1e3)}K`
+  if (n >= 10) return `$${Math.round(n)}`
+  return `$${n.toFixed(2)}`
+}
+
+// localStorage key for the last successful feed (last-known-good), so a returning
+// visitor — or one whose fetch fails — sees recent real numbers instead of a stale
+// hardcoded snapshot that never moves.
+// Bumped v1 → v2 when the cost tile became a token tile. A cached v1 payload has
+// no tokensPerIssue, so a returning visitor would render the static fallback until
+// the first fetch landed. Changing the key retires those entries outright.
+const CACHE_KEY = 'voget-board-v2'
+
+// First-visit fallback (used only before the very first successful fetch, when there's
+// no cached last-known-good yet). Kept roughly current so even this never shows a wildly
+// stale number; the live feed + the localStorage cache take over immediately after.
 const FALLBACK: Board = {
-  allTimeShipped: 164,
+  allTimeShipped: 207,
   weeklyThroughput: 36,
-  costPerIssue: 9,
+  tokensPerIssue: 99_000_000,
+  costPerIssue: 0.92,
   lastShipped: [
-    { repo: 'snapdex', id: '443', date: 'Jul 8' },
-    { repo: 'snapdex', id: '440', date: 'Jul 8' },
-    { repo: 'snapdex', id: '326', date: 'Jul 8' },
-    { repo: 'snapdex', id: '435', date: 'Jul 8' },
-    { repo: 'snapdex', id: '394', date: 'Jul 8' },
+    { repo: 'snapdex', id: '548', date: 'Jul 13' },
+    { repo: 'snapdex', id: '547', date: 'Jul 13' },
+    { repo: 'snapdex', id: '543', date: 'Jul 13' },
+    { repo: 'snapdex', id: '539', date: 'Jul 13' },
+    { repo: 'snapdex', id: '526', date: 'Jul 13' },
   ],
-  weeklyShipped: [3, 13, 60, 52, 36], // oldest -> newest
+  weeklyShipped: [12, 57, 70, 29, 36], // oldest -> newest
 }
 
 // Build the line/area chart geometry from the weekly values (viewBox 0 0 300 118).
@@ -54,7 +107,15 @@ function updatedAgo(iso?: string): string {
 }
 
 export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
-  const [board, setBoard] = useState<Board>(FALLBACK)
+  // Start from the last successful fetch (better than a stale hardcoded snapshot)
+  // while the live feed loads or if it's unreachable.
+  //
+  // Read via a lazy initializer rather than inside the effect: a synchronous
+  // setState in an effect body causes a cascading re-render, which the
+  // react-hooks/set-state-in-effect lint rule rejects. The initializer runs once,
+  // before first paint, so there's no second render and no flash of fallback data.
+  // This app renders client-side only, so there's no hydration mismatch to guard.
+  const [board, setBoard] = useState<Board>(readCachedBoard)
   const [live, setLive] = useState(false)
 
   useEffect(() => {
@@ -66,9 +127,14 @@ export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HT
           if (!active || !d || typeof d.allTimeShipped !== 'number') return
           setBoard(d)
           setLive(true)
+          try {
+            window.localStorage.setItem(CACHE_KEY, JSON.stringify(d))
+          } catch {
+            /* ignore — no/blocked localStorage */
+          }
         })
         .catch(() => {
-          /* keep fallback snapshot */
+          /* keep last-known-good (cache) or the first-visit fallback */
         })
     }
     load()
@@ -118,8 +184,10 @@ export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HT
         </div>
         <div className={`${styles.kpi} ${styles.card}`}>
           <div className={styles.kpiLabel}>Cost / issue</div>
-          <div className={`${styles.kpiValue} ${styles.am}`}>${board.costPerIssue}</div>
-          <div className={styles.kpiSub}>opus-4.8 token spend / shipped</div>
+          <div className={`${styles.kpiValue} ${styles.am}`}>
+            {formatUsd(board.costPerIssue ?? FALLBACK.costPerIssue!)}
+          </div>
+          <div className={styles.kpiSub}>all&#8209;in run cost &divide; shipped</div>
         </div>
       </div>
 
