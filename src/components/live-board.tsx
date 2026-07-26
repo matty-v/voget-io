@@ -9,15 +9,38 @@ type Board = {
   generatedAt?: string
   allTimeShipped: number
   weeklyThroughput: number
-  costPerIssue: number
+  /**
+   * Total tokens the team consumed per shipped issue, over a rolling 7 days.
+   *
+   * This replaced a dollar figure. The agents run on a Claude subscription, not
+   * per-token API billing, so pricing their tokens produced a number that read
+   * as money and wasn't. Tokens are what we actually measure, so tokens are what
+   * we show.
+   *
+   * Optional because the feed briefly served only the old field; the fallback
+   * below covers the gap. Safe to make required once a deployed feed has carried
+   * it for a full cache cycle.
+   */
+  tokensPerIssue?: number
   lastShipped: Shipped[]
   weeklyShipped: number[]
+}
+
+/** 98_958_000 → "99M". Tokens run to billions; raw digits are unreadable. */
+function formatTokens(n: number): string {
+  if (n >= 1e9) return `${(n / 1e9).toFixed(1)}B`
+  if (n >= 1e6) return `${Math.round(n / 1e6)}M`
+  if (n >= 1e3) return `${Math.round(n / 1e3)}K`
+  return String(n)
 }
 
 // localStorage key for the last successful feed (last-known-good), so a returning
 // visitor — or one whose fetch fails — sees recent real numbers instead of a stale
 // hardcoded snapshot that never moves.
-const CACHE_KEY = 'voget-board-v1'
+// Bumped v1 → v2 when the cost tile became a token tile. A cached v1 payload has
+// no tokensPerIssue, so a returning visitor would render the static fallback until
+// the first fetch landed. Changing the key retires those entries outright.
+const CACHE_KEY = 'voget-board-v2'
 
 // First-visit fallback (used only before the very first successful fetch, when there's
 // no cached last-known-good yet). Kept roughly current so even this never shows a wildly
@@ -25,7 +48,7 @@ const CACHE_KEY = 'voget-board-v1'
 const FALLBACK: Board = {
   allTimeShipped: 207,
   weeklyThroughput: 36,
-  costPerIssue: 12,
+  tokensPerIssue: 99_000_000,
   lastShipped: [
     { repo: 'snapdex', id: '548', date: 'Jul 13' },
     { repo: 'snapdex', id: '547', date: 'Jul 13' },
@@ -141,9 +164,11 @@ export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HT
           <div className={styles.kpiSub}>last 7 days</div>
         </div>
         <div className={`${styles.kpi} ${styles.card}`}>
-          <div className={styles.kpiLabel}>Cost / issue</div>
-          <div className={`${styles.kpiValue} ${styles.am}`}>${board.costPerIssue}</div>
-          <div className={styles.kpiSub}>opus-4.8 token spend / shipped</div>
+          <div className={styles.kpiLabel}>Tokens / issue</div>
+          <div className={`${styles.kpiValue} ${styles.am}`}>
+            {formatTokens(board.tokensPerIssue ?? FALLBACK.tokensPerIssue!)}
+          </div>
+          <div className={styles.kpiSub}>team token spend / shipped</div>
         </div>
       </div>
 
