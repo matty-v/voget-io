@@ -26,6 +26,21 @@ type Board = {
   weeklyShipped: number[]
 }
 
+/**
+ * Last-known-good feed from localStorage, or the first-visit fallback.
+ * Never throws — a blocked or corrupt store just means we start from FALLBACK.
+ */
+function readCachedBoard(): Board {
+  try {
+    const raw = window.localStorage.getItem(CACHE_KEY)
+    if (!raw) return FALLBACK
+    const cached = JSON.parse(raw) as Board
+    return cached && typeof cached.allTimeShipped === 'number' ? cached : FALLBACK
+  } catch {
+    return FALLBACK
+  }
+}
+
 /** 98_958_000 → "99M". Tokens run to billions; raw digits are unreadable. */
 function formatTokens(n: number): string {
   if (n >= 1e9) return `${(n / 1e9).toFixed(1)}B`
@@ -84,23 +99,19 @@ function updatedAgo(iso?: string): string {
 }
 
 export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
-  const [board, setBoard] = useState<Board>(FALLBACK)
+  // Start from the last successful fetch (better than a stale hardcoded snapshot)
+  // while the live feed loads or if it's unreachable.
+  //
+  // Read via a lazy initializer rather than inside the effect: a synchronous
+  // setState in an effect body causes a cascading re-render, which the
+  // react-hooks/set-state-in-effect lint rule rejects. The initializer runs once,
+  // before first paint, so there's no second render and no flash of fallback data.
+  // This app renders client-side only, so there's no hydration mismatch to guard.
+  const [board, setBoard] = useState<Board>(readCachedBoard)
   const [live, setLive] = useState(false)
 
   useEffect(() => {
     let active = true
-    // Show the last successful fetch immediately (better than a stale hardcoded
-    // snapshot) while the live feed loads or if it's unreachable. Read in an effect
-    // (not initial state) to stay SSR/hydration-safe.
-    try {
-      const raw = window.localStorage.getItem(CACHE_KEY)
-      if (raw) {
-        const cached = JSON.parse(raw) as Board
-        if (cached && typeof cached.allTimeShipped === 'number') setBoard(cached)
-      }
-    } catch {
-      /* ignore — no/blocked localStorage */
-    }
     const load = () => {
       fetch(FEED_URL, { cache: 'no-store' })
         .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))

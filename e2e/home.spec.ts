@@ -33,7 +33,13 @@ test.describe('Home Page', () => {
   test('shows the Falcon Dev Team dashboard inline', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /falcon dev team dashboard/i })).toBeVisible()
     await expect(page.getByText(/Last 5 shipped/i)).toBeVisible()
-    await expect(page.getByText('#443')).toBeVisible()
+    // Assert the shape, not a specific issue number. This previously pinned
+    // '#443', which broke as soon as the team shipped past it — the test was
+    // coupled to live data that moves every day.
+    await expect(page.getByText(/^#\d+$/).first()).toBeVisible()
+    // The token tile should render a magnitude-formatted figure (e.g. "99M"),
+    // never a raw token count or an empty cell.
+    await expect(page.getByText(/^\d+(\.\d+)?[KMB]$/).first()).toBeVisible()
   })
 })
 
