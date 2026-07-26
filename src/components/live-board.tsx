@@ -58,10 +58,17 @@ function formatTokens(n: number): string {
   return String(n)
 }
 
-/** 253032 → "$253K". */
+/**
+ * 253032 → "$253K", 4866 → "$4.9K", 63 → "$63".
+ *
+ * One decimal below $10K on purpose: rounding $4,866 to "$5K" reads as a
+ * ballpark, and a figure that looks estimated invites less trust than one that
+ * looks measured — which this is.
+ */
 function formatUsd(n: number): string {
   if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`
-  if (n >= 1e3) return `$${Math.round(n / 1e3)}K`
+  if (n >= 1e4) return `$${Math.round(n / 1e3)}K`
+  if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`
   return `$${Math.round(n)}`
 }
 
