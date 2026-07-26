@@ -22,15 +22,6 @@ type Board = {
    * it for a full cache cycle.
    */
   tokensPerIssue?: number
-  /**
-   * What the last 7 days of team activity WOULD cost at Anthropic's published
-   * API rates. The fleet runs on a Claude subscription, so this is a
-   * cost-to-produce figure, not an invoice — every surface that shows it has to
-   * say so, or it's misleading.
-   */
-  costPerIssue?: number
-  weeklyCost?: number
-  outputTokensPerIssue?: number
   lastShipped: Shipped[]
   weeklyShipped: number[]
 }
@@ -58,20 +49,6 @@ function formatTokens(n: number): string {
   return String(n)
 }
 
-/**
- * 253032 → "$253K", 4866 → "$4.9K", 63 → "$63".
- *
- * One decimal below $10K on purpose: rounding $4,866 to "$5K" reads as a
- * ballpark, and a figure that looks estimated invites less trust than one that
- * looks measured — which this is.
- */
-function formatUsd(n: number): string {
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`
-  if (n >= 1e4) return `$${Math.round(n / 1e3)}K`
-  if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`
-  return `$${Math.round(n)}`
-}
-
 // localStorage key for the last successful feed (last-known-good), so a returning
 // visitor — or one whose fetch fails — sees recent real numbers instead of a stale
 // hardcoded snapshot that never moves.
@@ -87,8 +64,6 @@ const FALLBACK: Board = {
   allTimeShipped: 207,
   weeklyThroughput: 36,
   tokensPerIssue: 99_000_000,
-  costPerIssue: 63,
-  weeklyCost: 4_866,
   lastShipped: [
     { repo: 'snapdex', id: '548', date: 'Jul 13' },
     { repo: 'snapdex', id: '547', date: 'Jul 13' },
@@ -164,11 +139,6 @@ export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HT
 
   const geo = chartGeometry(board.weeklyShipped)
   const ago = updatedAgo(board.generatedAt)
-  // Fall back per-field: an older cached payload may carry some of these and not
-  // others, and a half-rendered economics block is worse than a slightly stale one.
-  const weeklyCost = board.weeklyCost ?? FALLBACK.weeklyCost!
-  const tokensPerIssue = board.tokensPerIssue ?? FALLBACK.tokensPerIssue!
-  const outputTokens = board.outputTokensPerIssue ?? 247_000
 
   return (
     <section className={`py-10 ${styles.wrap}`}>
@@ -205,78 +175,12 @@ export function LiveBoard({ onNavigate }: { onNavigate?: (e: React.MouseEvent<HT
           <div className={styles.kpiSub}>last 7 days</div>
         </div>
         <div className={`${styles.kpi} ${styles.card}`}>
-          <div className={styles.kpiLabel}>Cost / issue</div>
+          <div className={styles.kpiLabel}>Tokens / issue</div>
           <div className={`${styles.kpiValue} ${styles.am}`}>
-            {formatUsd(board.costPerIssue ?? FALLBACK.costPerIssue!)}
+            {formatTokens(board.tokensPerIssue ?? FALLBACK.tokensPerIssue!)}
           </div>
-          <div className={styles.kpiSub}>at published API rates</div>
+          <div className={styles.kpiSub}>team token spend / shipped</div>
         </div>
-      </div>
-
-      {/*
-        The economics claim. Deliberately structured so every number is followed
-        by the thing that qualifies it — a peer audience will poke at this, and
-        the qualifiers are what make it hold up rather than what weakens it.
-      */}
-      <div className={`${styles.card} ${styles.econ}`}>
-        <div className={styles.econLead}>
-          Eight agents running a full SDLC — triage, architecture, implementation, review, deploy.
-        </div>
-        <div className={styles.econFigures}>
-          <div>
-            <strong>{formatUsd(weeklyCost)}</strong>
-            <span> / week</span>
-          </div>
-          <div>
-            <strong>{formatUsd(weeklyCost * 52)}</strong>
-            <span> / year run&#8209;rate</span>
-          </div>
-          <div>
-            <strong>{board.weeklyThroughput}</strong>
-            <span> issues / week</span>
-          </div>
-        </div>
-        <div className={styles.econClaim}>
-          Roughly one senior engineer&rsquo;s fully&#8209;loaded cost — for the output of a team.
-          <strong> One human reviews and merges every change.</strong>
-        </div>
-
-        <details className={styles.method}>
-          <summary>How this is measured</summary>
-          <ul>
-            <li>
-              Every assistant message the eight agents produced in the last 7 days, priced at
-              Anthropic&rsquo;s <em>published</em> API rates for the model that actually produced it
-              (Opus-tier $5/$25 per million in/out, cache reads 0.1&times;, cache writes 1.25&times;).
-            </li>
-            <li>
-              <strong>This is a cost-to-produce figure, not a bill.</strong> The agents run on a
-              Claude subscription, so nobody was invoiced this — it&rsquo;s what the same work would
-              cost billed per token.
-            </li>
-            <li>
-              It counts <em>everything</em>: triage, architecture, code review, deploy verification,
-              scheduled jobs, and work that never shipped — divided only by issues that did ship. An
-              upper bound on cost-per-issue, not a best case.
-            </li>
-            <li>
-              About 99% of the tokens are cache reads — context re-sent on each turn. They bill at a
-              tenth of input rate but there are a great many, so they dominate. Included because on
-              the API you would genuinely pay them. ({formatTokens(tokensPerIssue)} tokens per issue,{' '}
-              {formatTokens(outputTokens)} of it newly generated.)
-            </li>
-            <li>
-              The year figure is a <em>run-rate</em> — the current 7-day rate annualised, not a year
-              of measured history. Cost data is only trustworthy from 21 July 2026, when a gap in the
-              transcript archive was fixed.
-            </li>
-            <li>
-              An earlier version of this figure counted the same message more than once, because the
-              archive stores overlapping snapshots. Fixed 26 July 2026; messages are now deduplicated
-              by their API message id.
-            </li>
-          </ul>
-        </details>
       </div>
 
       {/* last shipped + rolling weekly */}

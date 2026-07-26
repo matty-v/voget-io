@@ -37,15 +37,9 @@ test.describe('Home Page', () => {
     // '#443', which broke as soon as the team shipped past it — the test was
     // coupled to live data that moves every day.
     await expect(page.getByText(/^#\d+$/).first()).toBeVisible()
-    // Money renders magnitude-formatted ("$63", "$253K") — never a raw 253032,
-    // never blank.
-    await expect(page.getByText(/^\$\d+(\.\d+)?[KM]?$/).first()).toBeVisible()
-    // And never without the qualifiers that make it an honest claim: the fleet
-    // runs on a subscription, so an unlabelled dollar figure would be a false
-    // statement about money spent.
-    await expect(page.getByText(/at published API rates/i).first()).toBeVisible()
-    await expect(page.getByText(/one human reviews and merges/i)).toBeVisible()
-    await expect(page.getByText(/how this is measured/i)).toBeVisible()
+    // The token tile should render a magnitude-formatted figure (e.g. "99M"),
+    // never a raw token count or an empty cell.
+    await expect(page.getByText(/^\d+(\.\d+)?[KMB]$/).first()).toBeVisible()
   })
 })
 
