@@ -12,8 +12,9 @@ test.describe('Systems Index homepage', () => {
     await expect(page.getByLabel(/Kyber architecture/)).toBeVisible()
   })
 
-  test('shows truthful signals and the extensible project index', async ({ page }) => {
-    await expect(page.getByText('End-to-end canary completed')).toBeVisible()
+  test('links to live work and shows the extensible project index', async ({ page }) => {
+    await expect(page.getByRole('link', { name: /Kyber Explore the live platform site/i })).toHaveAttribute('href', 'https://kyber.voget.io')
+    await expect(page.getByRole('link', { name: /Snapdex A product shipped/i })).toHaveAttribute('href', 'https://snapdex.ai')
     await expect(page.getByRole('table', { name: 'Projects' })).toBeVisible()
     await expect(page.getByText('Falcon Dev Team', { exact: true }).last()).toBeVisible()
     await expect(page.getByText('Snapdex', { exact: true })).toBeVisible()
@@ -29,7 +30,7 @@ test.describe('Systems Index homepage', () => {
     await page.setViewportSize({ width: 390, height: 844 })
     await expect(page.getByRole('button', { name: 'Open menu' })).toBeVisible()
     await page.getByRole('button', { name: 'Open menu' }).click()
-    await expect(page.getByRole('navigation').filter({ hasText: 'Kyber' }).last()).toBeVisible()
+    await expect(page.getByRole('navigation').filter({ hasText: 'Dispatches' }).last()).toBeVisible()
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
     expect(overflow).toBe(false)
   })

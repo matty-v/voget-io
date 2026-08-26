@@ -27,7 +27,7 @@ svg { width:1em; height:1em; stroke-width:1.5; }
 .site-main { margin-left:194px; padding:0 28px 28px; max-width:1600px; }
 .identity-line { min-height:64px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; font:.73rem 'JetBrains Mono',monospace; text-transform:uppercase; }
 .availability { display:inline-flex; align-items:center; gap:.55rem; color:var(--muted); font:.7rem 'JetBrains Mono',monospace; text-transform:uppercase; }
-.availability i,.signal article>i,.project-status i { width:8px; height:8px; flex:0 0 auto; border-radius:50%; background:var(--accent); }
+.availability i,.signal-list a>i,.project-status i { width:8px; height:8px; flex:0 0 auto; border-radius:50%; background:var(--accent); }
 .hero { padding:36px 4px 25px; }
 .hero h1 { max-width:1100px; margin:0; font-size:clamp(2.5rem,4.2vw,4.15rem); line-height:.98; letter-spacing:-.055em; font-weight:500; }
 .hero p { margin:1.2rem 0 .8rem; color:var(--text); font:.9rem/1.7 'JetBrains Mono',monospace; }
@@ -55,8 +55,10 @@ svg { width:1em; height:1em; stroke-width:1.5; }
 .facts p { margin:0; padding:12px 14px; border-right:1px solid var(--line); font:.68rem 'JetBrains Mono',monospace; text-transform:uppercase; }
 .facts p:last-child { border:0; }
 .facts span { display:block; margin-bottom:.35rem; color:var(--accent); }
-.signal-list article { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:start; gap:10px; padding:16px 0; border-bottom:1px solid var(--line); }
-.signal-list article>i { margin-top:.35rem; }
+.signal-list a { display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; align-items:start; gap:10px; padding:16px 0; border-bottom:1px solid var(--line); }
+.signal-list a:hover strong,.signal-list a:hover>svg { color:var(--accent); }
+.signal-list a>i { margin-top:.35rem; }
+.signal-list a>svg { color:var(--muted); }
 .signal-list strong,.signal-list span { display:block; font:.72rem/1.45 'JetBrains Mono',monospace; }
 .signal-list span,.signal-list small { color:var(--muted); }
 .signal-list small { font:.55rem 'JetBrains Mono',monospace; }

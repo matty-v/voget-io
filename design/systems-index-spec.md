@@ -19,7 +19,7 @@ Quiet interface, loud proof. The site should feel like an engineer's working ind
 1. Matt's role and a direct positioning statement
 2. Kyber as the active featured project
 3. A truthful, simplified architecture model
-4. Current platform signals stated without fake timestamps or fabricated metrics
+4. Dispatches to live project sites, source, and future writing
 5. An extensible project index
 6. Compact identity, contact, and legal links
 

@@ -5,15 +5,15 @@ type Navigate = (event: React.MouseEvent<HTMLAnchorElement>, path: string) => vo
 
 const projects = [
   { index: '001', name: 'Kyber', status: 'active', focus: 'Kubernetes-native infrastructure for persistent AI agents', href: '#kyber' },
-  { index: '002', name: 'Falcon Dev Team', status: 'operational', focus: 'A multi-agent software team running on Kyber', href: '#signal' },
+  { index: '002', name: 'Falcon Dev Team', status: 'operational', focus: 'A multi-agent software team running on Kyber', href: '#dispatches' },
   { index: '003', name: 'Snapdex', status: 'shipped', focus: 'A Pokédex app delivered by the Falcon Dev Team', href: 'https://snapdex.ai' },
 ]
 
-const signals = [
-  { title: 'Kyber platform', detail: 'Active development', kind: 'SYSTEM' },
-  { title: 'Falcon Dev Team', detail: 'End-to-end canary completed', kind: 'WORKFLOW' },
-  { title: 'Agent identities', detail: 'Persistent and versioned', kind: 'STATE' },
-  { title: 'Workloads', detail: 'Isolated on Kubernetes', kind: 'RUNTIME' },
+const dispatches = [
+  { title: 'Kyber', detail: 'Explore the live platform site', kind: 'LIVE SITE', href: 'https://kyber.voget.io' },
+  { title: 'Snapdex', detail: 'A product shipped by the Falcon Dev Team', kind: 'LIVE SITE', href: 'https://snapdex.ai' },
+  { title: 'Kyber source', detail: 'Follow development on GitHub', kind: 'SOURCE', href: 'https://github.com/matty-v/kyber' },
+  { title: 'Writing', detail: 'Technical notes and project updates', kind: 'COMING SOON', href: '#dispatches' },
 ]
 
 function Brand() {
@@ -24,7 +24,7 @@ function Sidebar() {
   return <aside className="sidebar" aria-label="Primary navigation">
     <Brand />
     <nav className="side-nav">
-      <a className="active" href="#top"><Network /> Index</a><a href="#kyber"><Box /> Kyber</a><a href="#projects"><Layers3 /> Projects</a><a href="#signal"><Database /> Signal</a><a href="mailto:matt.voget@gmail.com"><Mail /> Contact</a>
+      <a className="active" href="#top"><Network /> Index</a><a href="#kyber"><Box /> Kyber</a><a href="#projects"><Layers3 /> Projects</a><a href="#dispatches"><Database /> Dispatches</a><a href="mailto:matt.voget@gmail.com"><Mail /> Contact</a>
     </nav>
     <div className="side-footer">
       <a href="https://github.com/matty-v" target="_blank" rel="noreferrer">GitHub <ArrowUpRight /></a><a href="https://www.linkedin.com/in/matthew-voget-47a225a1/" target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight /></a><p>&copy; {new Date().getFullYear()} Matt Voget</p><span>Built by hand</span>
@@ -37,7 +37,7 @@ function MobileHeader() {
   return <header className="mobile-header">
     <Brand /><span className="availability"><i /> Available</span>
     <button type="button" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
-    {open && <nav className="mobile-menu"><a href="#kyber" onClick={() => setOpen(false)}>Kyber</a><a href="#projects" onClick={() => setOpen(false)}>Projects</a><a href="#signal" onClick={() => setOpen(false)}>Signal</a><a href="mailto:matt.voget@gmail.com">Contact</a></nav>}
+    {open && <nav className="mobile-menu"><a href="#kyber" onClick={() => setOpen(false)}>Kyber</a><a href="#projects" onClick={() => setOpen(false)}>Projects</a><a href="#dispatches" onClick={() => setOpen(false)}>Dispatches</a><a href="mailto:matt.voget@gmail.com">Contact</a></nav>}
   </header>
 }
 
@@ -54,7 +54,7 @@ function Architecture() {
 function KyberSection() {
   return <section className="kyber-section" id="kyber">
     <div className="project-card"><header className="module-heading"><span>Kyber / Active project</span></header><h2>Kubernetes-native infrastructure for persistent AI agents.</h2><p className="project-summary">Kyber gives long-running agents durable identity, isolated compute, controlled access to secrets, schedules, and two-way communication channels.</p><Architecture /><div className="facts" aria-label="Kyber facts"><p><span>Runtime</span> / Kubernetes</p><p><span>State</span> / Persistent</p><p><span>Control</span> / Human</p></div></div>
-    <section className="signal" id="signal"><header className="module-heading"><span>Live signal</span></header><div className="signal-list">{signals.map((signal) => <article key={signal.title}><i /><div><strong>{signal.title}</strong><span>{signal.detail}</span></div><small>{signal.kind}</small></article>)}</div><a className="text-link" href="https://github.com/matty-v" target="_blank" rel="noreferrer">View GitHub <ArrowUpRight /></a></section>
+    <section className="signal" id="dispatches"><header className="module-heading"><span>Dispatches</span></header><div className="signal-list">{dispatches.map((dispatch) => <a href={dispatch.href} target={dispatch.href.startsWith('http') ? '_blank' : undefined} rel={dispatch.href.startsWith('http') ? 'noreferrer' : undefined} key={dispatch.title}><i /><div><strong>{dispatch.title}</strong><span>{dispatch.detail}</span></div><small>{dispatch.kind}</small><ArrowUpRight /></a>)}</div></section>
   </section>
 }
 
