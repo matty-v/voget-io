@@ -1,91 +1,98 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from "@playwright/test";
 
-test.describe('Home Page', () => {
+test.describe("Systems Index homepage", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
-  })
+    await page.goto("/");
+  });
 
-  test('displays hero section with name', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /Matt Voget/i })).toBeVisible()
-    await expect(page.getByText(/I lead engineering teams/i)).toBeVisible()
-  })
+  test("presents Matt and Kyber with the approved hierarchy", async ({
+    page,
+  }) => {
+    await expect(
+      page.getByRole("heading", {
+        name: "Leading teams and building production software.",
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Matt Voget / Engineering leader + builder"),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("img", { name: "Matt Voget" }).first(),
+    ).toHaveAttribute("src", "/profile.jpeg");
+    await expect(
+      page.getByRole("heading", {
+        name: "Kubernetes-native infrastructure for persistent AI agents.",
+      }),
+    ).toBeVisible();
+    await expect(page.getByLabel(/Kyber architecture/)).toBeVisible();
+  });
 
-  test('displays the What I\'m Building section with Kyber, the team, and Snapdex', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /What I'm Building/i })).toBeVisible()
-    await expect(page.getByRole('heading', { name: /Kubernetes Native Agent Platform/i })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'The Falcon Dev Team' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Snapdex' })).toBeVisible()
-  })
+  test("links to live work and shows the career journey", async ({ page }) => {
+    await expect(
+      page.getByRole("link", { name: /Kyber Explore the live platform site/i }),
+    ).toHaveAttribute("href", "https://kyber.voget.io");
+    await expect(
+      page.getByRole("link", { name: /Snapdex A product shipped/i }),
+    ).toHaveAttribute("href", "https://snapdex.ai");
+    await expect(page.getByText("Writing").locator("xpath=ancestor::a")).toHaveCount(
+      0,
+    );
+    await expect(
+      page.getByText("Lockheed Martin", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Director of Engineering", { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText("Current", { exact: true })).toBeVisible();
+  });
 
-  test('shows the Falcon Dev Team agents', async ({ page }) => {
-    // agent names / roles; some also appear in the Kyber diagram, so match the first
-    await expect(page.getByText('Obi-Wan').first()).toBeVisible()
-    await expect(page.getByText('Boba-Fett').first()).toBeVisible()
-    await expect(page.getByText('Orchestrator').first()).toBeVisible()
-    await expect(page.getByText('Ackbar').first()).toBeVisible()
-  })
+  test("has correct social and contact links", async ({ page }) => {
+    await expect(
+      page.getByRole("link", { name: "GitHub" }).last(),
+    ).toHaveAttribute("href", "https://github.com/matty-v");
+    await expect(
+      page.getByRole("link", { name: "LinkedIn" }).last(),
+    ).toHaveAttribute(
+      "href",
+      "https://www.linkedin.com/in/matthew-voget-47a225a1/",
+    );
+    await expect(
+      page.getByRole("link", { name: "Email" }).last(),
+    ).toHaveAttribute("href", "mailto:matt.voget@gmail.com");
+  });
 
-  test('displays contact section with social links', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Get in Touch' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'GitHub' })).toBeVisible()
-  })
+  test("uses the compact navigation on mobile without horizontal overflow", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
+    await page.getByRole("button", { name: "Open menu" }).click();
+    await expect(
+      page.getByRole("navigation").filter({ hasText: "Dispatches" }).last(),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
+    const overflow = await page.evaluate(
+      () =>
+        document.documentElement.scrollWidth >
+        document.documentElement.clientWidth,
+    );
+    expect(overflow).toBe(false);
+  });
+});
 
-  test('shows the Falcon Dev Team dashboard inline', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /falcon dev team dashboard/i })).toBeVisible()
-    await expect(page.getByText(/Last 5 shipped/i)).toBeVisible()
-    // Assert the shape, not a specific issue number. This previously pinned
-    // '#443', which broke as soon as the team shipped past it — the test was
-    // coupled to live data that moves every day.
-    await expect(page.getByText(/^#\d+$/).first()).toBeVisible()
-    // Cost tile renders with cents (the figure is around $1), never blank.
-    await expect(page.getByText(/^\$\d+\.\d{2}$/).first()).toBeVisible()
-    // The subscription price it is derived from must never reach the client.
-    await expect(page.getByText(/\$200/)).toHaveCount(0)
-  })
-})
-
-test.describe('Privacy Policy Page', () => {
-  test('navigates to privacy policy and back', async ({ page }) => {
-    await page.goto('/')
-    await page.getByRole('link', { name: 'Privacy Policy' }).click()
-
-    await expect(page).toHaveURL('/privacy')
-    await expect(page.getByRole('heading', { name: 'Privacy Policy' })).toBeVisible()
-
-    await page.getByRole('link', { name: 'Back to Home' }).click()
-    await expect(page).toHaveURL('/')
-  })
-})
-
-test.describe('Terms Page', () => {
-  test('navigates to terms and conditions and back', async ({ page }) => {
-    await page.goto('/')
-    await page.getByRole('link', { name: 'Terms and Conditions' }).click()
-
-    await expect(page).toHaveURL('/terms')
-    await expect(page.getByRole('heading', { name: 'Terms and Conditions' })).toBeVisible()
-
-    await page.getByRole('link', { name: 'Back to Home' }).click()
-    await expect(page).toHaveURL('/')
-  })
-})
-
-test.describe('Social Links', () => {
-  test('has GitHub link with correct href', async ({ page }) => {
-    await page.goto('/')
-    const githubLink = page.getByRole('link', { name: 'GitHub' })
-    await expect(githubLink).toHaveAttribute('href', 'https://github.com/matty-v')
-  })
-
-  test('has LinkedIn link with correct href', async ({ page }) => {
-    await page.goto('/')
-    const linkedinLink = page.getByRole('link', { name: 'LinkedIn' })
-    await expect(linkedinLink).toHaveAttribute('href', 'https://www.linkedin.com/in/matthew-voget-47a225a1/')
-  })
-
-  test('has Email link with correct href', async ({ page }) => {
-    await page.goto('/')
-    const emailLink = page.getByRole('link', { name: 'Email' })
-    await expect(emailLink).toHaveAttribute('href', 'mailto:matt.voget@gmail.com')
-  })
-})
+test.describe("Legal pages", () => {
+  for (const [link, heading, path] of [
+    ["Privacy", "Privacy Policy", "/privacy"],
+    ["Terms", "Terms and Conditions", "/terms"],
+  ] as const) {
+    test(`${heading} navigates and returns home`, async ({ page }) => {
+      await page.goto("/");
+      await page.getByRole("link", { name: link }).click();
+      await expect(page).toHaveURL(path);
+      await expect(page.getByRole("heading", { name: heading })).toBeVisible();
+      await page.getByRole("link", { name: "Back to Home" }).click();
+      await expect(page).toHaveURL("/");
+    });
+  }
+});

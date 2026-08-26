@@ -1,257 +1,457 @@
-import { useEffect, useState } from 'react'
-import { Github, Linkedin, Mail, Gem } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { FalconTeam } from '@/components/falcon-team'
-import { KyberDiagram } from '@/components/kyber-diagram'
-import { SnapdexShowcase } from '@/components/snapdex-showcase'
-import { LiveBoard } from '@/components/live-board'
+import { useEffect, useState } from "react";
+import {
+  ArrowDown,
+  ArrowUpRight,
+  Box,
+  CalendarClock,
+  Database,
+  Github,
+  KeyRound,
+  Layers3,
+  Linkedin,
+  Mail,
+  Menu,
+  MessageSquare,
+  Network,
+  ShieldCheck,
+  UserRound,
+  X,
+} from "lucide-react";
 
-function Particles() {
-  useEffect(() => {
-    const container = document.getElementById('particles')
-    if (!container || container.children.length > 0) return
+type Navigate = (
+  event: React.MouseEvent<HTMLAnchorElement>,
+  path: string,
+) => void;
 
-    const particleCount = 30
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div')
-      particle.className = 'particle'
-      particle.style.left = Math.random() * 100 + '%'
-      particle.style.top = Math.random() * 100 + '%'
-      const duration = 15 + Math.random() * 25
-      particle.style.animationDuration = duration + 's'
-      particle.style.animationDelay = Math.random() * 10 + 's'
-      const drift = (Math.random() - 0.5) * 100
-      particle.style.setProperty('--particle-drift', drift + 'px')
-      const size = 1 + Math.random() * 2
-      particle.style.width = size + 'px'
-      particle.style.height = size + 'px'
-      container.appendChild(particle)
-    }
-  }, [])
+const career = [
+  {
+    company: "Lockheed Martin",
+    title: "Systems / Software Engineer",
+    detail:
+      "Satellites, identity and access management, and intelligence systems.",
+  },
+  {
+    company: "Cherwell",
+    title: "Team Lead / Senior Engineer",
+    detail: "IT service management, .NET, and machine learning.",
+  },
+  {
+    company: "Stoplight",
+    title: "Engineering Manager / Staff Engineer",
+    detail: "API design, DevOps, and microservices.",
+  },
+  {
+    company: "Ambassador Labs",
+    title: "VP Engineering / Director of Technology",
+    detail: "Zero-to-one products, Kubernetes, and API gateways.",
+  },
+  {
+    company: "Gravitee",
+    title: "Director of Engineering",
+    detail: "Agent management gateways and AI developer enablement.",
+    current: true,
+  },
+];
 
-  return <div className="particles" id="particles" />
+const dispatches = [
+  {
+    title: "Kyber",
+    detail: "Explore the live platform site",
+    kind: "LIVE SITE",
+    href: "https://kyber.voget.io",
+  },
+  {
+    title: "Snapdex",
+    detail: "A product shipped by the Falcon Dev Team",
+    kind: "LIVE SITE",
+    href: "https://snapdex.ai",
+  },
+  {
+    title: "Kyber source",
+    detail: "Follow development on GitHub",
+    kind: "SOURCE",
+    href: "https://github.com/matty-v/kyber",
+  },
+  {
+    title: "Writing",
+    detail: "Technical notes and project updates",
+    kind: "COMING SOON",
+  },
+];
+
+function Brand() {
+  return (
+    <a className="brand" href="#top" aria-label="Matt Voget home">
+      <img src="/profile.jpeg" alt="Matt Voget" />
+      <span>/</span>
+      <time>{new Date().getFullYear()}</time>
+    </a>
+  );
 }
 
-function Background() {
+function Sidebar() {
   return (
-    <>
-      <div className="gradient-backdrop" />
-      <div className="grid-overlay" />
-      <Particles />
-      <div className="scanline" />
-      <div className="corner-accent top-left" />
-      <div className="corner-accent bottom-right" />
-    </>
-  )
-}
-
-function Hero() {
-  return (
-    <section className="space-y-5 text-center pt-12 pb-0">
-      <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-        <span className="text-foreground">Matt </span>
-        <span className="glow-cyan">Voget</span>
-      </h1>
-      <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
-        I lead engineering teams, but still love to build!
-        Passionate about good architecture, managing functional teams, and creating software that solves problems.
-      </p>
-    </section>
-  )
-}
-
-function Contact() {
-  return (
-    <section id="contact" className="space-y-4 text-center py-0">
-      <h2 className="text-2xl font-semibold tracking-tight">
-        <span className="glow-cyan">Get in Touch</span>
-      </h2>
-      <div className="flex gap-4 justify-center">
-        <Button variant="outline" size="icon" asChild className="border-[var(--accent-cyan)]/30 hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10 hover:text-[var(--accent-cyan)]">
-          <a href="https://github.com/matty-v" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-            <Github className="h-5 w-5" />
-          </a>
-        </Button>
-        <Button variant="outline" size="icon" asChild className="border-[var(--accent-purple)]/30 hover:border-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/10 hover:text-[var(--accent-purple)]">
-          <a href="https://www.linkedin.com/in/matthew-voget-47a225a1/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-            <Linkedin className="h-5 w-5" />
-          </a>
-        </Button>
-        <Button variant="outline" size="icon" asChild className="border-[var(--accent-pink)]/30 hover:border-[var(--accent-pink)] hover:bg-[var(--accent-pink)]/10 hover:text-[var(--accent-pink)]">
-          <a href="mailto:matt.voget@gmail.com" aria-label="Email">
-            <Mail className="h-5 w-5" />
-          </a>
-        </Button>
+    <aside className="sidebar" aria-label="Primary navigation">
+      <Brand />
+      <nav className="side-nav">
+        <a className="active" href="#top">
+          <Network /> Index
+        </a>
+        <a href="#kyber">
+          <Box /> Kyber
+        </a>
+        <a href="#journey">
+          <Layers3 /> Journey
+        </a>
+        <a href="#dispatches">
+          <Database /> Dispatches
+        </a>
+        <a href="mailto:matt.voget@gmail.com">
+          <Mail /> Contact
+        </a>
+      </nav>
+      <div className="side-footer">
+        <a href="https://github.com/matty-v" target="_blank" rel="noreferrer">
+          GitHub <ArrowUpRight />
+        </a>
+        <a
+          href="https://www.linkedin.com/in/matthew-voget-47a225a1/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          LinkedIn <ArrowUpRight />
+        </a>
+        <a href="mailto:matt.voget@gmail.com">
+          Email <ArrowUpRight />
+        </a>
+        <p>&copy; {new Date().getFullYear()} Matt Voget</p>
+        <span>Lovingly built by 🤖</span>
       </div>
-    </section>
-  )
+    </aside>
+  );
 }
 
-function MyWork() {
+function MobileHeader() {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [open]);
   return (
-    <section id="work" className="space-y-16">
-      <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
-        <span className="glow-purple">What I&apos;m Building&hellip;</span>
-      </h2>
+    <header className="mobile-header">
+      <Brand />
+      <span className="availability">
+        <i /> Available
+      </span>
+      <button
+        type="button"
+        aria-label={open ? "Close menu" : "Open menu"}
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        {open ? <X /> : <Menu />}
+      </button>
+      {open && (
+        <nav className="mobile-menu">
+          <a href="#kyber" onClick={() => setOpen(false)}>
+            Kyber
+          </a>
+          <a href="#journey" onClick={() => setOpen(false)}>
+            Journey
+          </a>
+          <a href="#dispatches" onClick={() => setOpen(false)}>
+            Dispatches
+          </a>
+          <a href="mailto:matt.voget@gmail.com">Contact</a>
+        </nav>
+      )}
+    </header>
+  );
+}
 
-      <div className="space-y-10">
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <Gem
-              className="h-8 w-8 shrink-0"
-              strokeWidth={1.5}
-              aria-hidden
-              style={{ color: 'var(--accent-cyan)', filter: 'drop-shadow(0 0 10px color-mix(in srgb, var(--accent-cyan) 55%, transparent))' }}
-            />
-            <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-              <span className="glow-cyan">Kyber</span> — A Kubernetes Native Agent Platform
-            </h3>
+function Architecture() {
+  const capabilities = [
+    { label: "Identity", icon: ShieldCheck },
+    { label: "Scheduling", icon: CalendarClock },
+    { label: "Secrets", icon: KeyRound },
+    { label: "Memory", icon: Database },
+    { label: "Channels", icon: MessageSquare },
+  ];
+  return (
+    <div
+      className="architecture"
+      aria-label="Kyber architecture: operator to control plane to isolated agent pods"
+    >
+      <div className="architecture-node operator">
+        <UserRound />
+        <span>Operator</span>
+      </div>
+      <ArrowDown className="flow-arrow" aria-hidden="true" />
+      <div className="control-plane">
+        <p>Control plane</p>
+        <div className="capabilities">
+          {capabilities.map(({ label, icon: Icon }) => (
+            <span key={label}>
+              <Icon /> {label}
+            </span>
+          ))}
+        </div>
+      </div>
+      <ArrowDown className="flow-arrow" aria-hidden="true" />
+      <div className="agent-pods">
+        {[1, 2, "N"].map((pod) => (
+          <div className="architecture-node" key={pod}>
+            <Box />
+            <span>Agent pod {pod}</span>
           </div>
-          <p className="text-sm sm:text-base text-muted-foreground font-light leading-relaxed max-w-3xl">
-            Kyber runs AI agents as first-class Kubernetes workloads, each in its own pod with persistent memory. I can restart sessions, manage agent identities, inject secrets, trigger actions on cron schedules, and hold two-way conversations with each one. Kyber&apos;s first use case is the Falcon Dev Team, a team of AI agents that ship real software end to end.
+        ))}
+      </div>
+      <div className="runtime-strip">
+        <span>Kubernetes</span>
+        <span>CRDs</span>
+        <span>OCI</span>
+        <span>gRPC</span>
+      </div>
+    </div>
+  );
+}
+
+function KyberSection() {
+  return (
+    <section className="kyber-section" id="kyber">
+      <div className="project-card">
+        <header className="module-heading">
+          <span>Kyber / Active project</span>
+        </header>
+        <h2>Kubernetes-native infrastructure for persistent AI agents.</h2>
+        <p className="project-summary">
+          Kyber gives long-running agents durable identity, isolated compute,
+          controlled access to secrets, schedules, and two-way communication
+          channels.
+        </p>
+        <Architecture />
+        <div className="facts" aria-label="Kyber facts">
+          <p>
+            <span>Runtime</span> / Kubernetes
+          </p>
+          <p>
+            <span>State</span> / Persistent
+          </p>
+          <p>
+            <span>Control</span> / Human
           </p>
         </div>
-
-        <div className="grid gap-x-16 gap-y-10 md:grid-cols-2 items-start">
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold tracking-tight text-foreground/90">Architecture</h4>
-            <KyberDiagram />
-          </div>
-          <div className="mx-auto w-full max-w-[400px] space-y-4">
-            <h4 className="text-sm font-semibold tracking-tight text-foreground/90">The Falcon Dev Team — AI Agents Running on Kyber</h4>
-            <FalconTeam />
-          </div>
+      </div>
+      <section className="signal" id="dispatches">
+        <header className="module-heading">
+          <span>Dispatches</span>
+        </header>
+        <div className="signal-list">
+          {dispatches.map((dispatch) => {
+            const content = (
+              <>
+                <i />
+                <div>
+                  <strong>{dispatch.title}</strong>
+                  <span>{dispatch.detail}</span>
+                </div>
+                <small>{dispatch.kind}</small>
+                {dispatch.href ? (
+                  <ArrowUpRight aria-hidden="true" />
+                ) : (
+                  <span aria-hidden="true">—</span>
+                )}
+              </>
+            );
+            return dispatch.href ? (
+              <a
+                href={dispatch.href}
+                target="_blank"
+                rel="noreferrer"
+                key={dispatch.title}
+              >
+                {content}
+              </a>
+            ) : (
+              <div className="dispatch-placeholder" key={dispatch.title}>
+                {content}
+              </div>
+            );
+          })}
         </div>
-
-        <LiveBoard />
-      </div>
-
-      <SnapdexShowcase />
+      </section>
     </section>
-  )
+  );
 }
 
-function PrivacyPolicy({ onNavigate }: { onNavigate: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
+function CareerJourney() {
   return (
-    <section className="py-12 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-semibold tracking-tight mb-8">
-        <span className="glow-cyan">Privacy Policy</span>
-      </h1>
-      <div className="space-y-6 text-muted-foreground font-light">
-        <p>Last updated: {new Date().toLocaleDateString()}</p>
-        <p>
-          This website is a personal portfolio site. We do not collect, store, or process any personal information from visitors.
-        </p>
-        <p>
-          This site does not use cookies, analytics, or any tracking technologies.
-        </p>
-        <p>
-          If you contact me via email, I will only use your information to respond to your inquiry.
-        </p>
-        <p>
-          For questions about this policy, contact me at matt.voget@gmail.com.
-        </p>
-      </div>
-      <div className="mt-8">
-        <Button variant="outline" asChild className="border-[var(--accent-cyan)]/50 hover:border-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/10">
-          <a href="/" onClick={(e) => onNavigate(e, '/')}>Back to Home</a>
-        </Button>
-      </div>
+    <section className="project-index" id="journey">
+      <header className="module-heading">
+        <span>Career journey</span>
+      </header>
+      <ol className="career-list">
+        {career.map((beat, index) => (
+          <li
+            className={beat.current ? "current" : undefined}
+            key={beat.company}
+          >
+            <span className="career-index">0{index + 1}</span>
+            <div>
+              <p>
+                <strong>{beat.company}</strong>
+                {beat.current && (
+                  <em>
+                    <i /> Current
+                  </em>
+                )}
+                <span>{beat.title}</span>
+              </p>
+              <p>{beat.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
     </section>
-  )
+  );
 }
 
-function TermsAndConditions({ onNavigate }: { onNavigate: (e: React.MouseEvent<HTMLAnchorElement>, path: string) => void }) {
+function Home() {
   return (
-    <section className="py-12 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-semibold tracking-tight mb-8">
-        <span className="glow-purple">Terms and Conditions</span>
-      </h1>
-      <div className="space-y-6 text-muted-foreground font-light">
-        <p>Last updated: {new Date().toLocaleDateString()}</p>
-        <p>
-          This is a personal portfolio website. By accessing this site, you agree to these terms.
-        </p>
-        <p>
-          All content on this site, including text, graphics, and code samples, is provided for informational purposes only.
-        </p>
-        <p>
-          The projects showcased are my personal work. External links to demos and repositories are provided as-is.
-        </p>
-        <p>
-          This site is provided "as is" without warranties of any kind.
-        </p>
-        <p>
-          For questions, contact me at matt.voget@gmail.com.
-        </p>
-      </div>
-      <div className="mt-8">
-        <Button variant="outline" asChild className="border-[var(--accent-purple)]/50 hover:border-[var(--accent-purple)] hover:bg-[var(--accent-purple)]/10">
-          <a href="/" onClick={(e) => onNavigate(e, '/')}>Back to Home</a>
-        </Button>
-      </div>
-    </section>
-  )
+    <>
+      <Sidebar />
+      <MobileHeader />
+      <main className="site-main" id="top">
+        <div className="identity-line">
+          <span>Matt Voget / Engineering leader + builder</span>
+          <span className="availability">
+            <i /> Available
+          </span>
+        </div>
+        <section className="hero">
+          <h1>Leading teams and building production software.</h1>
+          <p>
+            I help engineering organizations turn ambitious ideas into reliable
+            products. I also still love to build!
+          </p>
+          <a href="mailto:matt.voget@gmail.com">
+            matt.voget@gmail.com <ArrowUpRight />
+          </a>
+        </section>
+        <KyberSection />
+        <CareerJourney />
+        <footer className="site-footer">
+          <div>
+            <strong>Matt Voget</strong>
+            <p>Engineering leader, systems builder, and creator of Kyber.</p>
+          </div>
+          <nav aria-label="Social and legal links">
+            <a
+              aria-label="GitHub"
+              href="https://github.com/matty-v"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Github />
+            </a>
+            <a
+              aria-label="LinkedIn"
+              href="https://www.linkedin.com/in/matthew-voget-47a225a1/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Linkedin />
+            </a>
+            <a aria-label="Email" href="mailto:matt.voget@gmail.com">
+              <Mail />
+            </a>
+            <a href="/privacy">Privacy</a>
+            <a href="/terms">Terms</a>
+          </nav>
+        </footer>
+      </main>
+    </>
+  );
+}
+
+function LegalPage({
+  title,
+  onNavigate,
+}: {
+  title: "Privacy Policy" | "Terms and Conditions";
+  onNavigate: Navigate;
+}) {
+  const privacy = title === "Privacy Policy";
+  return (
+    <main className="legal-page">
+      <a
+        className="text-link"
+        href="/"
+        onClick={(event) => onNavigate(event, "/")}
+      >
+        &larr; Back to Home
+      </a>
+      <p className="legal-kicker">Voget.io / Legal</p>
+      <h1>{title}</h1>
+      <p>Last updated: {new Date().toLocaleDateString()}</p>
+      {privacy ? (
+        <>
+          <p>
+            This website is a personal portfolio site. We do not collect, store,
+            or process personal information from visitors.
+          </p>
+          <p>
+            This site does not use cookies, analytics, or tracking technologies.
+          </p>
+          <p>
+            If you contact me by email, I will use your information only to
+            respond.
+          </p>
+        </>
+      ) : (
+        <>
+          <p>
+            This is a personal portfolio website. By accessing it, you agree to
+            these terms.
+          </p>
+          <p>
+            Content, graphics, and code samples are provided for informational
+            purposes. External project links are provided as-is.
+          </p>
+          <p>This site is provided without warranties of any kind.</p>
+        </>
+      )}
+      <p>
+        Questions:{" "}
+        <a href="mailto:matt.voget@gmail.com">matt.voget@gmail.com</a>
+      </p>
+    </main>
+  );
 }
 
 function App() {
-  const getPageFromPath = () => {
-    const path = window.location.pathname.replace(/^\//, '')
-    return path || 'home'
-  }
-
-  const [page, setPage] = useState(getPageFromPath)
-
+  const readPage = () => window.location.pathname.replace(/^\//, "") || "home";
+  const [page, setPage] = useState(readPage);
   useEffect(() => {
-    const handlePopState = () => {
-      setPage(getPageFromPath())
-      window.scrollTo(0, 0)
-    }
-    window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
-  }, [])
-
-  const navigate = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
-    e.preventDefault()
-    window.history.pushState({}, '', path)
-    setPage(path.replace(/^\//, '') || 'home')
-    window.scrollTo(0, 0)
-  }
-
-  const renderContent = () => {
-    switch (page) {
-      case 'privacy':
-        return <PrivacyPolicy onNavigate={navigate} />
-      case 'terms':
-        return <TermsAndConditions onNavigate={navigate} />
-      default:
-        return (
-          <>
-            <div className="space-y-8">
-              <Hero />
-              <Contact />
-            </div>
-            <MyWork />
-          </>
-        )
-    }
-  }
-
-  return (
-    <div className="min-h-screen bg-[var(--bg-primary)] relative">
-      <Background />
-      <main className="container max-w-6xl mx-auto px-4 py-8 space-y-16 relative z-10">
-        {renderContent()}
-      </main>
-      <footer className="border-t border-[var(--accent-cyan)]/10 py-6 text-center text-sm text-muted-foreground relative z-10">
-        <p className="font-light">&copy; {new Date().getFullYear()} Matt Voget. Built with React + Tailwind.</p>
-        <div className="mt-2 space-x-4">
-          <a href="/privacy" onClick={(e) => navigate(e, '/privacy')} className="hover:text-[var(--accent-cyan)] transition-colors">Privacy Policy</a>
-          <a href="/terms" onClick={(e) => navigate(e, '/terms')} className="hover:text-[var(--accent-purple)] transition-colors">Terms and Conditions</a>
-        </div>
-      </footer>
-    </div>
-  )
+    const handlePopState = () => setPage(readPage());
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+  const navigate: Navigate = (event, path) => {
+    event.preventDefault();
+    window.history.pushState({}, "", path);
+    setPage(path.replace(/^\//, "") || "home");
+    window.scrollTo(0, 0);
+  };
+  if (page === "privacy")
+    return <LegalPage title="Privacy Policy" onNavigate={navigate} />;
+  if (page === "terms")
+    return <LegalPage title="Terms and Conditions" onNavigate={navigate} />;
+  return <Home />;
 }
 
-export default App
+export default App;
