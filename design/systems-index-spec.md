@@ -20,7 +20,7 @@ Quiet interface, loud proof. The site should feel like an engineer's working ind
 2. Kyber as the active featured project
 3. A truthful, simplified architecture model
 4. Dispatches to live project sites, source, and future writing
-5. An extensible project index
+5. A concise visual career journey
 6. Compact identity, contact, and legal links
 
 ## Responsive behavior

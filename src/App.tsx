@@ -3,10 +3,12 @@ import { ArrowDown, ArrowUpRight, Box, CalendarClock, Database, Github, KeyRound
 
 type Navigate = (event: React.MouseEvent<HTMLAnchorElement>, path: string) => void
 
-const projects = [
-  { index: '001', name: 'Kyber', status: 'active', focus: 'Kubernetes-native infrastructure for persistent AI agents', href: '#kyber' },
-  { index: '002', name: 'Falcon Dev Team', status: 'operational', focus: 'A multi-agent software team running on Kyber', href: '#dispatches' },
-  { index: '003', name: 'Snapdex', status: 'shipped', focus: 'A Pokédex app delivered by the Falcon Dev Team', href: 'https://snapdex.ai' },
+const career = [
+  { company: 'Lockheed Martin', title: 'Systems / Software Engineer', detail: 'Satellites, identity and access management, and intelligence systems.' },
+  { company: 'Cherwell', title: 'Team Lead / Senior Engineer', detail: 'IT service management, .NET, and machine learning.' },
+  { company: 'Stoplight', title: 'Engineering Manager / Staff Engineer', detail: 'API design, DevOps, and microservices.' },
+  { company: 'Ambassador Labs', title: 'VP Engineering / Director of Technology', detail: 'Zero-to-one products, Kubernetes, and API gateways.' },
+  { company: 'Gravitee', title: 'Director of Engineering', detail: 'Agent management gateways and AI developer enablement.' },
 ]
 
 const dispatches = [
@@ -17,17 +19,17 @@ const dispatches = [
 ]
 
 function Brand() {
-  return <a className="brand" href="#top" aria-label="Matt Voget home"><strong>MV</strong><span>/</span><time>{new Date().getFullYear()}</time></a>
+  return <a className="brand" href="#top" aria-label="Matt Voget home"><img src="/profile.jpeg" alt="Matt Voget" /><span>/</span><time>{new Date().getFullYear()}</time></a>
 }
 
 function Sidebar() {
   return <aside className="sidebar" aria-label="Primary navigation">
     <Brand />
     <nav className="side-nav">
-      <a className="active" href="#top"><Network /> Index</a><a href="#kyber"><Box /> Kyber</a><a href="#projects"><Layers3 /> Projects</a><a href="#dispatches"><Database /> Dispatches</a><a href="mailto:matt.voget@gmail.com"><Mail /> Contact</a>
+      <a className="active" href="#top"><Network /> Index</a><a href="#kyber"><Box /> Kyber</a><a href="#journey"><Layers3 /> Journey</a><a href="#dispatches"><Database /> Dispatches</a><a href="mailto:matt.voget@gmail.com"><Mail /> Contact</a>
     </nav>
     <div className="side-footer">
-      <a href="https://github.com/matty-v" target="_blank" rel="noreferrer">GitHub <ArrowUpRight /></a><a href="https://www.linkedin.com/in/matthew-voget-47a225a1/" target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight /></a><p>&copy; {new Date().getFullYear()} Matt Voget</p><span>Built by hand</span>
+      <a href="https://github.com/matty-v" target="_blank" rel="noreferrer">GitHub <ArrowUpRight /></a><a href="https://www.linkedin.com/in/matthew-voget-47a225a1/" target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight /></a><a href="mailto:matt.voget@gmail.com">Email <ArrowUpRight /></a><p>&copy; {new Date().getFullYear()} Matt Voget</p><span>Lovingly built by 🤖</span>
     </div>
   </aside>
 }
@@ -37,7 +39,7 @@ function MobileHeader() {
   return <header className="mobile-header">
     <Brand /><span className="availability"><i /> Available</span>
     <button type="button" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
-    {open && <nav className="mobile-menu"><a href="#kyber" onClick={() => setOpen(false)}>Kyber</a><a href="#projects" onClick={() => setOpen(false)}>Projects</a><a href="#dispatches" onClick={() => setOpen(false)}>Dispatches</a><a href="mailto:matt.voget@gmail.com">Contact</a></nav>}
+    {open && <nav className="mobile-menu"><a href="#kyber" onClick={() => setOpen(false)}>Kyber</a><a href="#journey" onClick={() => setOpen(false)}>Journey</a><a href="#dispatches" onClick={() => setOpen(false)}>Dispatches</a><a href="mailto:matt.voget@gmail.com">Contact</a></nav>}
   </header>
 }
 
@@ -58,12 +60,12 @@ function KyberSection() {
   </section>
 }
 
-function ProjectIndex() {
-  return <section className="project-index" id="projects"><header className="module-heading"><span>Project index</span></header><div className="project-table" role="table" aria-label="Projects"><div className="project-row project-labels" role="row"><span>Idx</span><span>Project</span><span>Status</span><span>Focus</span></div>{projects.map((project) => { const external = project.href.startsWith('http'); return <a className="project-row" role="row" key={project.index} href={project.href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}><span>{project.index}</span><strong>{project.name}</strong><span className="project-status"><i />{project.status}</span><span>{project.focus}</span></a> })}</div></section>
+function CareerJourney() {
+  return <section className="project-index" id="journey"><header className="module-heading"><span>Career journey</span></header><ol className="career-list">{career.map((beat, index) => <li key={beat.company}><span className="career-index">0{index + 1}</span><div><p><strong>{beat.company}</strong><span>{beat.title}</span></p><p>{beat.detail}</p></div></li>)}</ol></section>
 }
 
 function Home() {
-  return <><Sidebar /><MobileHeader /><main className="site-main" id="top"><div className="identity-line"><span>Matt Voget / Engineering leader + builder</span><span className="availability"><i /> Available</span></div><section className="hero"><h1>Building durable systems for people and agents.</h1><p>I design and ship infrastructure that stays up, scales out, and earns trust.</p><a href="mailto:matt.voget@gmail.com">matt@voget.io <ArrowUpRight /></a></section><KyberSection /><ProjectIndex /><footer className="site-footer"><div><strong>Matt Voget</strong><p>Engineering leader, systems builder, and creator of Kyber.</p></div><nav aria-label="Social and legal links"><a aria-label="GitHub" href="https://github.com/matty-v" target="_blank" rel="noreferrer"><Github /></a><a aria-label="LinkedIn" href="https://www.linkedin.com/in/matthew-voget-47a225a1/" target="_blank" rel="noreferrer"><Linkedin /></a><a aria-label="Email" href="mailto:matt.voget@gmail.com"><Mail /></a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav></footer></main></>
+  return <><Sidebar /><MobileHeader /><main className="site-main" id="top"><div className="identity-line"><span>Matt Voget / Engineering leader + builder</span><span className="availability"><i /> Available</span></div><section className="hero"><h1>Leading teams and building production software.</h1><p>I help engineering organizations turn ambitious ideas into reliable products—and I still write the code.</p><a href="mailto:matt.voget@gmail.com">matt.voget@gmail.com <ArrowUpRight /></a></section><KyberSection /><CareerJourney /><footer className="site-footer"><div><strong>Matt Voget</strong><p>Engineering leader, systems builder, and creator of Kyber.</p></div><nav aria-label="Social and legal links"><a aria-label="GitHub" href="https://github.com/matty-v" target="_blank" rel="noreferrer"><Github /></a><a aria-label="LinkedIn" href="https://www.linkedin.com/in/matthew-voget-47a225a1/" target="_blank" rel="noreferrer"><Linkedin /></a><a aria-label="Email" href="mailto:matt.voget@gmail.com"><Mail /></a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav></footer></main></>
 }
 
 function LegalPage({ title, onNavigate }: { title: 'Privacy Policy' | 'Terms and Conditions'; onNavigate: Navigate }) {

@@ -6,24 +6,24 @@ test.describe('Systems Index homepage', () => {
   })
 
   test('presents Matt and Kyber with the approved hierarchy', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Building durable systems for people and agents.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Leading teams and building production software.' })).toBeVisible()
     await expect(page.getByText('Matt Voget / Engineering leader + builder')).toBeVisible()
+    await expect(page.getByRole('img', { name: 'Matt Voget' }).first()).toHaveAttribute('src', '/profile.jpeg')
     await expect(page.getByRole('heading', { name: 'Kubernetes-native infrastructure for persistent AI agents.' })).toBeVisible()
     await expect(page.getByLabel(/Kyber architecture/)).toBeVisible()
   })
 
-  test('links to live work and shows the extensible project index', async ({ page }) => {
+  test('links to live work and shows the career journey', async ({ page }) => {
     await expect(page.getByRole('link', { name: /Kyber Explore the live platform site/i })).toHaveAttribute('href', 'https://kyber.voget.io')
     await expect(page.getByRole('link', { name: /Snapdex A product shipped/i })).toHaveAttribute('href', 'https://snapdex.ai')
-    await expect(page.getByRole('table', { name: 'Projects' })).toBeVisible()
-    await expect(page.getByText('Falcon Dev Team', { exact: true }).last()).toBeVisible()
-    await expect(page.getByText('Snapdex', { exact: true }).last()).toBeVisible()
+    await expect(page.getByText('Lockheed Martin', { exact: true })).toBeVisible()
+    await expect(page.getByText('Director of Engineering', { exact: true })).toBeVisible()
   })
 
   test('has correct social and contact links', async ({ page }) => {
     await expect(page.getByRole('link', { name: 'GitHub' }).last()).toHaveAttribute('href', 'https://github.com/matty-v')
     await expect(page.getByRole('link', { name: 'LinkedIn' }).last()).toHaveAttribute('href', 'https://www.linkedin.com/in/matthew-voget-47a225a1/')
-    await expect(page.getByRole('link', { name: 'Email' })).toHaveAttribute('href', 'mailto:matt.voget@gmail.com')
+    await expect(page.getByRole('link', { name: 'Email' }).last()).toHaveAttribute('href', 'mailto:matt.voget@gmail.com')
   })
 
   test('uses the compact navigation on mobile without horizontal overflow', async ({ page }) => {
