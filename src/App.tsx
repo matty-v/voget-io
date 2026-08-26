@@ -4,11 +4,11 @@ import { ArrowDown, ArrowUpRight, Box, CalendarClock, Database, Github, KeyRound
 type Navigate = (event: React.MouseEvent<HTMLAnchorElement>, path: string) => void
 
 const career = [
-  { company: 'Gravitee', title: 'Director of Engineering', detail: 'Agent management gateways and AI developer enablement.' },
-  { company: 'Ambassador Labs', title: 'VP Engineering / Director of Technology', detail: 'Zero-to-one products, Kubernetes, and API gateways.' },
-  { company: 'Stoplight', title: 'Engineering Manager / Staff Engineer', detail: 'API design, DevOps, and microservices.' },
-  { company: 'Cherwell', title: 'Team Lead / Senior Engineer', detail: 'IT service management, .NET, and machine learning.' },
   { company: 'Lockheed Martin', title: 'Systems / Software Engineer', detail: 'Satellites, identity and access management, and intelligence systems.' },
+  { company: 'Cherwell', title: 'Team Lead / Senior Engineer', detail: 'IT service management, .NET, and machine learning.' },
+  { company: 'Stoplight', title: 'Engineering Manager / Staff Engineer', detail: 'API design, DevOps, and microservices.' },
+  { company: 'Ambassador Labs', title: 'VP Engineering / Director of Technology', detail: 'Zero-to-one products, Kubernetes, and API gateways.' },
+  { company: 'Gravitee', title: 'Director of Engineering', detail: 'Agent management gateways and AI developer enablement.', current: true },
 ]
 
 const dispatches = [
@@ -61,7 +61,7 @@ function KyberSection() {
 }
 
 function CareerJourney() {
-  return <section className="project-index" id="journey"><header className="module-heading"><span>Career journey</span></header><ol className="career-list">{career.map((beat, index) => <li key={beat.company}><span className="career-index">0{index + 1}</span><div><p><strong>{beat.company}</strong><span>{beat.title}</span></p><p>{beat.detail}</p></div></li>)}</ol></section>
+  return <section className="project-index" id="journey"><header className="module-heading"><span>Career journey</span></header><ol className="career-list">{career.map((beat, index) => <li className={beat.current ? 'current' : undefined} key={beat.company}><span className="career-index">0{index + 1}</span><div><p><strong>{beat.company}</strong>{beat.current && <em><i /> Current</em>}<span>{beat.title}</span></p><p>{beat.detail}</p></div></li>)}</ol></section>
 }
 
 function Home() {
