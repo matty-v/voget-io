@@ -4,11 +4,11 @@ import { ArrowDown, ArrowUpRight, Box, CalendarClock, Database, Github, KeyRound
 type Navigate = (event: React.MouseEvent<HTMLAnchorElement>, path: string) => void
 
 const career = [
-  { company: 'Lockheed Martin', title: 'Systems / Software Engineer', detail: 'Satellites, identity and access management, and intelligence systems.' },
-  { company: 'Cherwell', title: 'Team Lead / Senior Engineer', detail: 'IT service management, .NET, and machine learning.' },
-  { company: 'Stoplight', title: 'Engineering Manager / Staff Engineer', detail: 'API design, DevOps, and microservices.' },
-  { company: 'Ambassador Labs', title: 'VP Engineering / Director of Technology', detail: 'Zero-to-one products, Kubernetes, and API gateways.' },
   { company: 'Gravitee', title: 'Director of Engineering', detail: 'Agent management gateways and AI developer enablement.' },
+  { company: 'Ambassador Labs', title: 'VP Engineering / Director of Technology', detail: 'Zero-to-one products, Kubernetes, and API gateways.' },
+  { company: 'Stoplight', title: 'Engineering Manager / Staff Engineer', detail: 'API design, DevOps, and microservices.' },
+  { company: 'Cherwell', title: 'Team Lead / Senior Engineer', detail: 'IT service management, .NET, and machine learning.' },
+  { company: 'Lockheed Martin', title: 'Systems / Software Engineer', detail: 'Satellites, identity and access management, and intelligence systems.' },
 ]
 
 const dispatches = [
