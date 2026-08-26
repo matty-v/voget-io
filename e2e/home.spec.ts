@@ -17,7 +17,7 @@ test.describe('Systems Index homepage', () => {
     await expect(page.getByRole('link', { name: /Snapdex A product shipped/i })).toHaveAttribute('href', 'https://snapdex.ai')
     await expect(page.getByRole('table', { name: 'Projects' })).toBeVisible()
     await expect(page.getByText('Falcon Dev Team', { exact: true }).last()).toBeVisible()
-    await expect(page.getByText('Snapdex', { exact: true })).toBeVisible()
+    await expect(page.getByText('Snapdex', { exact: true }).last()).toBeVisible()
   })
 
   test('has correct social and contact links', async ({ page }) => {
