@@ -454,6 +454,19 @@ svg {
   color: var(--text);
   font-weight: 500;
 }
+.career-list .acquisition {
+  flex-basis: 100%;
+  color: var(--muted);
+  font:
+    0.54rem "JetBrains Mono",
+    monospace;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.career-list .acquisition span {
+  color: var(--accent);
+  font: inherit;
+}
 .career-list p span,
 .career-list p:last-child {
   color: var(--muted);

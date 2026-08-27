@@ -22,6 +22,9 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Gravitee")).toBeInTheDocument();
     expect(screen.getByText("Current")).toBeInTheDocument();
+    expect(screen.getByText("→ Ivanti")).toBeInTheDocument();
+    expect(screen.getByText("→ SmartBear")).toBeInTheDocument();
+    expect(screen.getAllByText("→ Gravitee")).toHaveLength(1);
   });
 
   it("renders the future writing entry without a misleading link", () => {
@@ -35,8 +38,12 @@ describe("App", () => {
     render(<App />);
 
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
-    expect(screen.getByRole("button", { name: "Close menu" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Close menu" }),
+    ).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "Escape" });
-    expect(screen.getByRole("button", { name: "Open menu" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Open menu" }),
+    ).toBeInTheDocument();
   });
 });

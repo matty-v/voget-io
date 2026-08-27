@@ -23,7 +23,15 @@ type Navigate = (
   path: string,
 ) => void;
 
-const career = [
+type CareerBeat = {
+  company: string;
+  title: string;
+  detail: string;
+  acquiredBy?: string;
+  current?: boolean;
+};
+
+const career: CareerBeat[] = [
   {
     company: "Lockheed Martin",
     title: "Systems / Software Engineer",
@@ -32,16 +40,19 @@ const career = [
   },
   {
     company: "Cherwell",
+    acquiredBy: "Ivanti",
     title: "Team Lead / Senior Engineer",
     detail: "IT service management, .NET, and machine learning.",
   },
   {
     company: "Stoplight",
+    acquiredBy: "SmartBear",
     title: "Engineering Manager / Staff Engineer",
     detail: "API design, DevOps, and microservices.",
   },
   {
     company: "Ambassador Labs",
+    acquiredBy: "Gravitee",
     title: "VP Engineering / Director of Technology",
     detail: "Zero-to-one products, Kubernetes, and API gateways.",
   },
@@ -309,6 +320,11 @@ function CareerJourney() {
                     <i /> Current
                   </em>
                 )}
+                {beat.acquiredBy && (
+                  <small className="acquisition">
+                    Acquired by <span>→ {beat.acquiredBy}</span>
+                  </small>
+                )}
                 <span>{beat.title}</span>
               </p>
               <p>{beat.detail}</p>
@@ -338,9 +354,6 @@ function Home() {
             I help engineering organizations turn ambitious ideas into reliable
             products. I also still love to build!
           </p>
-          <a href="mailto:matt.voget@gmail.com">
-            matt.voget@gmail.com <ArrowUpRight />
-          </a>
         </section>
         <KyberSection />
         <CareerJourney />
