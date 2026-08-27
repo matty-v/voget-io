@@ -182,22 +182,32 @@ function MobileHeader() {
 
 const agentActions = {
   joke: {
+    command: "/joke",
     label: "Tell me a joke",
-    prompt: "request /joke",
+    skill: "kyber-joke",
     response:
       "Why did the Kubernetes pod go to therapy? Too many unresolved dependencies.",
   },
-  status: {
-    label: "Report runtime status",
-    prompt: "request /status",
+  features: {
+    command: "/features",
+    label: "Agent features",
+    skill: "kyber-features",
     response:
-      "Healthy. Identity mounted, memory persistent, channel connected, human in control.",
+      "Kyber agents have durable identity, persistent memory, isolated compute, schedules, secure credentials, and two-way human channels.",
   },
-  explain: {
-    label: "What makes you a Kyber agent?",
-    prompt: "request /explain",
+  architecture: {
+    command: "/architecture",
+    label: "Kyber architecture",
+    skill: "kyber-architecture",
     response:
-      "I run in an isolated Kubernetes pod with durable identity, state, schedules, and controlled access to tools.",
+      "A Kubernetes-native control plane reconciles each agent into an isolated, persistent runtime. Operators manage agents through declarative resources and controlled channels.",
+  },
+  cluster: {
+    command: "/cluster-status",
+    label: "Cluster status",
+    skill: "public-cluster-status",
+    response:
+      "HEALTH  healthy\nREGION  us-central\nKYBER   showcase\nAGENTS  3 online\nUPTIME  99.97%\n\nOnly public, allowlisted properties are exposed.",
   },
 } as const;
 
@@ -206,16 +216,25 @@ type AgentAction = keyof typeof agentActions;
 function LiveAgentDemo() {
   const [activeAction, setActiveAction] = useState<AgentAction | null>(null);
   const [exchange, setExchange] = useState({
-    prompt: "awaiting command",
-    response: "Choose a safe, pre-approved action below.",
+    command: "awaiting command",
+    skill: "kiosk-ready",
+    response: "Select an installed kiosk skill below.",
   });
 
   const runAction = (action: AgentAction) => {
     const next = agentActions[action];
     setActiveAction(action);
-    setExchange({ prompt: next.prompt, response: "Agent is thinking…" });
+    setExchange({
+      command: next.command,
+      skill: next.skill,
+      response: "Working…",
+    });
     window.setTimeout(() => {
-      setExchange({ prompt: next.prompt, response: next.response });
+      setExchange({
+        command: next.command,
+        skill: next.skill,
+        response: next.response,
+      });
       setActiveAction(null);
     }, 650);
   };
@@ -228,21 +247,27 @@ function LiveAgentDemo() {
             <Terminal aria-hidden="true" />
           </span>
           <div>
-            <strong>k-demo / showcase agent</strong>
-            <span>pod: kyber-demo-01</span>
+            <strong>kiosk@kyber</strong>
+            <span>Codex / terminal peek</span>
           </div>
         </div>
         <span className="agent-live">
-          <i /> Simulated live
+          <i /> Prototype session
         </span>
       </header>
       <div className="agent-terminal" aria-live="polite" aria-atomic="true">
-        <p>
-          <span>visitor@voget.io</span> $ {exchange.prompt}
+        <div className="terminal-session">
+          <span>Kyber agent</span>
+          <span>Harness: Codex</span>
+          <span>Mode: Kiosk</span>
+        </div>
+        <p className="terminal-command">
+          <span>›</span> {exchange.command}
         </p>
-        <p>
-          <span>k-demo</span> {exchange.response}
+        <p className="terminal-skill">
+          <span>•</span> Running {exchange.skill} skill
         </p>
+        <p className="terminal-response">{exchange.response}</p>
       </div>
       <div className="agent-actions" aria-label="Demo agent actions">
         {Object.entries(agentActions).map(([key, action]) => (
@@ -253,7 +278,10 @@ function LiveAgentDemo() {
             onClick={() => runAction(key as AgentAction)}
           >
             <Sparkles aria-hidden="true" />
-            {activeAction === key ? "Running…" : action.label}
+            <span>
+              <strong>{action.command}</strong>
+              {activeAction === key ? "Running…" : action.label}
+            </span>
           </button>
         ))}
       </div>

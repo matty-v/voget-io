@@ -307,14 +307,31 @@ svg {
   animation: availability-pulse 2s ease-out infinite;
 }
 .agent-terminal {
-  min-height: 124px;
-  padding: 20px 16px;
+  min-height: 190px;
+  padding: 14px 16px 20px;
   border-bottom: 1px solid var(--line);
   background-image: linear-gradient(
     rgba(255, 255, 255, 0.015) 1px,
     transparent 1px
   );
   background-size: 100% 24px;
+}
+.terminal-session {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0 -2px 18px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font:
+    0.52rem "JetBrains Mono",
+    monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.terminal-session span:first-child {
+  color: var(--text);
 }
 .agent-terminal p {
   margin: 0 0 12px;
@@ -329,14 +346,25 @@ svg {
 .agent-terminal span {
   color: var(--accent);
 }
+.agent-terminal .terminal-skill {
+  color: var(--muted);
+  font-size: 0.58rem;
+}
+.agent-terminal .terminal-skill span {
+  color: #55d86b;
+}
+.agent-terminal .terminal-response {
+  padding-left: 13px;
+  white-space: pre-wrap;
+}
 .agent-actions {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   padding: 12px;
 }
 .agent-actions button {
-  min-height: 50px;
+  min-height: 58px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -350,6 +378,15 @@ svg {
     0.59rem/1.35 "JetBrains Mono",
     monospace;
   text-transform: uppercase;
+}
+.agent-actions button > span,
+.agent-actions button strong {
+  display: block;
+}
+.agent-actions button strong {
+  margin-bottom: 3px;
+  color: var(--accent);
+  font-weight: 500;
 }
 .agent-actions button:hover:not(:disabled),
 .agent-actions button:focus-visible {

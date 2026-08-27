@@ -27,7 +27,8 @@ test.describe("Systems Index homepage", () => {
     await expect(
       page.getByLabel("Interactive Kyber agent prototype"),
     ).toBeVisible();
-    await page.getByRole("button", { name: "Tell me a joke" }).click();
+    await expect(page.getByText("Harness: Codex")).toBeVisible();
+    await page.getByRole("button", { name: /Tell me a joke/ }).click();
     await expect(page.getByText(/Kubernetes pod go to therapy/)).toBeVisible();
   });
 

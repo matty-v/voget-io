@@ -37,8 +37,18 @@ describe("App", () => {
   it("runs a fixed showcase-agent action", async () => {
     render(<App />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Tell me a joke" }));
-    expect(screen.getByText("Agent is thinking…")).toBeInTheDocument();
+    expect(screen.getByText("Harness: Codex")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Agent features/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Kyber architecture/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Cluster status/ }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Tell me a joke/ }));
+    expect(screen.getByText("Working…")).toBeInTheDocument();
     expect(
       await screen.findByText(/Kubernetes pod go to therapy/),
     ).toBeInTheDocument();
