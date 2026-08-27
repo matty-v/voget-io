@@ -34,9 +34,9 @@ test.describe("Systems Index homepage", () => {
     await expect(
       page.getByRole("link", { name: /Snapdex A product shipped/i }),
     ).toHaveAttribute("href", "https://snapdex.ai");
-    await expect(page.getByText("Writing").locator("xpath=ancestor::a")).toHaveCount(
-      0,
-    );
+    await expect(
+      page.getByText("Writing").locator("xpath=ancestor::a"),
+    ).toHaveCount(0);
     await expect(
       page.getByText("Lockheed Martin", { exact: true }),
     ).toBeVisible();
@@ -44,6 +44,9 @@ test.describe("Systems Index homepage", () => {
       page.getByText("Director of Engineering", { exact: true }),
     ).toBeVisible();
     await expect(page.getByText("Current", { exact: true })).toBeVisible();
+    await expect(page.getByText("→ Ivanti", { exact: true })).toBeVisible();
+    await expect(page.getByText("→ SmartBear", { exact: true })).toBeVisible();
+    await expect(page.getByText("→ Gravitee", { exact: true })).toBeVisible();
   });
 
   test("has correct social and contact links", async ({ page }) => {
