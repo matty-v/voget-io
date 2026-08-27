@@ -354,9 +354,6 @@ function Home() {
             I help engineering organizations turn ambitious ideas into reliable
             products. I also still love to build!
           </p>
-          <a href="mailto:matt.voget@gmail.com">
-            matt.voget@gmail.com <ArrowUpRight />
-          </a>
         </section>
         <KyberSection />
         <CareerJourney />
