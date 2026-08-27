@@ -1,20 +1,16 @@
 import { useEffect, useState } from "react";
 import {
-  ArrowDown,
   ArrowUpRight,
   Box,
-  CalendarClock,
   Database,
   Github,
-  KeyRound,
   Layers3,
   Linkedin,
   Mail,
   Menu,
-  MessageSquare,
   Network,
-  ShieldCheck,
-  UserRound,
+  Sparkles,
+  Terminal,
   X,
 } from "lucide-react";
 
@@ -184,49 +180,89 @@ function MobileHeader() {
   );
 }
 
-function Architecture() {
-  const capabilities = [
-    { label: "Identity", icon: ShieldCheck },
-    { label: "Scheduling", icon: CalendarClock },
-    { label: "Secrets", icon: KeyRound },
-    { label: "Memory", icon: Database },
-    { label: "Channels", icon: MessageSquare },
-  ];
+const agentActions = {
+  joke: {
+    label: "Tell me a joke",
+    prompt: "request /joke",
+    response:
+      "Why did the Kubernetes pod go to therapy? Too many unresolved dependencies.",
+  },
+  status: {
+    label: "Report runtime status",
+    prompt: "request /status",
+    response:
+      "Healthy. Identity mounted, memory persistent, channel connected, human in control.",
+  },
+  explain: {
+    label: "What makes you a Kyber agent?",
+    prompt: "request /explain",
+    response:
+      "I run in an isolated Kubernetes pod with durable identity, state, schedules, and controlled access to tools.",
+  },
+} as const;
+
+type AgentAction = keyof typeof agentActions;
+
+function LiveAgentDemo() {
+  const [activeAction, setActiveAction] = useState<AgentAction | null>(null);
+  const [exchange, setExchange] = useState({
+    prompt: "awaiting command",
+    response: "Choose a safe, pre-approved action below.",
+  });
+
+  const runAction = (action: AgentAction) => {
+    const next = agentActions[action];
+    setActiveAction(action);
+    setExchange({ prompt: next.prompt, response: "Agent is thinking…" });
+    window.setTimeout(() => {
+      setExchange({ prompt: next.prompt, response: next.response });
+      setActiveAction(null);
+    }, 650);
+  };
+
   return (
-    <div
-      className="architecture"
-      aria-label="Kyber architecture: operator to control plane to isolated agent pods"
-    >
-      <div className="architecture-node operator">
-        <UserRound />
-        <span>Operator</span>
-      </div>
-      <ArrowDown className="flow-arrow" aria-hidden="true" />
-      <div className="control-plane">
-        <p>Control plane</p>
-        <div className="capabilities">
-          {capabilities.map(({ label, icon: Icon }) => (
-            <span key={label}>
-              <Icon /> {label}
-            </span>
-          ))}
-        </div>
-      </div>
-      <ArrowDown className="flow-arrow" aria-hidden="true" />
-      <div className="agent-pods">
-        {[1, 2, "N"].map((pod) => (
-          <div className="architecture-node" key={pod}>
-            <Box />
-            <span>Agent pod {pod}</span>
+    <div className="agent-demo" aria-label="Interactive Kyber agent prototype">
+      <header className="agent-demo-header">
+        <div className="agent-identity">
+          <span className="agent-avatar">
+            <Terminal aria-hidden="true" />
+          </span>
+          <div>
+            <strong>k-demo / showcase agent</strong>
+            <span>pod: kyber-demo-01</span>
           </div>
+        </div>
+        <span className="agent-live">
+          <i /> Simulated live
+        </span>
+      </header>
+      <div className="agent-terminal" aria-live="polite" aria-atomic="true">
+        <p>
+          <span>visitor@voget.io</span> $ {exchange.prompt}
+        </p>
+        <p>
+          <span>k-demo</span> {exchange.response}
+        </p>
+      </div>
+      <div className="agent-actions" aria-label="Demo agent actions">
+        {Object.entries(agentActions).map(([key, action]) => (
+          <button
+            type="button"
+            key={key}
+            disabled={activeAction !== null}
+            onClick={() => runAction(key as AgentAction)}
+          >
+            <Sparkles aria-hidden="true" />
+            {activeAction === key ? "Running…" : action.label}
+          </button>
         ))}
       </div>
-      <div className="runtime-strip">
-        <span>Kubernetes</span>
-        <span>CRDs</span>
-        <span>OCI</span>
-        <span>gRPC</span>
-      </div>
+      <footer className="agent-demo-footer">
+        <span>Prototype / fixed actions / no free-form input</span>
+        <a href="https://kyber.voget.io" target="_blank" rel="noreferrer">
+          Learn how Kyber works <ArrowUpRight aria-hidden="true" />
+        </a>
+      </footer>
     </div>
   );
 }
@@ -244,7 +280,7 @@ function KyberSection() {
           controlled access to secrets, schedules, and two-way communication
           channels.
         </p>
-        <Architecture />
+        <LiveAgentDemo />
         <div className="facts" aria-label="Kyber facts">
           <p>
             <span>Runtime</span> / Kubernetes

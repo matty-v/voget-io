@@ -24,7 +24,11 @@ test.describe("Systems Index homepage", () => {
         name: "Kubernetes-native infrastructure for persistent AI agents.",
       }),
     ).toBeVisible();
-    await expect(page.getByLabel(/Kyber architecture/)).toBeVisible();
+    await expect(
+      page.getByLabel("Interactive Kyber agent prototype"),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Tell me a joke" }).click();
+    await expect(page.getByText(/Kubernetes pod go to therapy/)).toBeVisible();
   });
 
   test("links to live work and shows the career journey", async ({ page }) => {

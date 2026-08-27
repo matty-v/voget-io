@@ -34,6 +34,16 @@ describe("App", () => {
     expect(screen.getByText("COMING SOON")).toBeInTheDocument();
   });
 
+  it("runs a fixed showcase-agent action", async () => {
+    render(<App />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Tell me a joke" }));
+    expect(screen.getByText("Agent is thinking…")).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Kubernetes pod go to therapy/),
+    ).toBeInTheDocument();
+  });
+
   it("closes the mobile menu with Escape", () => {
     render(<App />);
 

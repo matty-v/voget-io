@@ -244,94 +244,143 @@ svg {
   font-size: 0.9rem;
   line-height: 1.55;
 }
-.architecture {
-  display: grid;
-  justify-items: center;
-  gap: 8px;
-  padding: 12px;
-  border: 1px solid var(--line);
-}
-.architecture-node {
-  min-height: 54px;
+.agent-demo {
   border: 1px solid #58554e;
-  padding: 10px 14px;
+  background: #121210;
+}
+.agent-demo-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  font:
-    0.68rem "JetBrains Mono",
-    monospace;
-  text-transform: uppercase;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
 }
-.operator {
-  min-width: 145px;
+.agent-identity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.operator svg {
-  font-size: 1.45rem;
+.agent-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border: 1px solid var(--accent);
+  color: var(--accent);
 }
-.flow-arrow {
-  color: var(--muted);
-  font-size: 1.15rem;
+.agent-identity strong,
+.agent-identity span {
+  display: block;
 }
-.control-plane {
-  width: min(620px, 100%);
-  border: 1px solid #58554e;
-  padding: 12px;
-}
-.control-plane > p {
-  margin: 0 0 10px;
-  text-align: center;
+.agent-identity strong {
   font:
     0.7rem "JetBrains Mono",
     monospace;
   text-transform: uppercase;
 }
-.capabilities {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 7px;
-}
-.capabilities span {
-  min-height: 54px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border: 1px solid var(--line);
+.agent-identity div > span {
+  margin-top: 3px;
+  color: var(--muted);
   font:
-    0.58rem "JetBrains Mono",
+    0.56rem "JetBrains Mono",
     monospace;
   text-transform: uppercase;
 }
-.capabilities svg {
-  font-size: 1.1rem;
+.agent-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font:
+    0.55rem "JetBrains Mono",
+    monospace;
+  text-transform: uppercase;
 }
-.agent-pods {
-  width: min(620px, 100%);
+.agent-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #55d86b;
+  animation: availability-pulse 2s ease-out infinite;
+}
+.agent-terminal {
+  min-height: 124px;
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--line);
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px
+  );
+  background-size: 100% 24px;
+}
+.agent-terminal p {
+  margin: 0 0 12px;
+  color: var(--text);
+  font:
+    0.68rem/1.6 "JetBrains Mono",
+    monospace;
+}
+.agent-terminal p:last-child {
+  margin: 0;
+}
+.agent-terminal span {
+  color: var(--accent);
+}
+.agent-actions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 9px;
+  gap: 8px;
+  padding: 12px;
 }
-.runtime-strip {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-top: 1px solid var(--line);
-  padding-top: 10px;
-}
-.runtime-strip span {
-  text-align: center;
-  color: var(--muted);
-  border-right: 1px solid var(--line);
+.agent-actions button {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  color: var(--text);
+  background: transparent;
+  cursor: pointer;
   font:
-    0.6rem "JetBrains Mono",
+    0.59rem/1.35 "JetBrains Mono",
     monospace;
   text-transform: uppercase;
 }
-.runtime-strip span:last-child {
-  border: 0;
+.agent-actions button:hover:not(:disabled),
+.agent-actions button:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.agent-actions button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+.agent-demo-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+}
+.agent-demo-footer > span,
+.agent-demo-footer a {
+  color: var(--muted);
+  font:
+    0.52rem "JetBrains Mono",
+    monospace;
+  text-transform: uppercase;
+}
+.agent-demo-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--accent);
 }
 .facts {
   display: grid;
@@ -632,21 +681,12 @@ svg {
   .project-summary {
     font-size: 0.84rem;
   }
-  .capabilities {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .capabilities span:last-child {
-    grid-column: 1/-1;
-  }
-  .agent-pods {
+  .agent-actions {
     grid-template-columns: 1fr;
   }
-  .runtime-strip {
-    grid-template-columns: repeat(2, 1fr);
-    row-gap: 10px;
-  }
-  .runtime-strip span:nth-child(2) {
-    border: 0;
+  .agent-demo-footer {
+    align-items: flex-start;
+    flex-direction: column;
   }
   .facts {
     grid-template-columns: 1fr;
@@ -673,6 +713,7 @@ svg {
     scroll-behavior: auto;
   }
   .availability i,
+  .agent-live i,
   .career-list em i {
     animation: none;
   }
