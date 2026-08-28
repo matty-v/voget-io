@@ -9,6 +9,16 @@ http.createServer(async (request, response) => {
   response.setHeader("content-type", "application/json; charset=utf-8");
   response.setHeader("cache-control", "no-store");
   if (request.method === "GET" && request.url === "/healthz") return send(response, 200, { ok: true });
+  if (request.method === "OPTIONS" && request.url === "/v1/requests") {
+    const origin = request.headers.origin;
+    if (!origin || !config.allowedOrigins.has(origin)) return send(response, 403, { error: "origin_denied" });
+    response.setHeader("access-control-allow-origin", origin);
+    response.setHeader("access-control-allow-methods", "POST, OPTIONS");
+    response.setHeader("access-control-allow-headers", "content-type");
+    response.setHeader("access-control-max-age", "600");
+    response.writeHead(204);
+    return response.end();
+  }
   if (request.method !== "POST" || request.url !== "/v1/requests") return send(response, 404, { error: "not_found" });
 
   const origin = request.headers.origin;
