@@ -1,10 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
 
 describe("App", () => {
   beforeEach(() => {
     window.history.replaceState({}, "", "/");
+    vi.unstubAllGlobals();
   });
 
   it("renders the homepage hierarchy and current career beat", () => {
@@ -35,6 +36,15 @@ describe("App", () => {
   });
 
   it("runs a fixed showcase-agent action", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        command: "joke",
+        response: "Why did the Kubernetes pod go to therapy? Too many unresolved dependencies.",
+        live: true,
+        harness: "Codex",
+      }),
+    }));
     render(<App />);
 
     expect(screen.getByText("Harness: Codex")).toBeInTheDocument();

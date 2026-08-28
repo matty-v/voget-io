@@ -13,6 +13,7 @@ import {
   Terminal,
   X,
 } from "lucide-react";
+import { runKioskCommand, type KioskCommand } from "./kyberGateway";
 
 type Navigate = (
   event: React.MouseEvent<HTMLAnchorElement>,
@@ -185,29 +186,21 @@ const agentActions = {
     command: "/joke",
     label: "Tell me a joke",
     skill: "kyber-joke",
-    response:
-      "Why did the Kubernetes pod go to therapy? Too many unresolved dependencies.",
   },
   features: {
     command: "/features",
     label: "Agent features",
     skill: "kyber-features",
-    response:
-      "Kyber agents have durable identity, persistent memory, isolated compute, schedules, secure credentials, and two-way human channels.",
   },
   architecture: {
     command: "/architecture",
     label: "Kyber architecture",
     skill: "kyber-architecture",
-    response:
-      "A Kubernetes-native control plane reconciles each agent into an isolated, persistent runtime. Operators manage agents through declarative resources and controlled channels.",
   },
   cluster: {
     command: "/cluster-status",
     label: "Cluster status",
     skill: "public-cluster-status",
-    response:
-      "HEALTH  healthy\nREGION  us-central\nKYBER   showcase\nAGENTS  3 online\nUPTIME  99.97%\n\nOnly public, allowlisted properties are exposed.",
   },
 } as const;
 
@@ -215,13 +208,15 @@ type AgentAction = keyof typeof agentActions;
 
 function LiveAgentDemo() {
   const [activeAction, setActiveAction] = useState<AgentAction | null>(null);
+  const [harness, setHarness] = useState("Codex");
+  const [live, setLive] = useState(false);
   const [exchange, setExchange] = useState({
     command: "awaiting command",
     skill: "kiosk-ready",
     response: "Select an installed kiosk skill below.",
   });
 
-  const runAction = (action: AgentAction) => {
+  const runAction = async (action: AgentAction) => {
     const next = agentActions[action];
     setActiveAction(action);
     setExchange({
@@ -229,14 +224,27 @@ function LiveAgentDemo() {
       skill: next.skill,
       response: "Working…",
     });
-    window.setTimeout(() => {
+    try {
+      const result = await runKioskCommand(
+        (action === "cluster" ? "cluster-status" : action) as KioskCommand,
+      );
       setExchange({
         command: next.command,
         skill: next.skill,
-        response: next.response,
+        response: result.response,
       });
+      setHarness(result.harness ?? "Codex");
+      setLive(result.live);
+    } catch {
+      setExchange({
+        command: next.command,
+        skill: next.skill,
+        response: "The live kiosk is temporarily unavailable. Please try again shortly.",
+      });
+      setLive(false);
+    } finally {
       setActiveAction(null);
-    }, 650);
+    }
   };
 
   return (
@@ -252,13 +260,13 @@ function LiveAgentDemo() {
           </div>
         </div>
         <span className="agent-live">
-          <i /> Prototype session
+          <i /> {live ? "Live agent" : "Gateway ready"}
         </span>
       </header>
       <div className="agent-terminal" aria-live="polite" aria-atomic="true">
         <div className="terminal-session">
           <span>Kyber agent</span>
-          <span>Harness: Codex</span>
+          <span>Harness: {harness}</span>
           <span>Mode: Kiosk</span>
         </div>
         <p className="terminal-command">
@@ -286,7 +294,7 @@ function LiveAgentDemo() {
         ))}
       </div>
       <footer className="agent-demo-footer">
-        <span>Prototype / fixed actions / no free-form input</span>
+        <span>Live gateway / fixed actions / no free-form input</span>
         <a href="https://kyber.voget.io" target="_blank" rel="noreferrer">
           Learn how Kyber works <ArrowUpRight aria-hidden="true" />
         </a>
