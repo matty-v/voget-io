@@ -1,4 +1,4 @@
-# Kyber kiosk gateway
+# Glyph — Kyber kiosk gateway
 
 Server-side boundary between untrusted showcase browsers and Kyber's scoped
 request/reply API. Browsers submit only `joke`, `features`, `architecture`, or

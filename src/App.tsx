@@ -255,7 +255,7 @@ function LiveAgentDemo() {
             <Terminal aria-hidden="true" />
           </span>
           <div>
-            <strong>kiosk@kyber</strong>
+            <strong>glyph@kyber</strong>
             <span>Codex / terminal peek</span>
           </div>
         </div>
