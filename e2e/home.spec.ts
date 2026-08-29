@@ -8,6 +8,18 @@ test.describe("Systems Index homepage", () => {
   test("presents Matt and Kyber with the approved hierarchy", async ({
     page,
   }) => {
+    await page.route("**/api/kyber-kiosk/v1/requests", async (route) => {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          command: "joke",
+          response:
+            "Why did the Kubernetes pod go to therapy? Too many unresolved dependencies.",
+          live: true,
+          harness: "Codex",
+        }),
+      });
+    });
     await expect(
       page.getByRole("heading", {
         name: "Leading teams and building production software.",
