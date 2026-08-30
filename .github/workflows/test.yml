@@ -29,6 +29,14 @@ jobs:
       - name: Run unit tests
         run: npm run test:run
 
+      - name: Test Kyber kiosk gateway
+        working-directory: gateway
+        run: npm test
+
+      - name: Pressure-test Kyber kiosk gateway limits
+        working-directory: gateway
+        run: npm run load-test
+
   e2e:
     runs-on: ubuntu-latest
 

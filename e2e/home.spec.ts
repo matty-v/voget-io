@@ -8,6 +8,18 @@ test.describe("Systems Index homepage", () => {
   test("presents Matt and Kyber with the approved hierarchy", async ({
     page,
   }) => {
+    await page.route("**/api/kyber-kiosk/v1/requests", async (route) => {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          command: "joke",
+          response:
+            "Why did the Kubernetes pod go to therapy? Too many unresolved dependencies.",
+          live: true,
+          harness: "Codex",
+        }),
+      });
+    });
     await expect(
       page.getByRole("heading", {
         name: "Leading teams and building production software.",
@@ -24,7 +36,12 @@ test.describe("Systems Index homepage", () => {
         name: "Kubernetes-native infrastructure for persistent AI agents.",
       }),
     ).toBeVisible();
-    await expect(page.getByLabel(/Kyber architecture/)).toBeVisible();
+    await expect(
+      page.getByLabel("Interactive Kyber agent prototype"),
+    ).toBeVisible();
+    await expect(page.getByText("Harness: Codex")).toBeVisible();
+    await page.getByRole("button", { name: /Tell me a joke/ }).click();
+    await expect(page.getByText(/Kubernetes pod go to therapy/)).toBeVisible();
   });
 
   test("links to live work and shows the career journey", async ({ page }) => {

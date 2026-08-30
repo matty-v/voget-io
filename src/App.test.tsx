@@ -1,10 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
 
 describe("App", () => {
   beforeEach(() => {
     window.history.replaceState({}, "", "/");
+    vi.unstubAllGlobals();
   });
 
   it("renders the homepage hierarchy and current career beat", () => {
@@ -32,6 +33,35 @@ describe("App", () => {
 
     expect(screen.getByText("Writing").closest("a")).toBeNull();
     expect(screen.getByText("COMING SOON")).toBeInTheDocument();
+  });
+
+  it("runs a fixed showcase-agent action", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        command: "joke",
+        response: "Why did the Kubernetes pod go to therapy? Too many unresolved dependencies.",
+        live: true,
+        harness: "Codex",
+      }),
+    }));
+    render(<App />);
+
+    expect(screen.getByText("Harness: Codex")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Agent features/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Kyber architecture/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Cluster status/ }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Tell me a joke/ }));
+    expect(screen.getByText("Working…")).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Kubernetes pod go to therapy/),
+    ).toBeInTheDocument();
   });
 
   it("closes the mobile menu with Escape", () => {
