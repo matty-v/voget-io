@@ -14,6 +14,18 @@ const fallbacks = Object.freeze({
 
 export const commandNames = Object.keys(commands);
 
+export function isRequestPath(path) {
+  return path === "/v1/requests" || path === "/api/kyber-kiosk/v1/requests";
+}
+
+export function clientAddress(headers, remoteAddress) {
+  const cloudflare = headers["cf-connecting-ip"];
+  if (typeof cloudflare === "string" && cloudflare.trim()) return cloudflare.trim();
+  const forwarded = headers["x-forwarded-for"];
+  if (typeof forwarded === "string" && forwarded.trim()) return forwarded.split(",", 1)[0].trim();
+  return String(remoteAddress ?? "unknown");
+}
+
 export class KioskGateway {
   constructor(config, fetchImpl = fetch) {
     this.config = config;

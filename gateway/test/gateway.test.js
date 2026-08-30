@@ -1,6 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { KioskGateway } from "../src/gateway.js";
+import { clientAddress, isRequestPath, KioskGateway } from "../src/gateway.js";
+
+test("accepts direct and Firebase Hosting request paths only", () => {
+  assert.equal(isRequestPath("/v1/requests"), true);
+  assert.equal(isRequestPath("/api/kyber-kiosk/v1/requests"), true);
+  assert.equal(isRequestPath("/api/kyber-kiosk/v1/requests/extra"), false);
+});
+
+test("uses the original visitor address behind Firebase Hosting", () => {
+  assert.equal(clientAddress({ "x-forwarded-for": "203.0.113.8, 10.0.0.1" }, "127.0.0.1"), "203.0.113.8");
+  assert.equal(clientAddress({ "cf-connecting-ip": "198.51.100.4", "x-forwarded-for": "203.0.113.8" }, "127.0.0.1"), "198.51.100.4");
+  assert.equal(clientAddress({}, "127.0.0.1"), "127.0.0.1");
+});
 
 const config = {
   kyberURL: "https://kyber.invalid", agentName: "kiosk", apiKey: "test-key", harness: "Codex",

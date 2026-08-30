@@ -35,6 +35,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      # PR previews exercise the UI with a stubbed gateway. Keeping the Cloud
+      # Run rewrite out of preview channels avoids granting deploy previews
+      # production backend permissions or routing them to production data.
+      - name: Use frontend-only preview configuration
+        run: cp firebase.preview.json firebase.json
+
       - name: Deploy to Firebase Preview Channel
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
