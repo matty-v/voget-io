@@ -18,7 +18,8 @@ a circuit breaker, bounded output, and curated fallbacks. Run `npm test` and
 The main-branch workflow deploys this directory to the
 `voget-io-kyber-gateway` Cloud Run service in `us-central1`, then deploys
 Firebase Hosting. Hosting forwards `/api/kyber-kiosk/**` to that service before
-the SPA fallback rewrite.
+the SPA fallback rewrite. PR preview channels intentionally use
+`firebase.preview.json` and do not connect to the production gateway.
 
 One secret must exist in project `kinetic-object-322814`:
 `KYBER_KIOSK_API_KEY`, containing a Falcon API key scoped only to Glyph with
