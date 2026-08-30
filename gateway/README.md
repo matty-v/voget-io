@@ -26,5 +26,7 @@ One secret must exist in project `kinetic-object-322814`:
 `requests:read` and `requests:write`. The service account stored in the
 `FIREBASE_SERVICE_ACCOUNT` GitHub secret needs Cloud Run Admin, Cloud Build
 Editor, Service Account User, Artifact Registry Writer, and Secret Manager
-Secret Accessor permissions. Cloud Run, Cloud Build, Artifact Registry, and
-Secret Manager APIs must be enabled.
+Viewer permissions. The dedicated
+`voget-kiosk-gateway@kinetic-object-322814.iam.gserviceaccount.com` runtime
+identity needs Secret Manager Secret Accessor on that one secret. Cloud Run,
+Cloud Build, Artifact Registry, and Secret Manager APIs must be enabled.

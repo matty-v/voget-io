@@ -46,6 +46,7 @@ jobs:
             --source gateway \
             --allow-unauthenticated \
             --max-instances 1 \
+            --service-account voget-kiosk-gateway@kinetic-object-322814.iam.gserviceaccount.com \
             --set-env-vars KYBER_URL=https://kyber-falcon.voget.io,KYBER_AGENT_NAME=glyph,KYBER_KIOSK_HARNESS=codex,ALLOWED_ORIGINS=https://voget.io \
             --set-secrets KYBER_API_KEY=KYBER_KIOSK_API_KEY:latest \
             --quiet
