@@ -30,6 +30,26 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Deploy Kyber kiosk gateway
+        run: |
+          gcloud run deploy voget-io-kyber-gateway \
+            --project kinetic-object-322814 \
+            --region us-central1 \
+            --source gateway \
+            --allow-unauthenticated \
+            --max-instances 1 \
+            --set-env-vars KYBER_URL=https://kyber-falcon.voget.io,KYBER_AGENT_NAME=glyph,KYBER_KIOSK_HARNESS=codex,ALLOWED_ORIGINS=https://voget.io \
+            --set-secrets KYBER_API_KEY=KYBER_KIOSK_API_KEY:latest \
+            --quiet
+
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
