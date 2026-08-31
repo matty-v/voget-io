@@ -1,5 +1,5 @@
 import http from "node:http";
-import { clientAddress, isRequestPath, KioskGateway, loadConfig } from "./gateway.js";
+import { clientAddress, isRequestPath, KioskGateway, loadConfig, originAllowed } from "./gateway.js";
 
 const config = loadConfig();
 const gateway = new KioskGateway(config);
@@ -11,7 +11,7 @@ http.createServer(async (request, response) => {
   if (request.method === "GET" && request.url === "/healthz") return send(response, 200, { ok: true });
   if (request.method === "OPTIONS" && isRequestPath(request.url)) {
     const origin = request.headers.origin;
-    if (!origin || !config.allowedOrigins.has(origin)) return send(response, 403, { error: "origin_denied" });
+    if (!origin || !originAllowed(origin, config)) return send(response, 403, { error: "origin_denied" });
     response.setHeader("access-control-allow-origin", origin);
     response.setHeader("access-control-allow-methods", "POST, OPTIONS");
     response.setHeader("access-control-allow-headers", "content-type");
@@ -22,7 +22,7 @@ http.createServer(async (request, response) => {
   if (request.method !== "POST" || !isRequestPath(request.url)) return send(response, 404, { error: "not_found" });
 
   const origin = request.headers.origin;
-  if (!origin || !config.allowedOrigins.has(origin)) return send(response, 403, { error: "origin_denied" });
+  if (!origin || !originAllowed(origin, config)) return send(response, 403, { error: "origin_denied" });
   response.setHeader("access-control-allow-origin", origin);
   try {
     const body = await readJSON(request, 1024);
