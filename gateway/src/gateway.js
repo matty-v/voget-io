@@ -26,6 +26,20 @@ export function clientAddress(headers, remoteAddress) {
   return String(remoteAddress ?? "unknown");
 }
 
+export function originAllowed(origin, config) {
+  if (config.allowedOrigins.has(origin)) return true;
+  if (!config.allowedPreviewHostPrefix) return false;
+  try {
+    const url = new URL(origin);
+    return url.protocol === "https:"
+      && url.port === ""
+      && url.hostname.startsWith(config.allowedPreviewHostPrefix)
+      && config.allowedPreviewHostSuffixes.some((suffix) => url.hostname.endsWith(`.${suffix}`));
+  } catch {
+    return false;
+  }
+}
+
 export class KioskGateway {
   constructor(config, fetchImpl = fetch) {
     this.config = config;
@@ -134,6 +148,9 @@ export function loadConfig(env = process.env) {
     apiKey: env.KYBER_API_KEY,
     harness: env.KYBER_KIOSK_HARNESS === "claude-code" ? "Claude Code" : "Codex",
     allowedOrigins: new Set((env.ALLOWED_ORIGINS ?? "").split(",").map((v) => v.trim()).filter(Boolean)),
+    allowedPreviewHostPrefix: env.ALLOWED_PREVIEW_HOST_PREFIX?.trim() ?? "",
+    allowedPreviewHostSuffixes: (env.ALLOWED_PREVIEW_HOST_SUFFIXES ?? "")
+      .split("|").map((value) => value.trim()).filter(Boolean),
     deadlineMs: positive(env.REQUEST_DEADLINE_MS, 15000),
     pollMs: positive(env.POLL_INTERVAL_MS, 250),
     maxConcurrency: positive(env.MAX_CONCURRENCY, 8),

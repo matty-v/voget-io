@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { clientAddress, isRequestPath, KioskGateway } from "../src/gateway.js";
+import { clientAddress, isRequestPath, KioskGateway, originAllowed } from "../src/gateway.js";
 
 test("accepts direct and Firebase Hosting request paths only", () => {
   assert.equal(isRequestPath("/v1/requests"), true);
@@ -12,6 +12,21 @@ test("uses the original visitor address behind Firebase Hosting", () => {
   assert.equal(clientAddress({ "x-forwarded-for": "203.0.113.8, 10.0.0.1" }, "127.0.0.1"), "203.0.113.8");
   assert.equal(clientAddress({ "cf-connecting-ip": "198.51.100.4", "x-forwarded-for": "203.0.113.8" }, "127.0.0.1"), "198.51.100.4");
   assert.equal(clientAddress({}, "127.0.0.1"), "127.0.0.1");
+});
+
+test("allows only production and project-scoped Firebase preview origins", () => {
+  const origins = {
+    allowedOrigins: new Set(["https://voget.io"]),
+    allowedPreviewHostPrefix: "voget-io--",
+    allowedPreviewHostSuffixes: ["web.app", "firebaseapp.com"],
+  };
+  assert.equal(originAllowed("https://voget.io", origins), true);
+  assert.equal(originAllowed("https://voget-io--pr10-example.web.app", origins), true);
+  assert.equal(originAllowed("https://voget-io--pr10-example.firebaseapp.com", origins), true);
+  assert.equal(originAllowed("http://voget-io--pr10-example.web.app", origins), false);
+  assert.equal(originAllowed("https://other--pr10-example.web.app", origins), false);
+  assert.equal(originAllowed("https://voget-io--pr10-example.web.app.attacker.test", origins), false);
+  assert.equal(originAllowed("not a URL", origins), false);
 });
 
 const config = {
