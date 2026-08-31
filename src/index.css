@@ -290,10 +290,12 @@ svg {
   text-transform: uppercase;
 }
 .agent-chat {
-  min-height: 250px;
+  height: 310px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
   padding: 20px 16px;
   border-bottom: 1px solid var(--line);
   background-image: linear-gradient(

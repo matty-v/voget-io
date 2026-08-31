@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   Box,
@@ -205,33 +205,74 @@ const agentActions = {
 } as const;
 
 type AgentAction = keyof typeof agentActions;
+type ChatMessage = {
+  id: number;
+  speaker: "Glyph" | "You";
+  text: string;
+  pending?: boolean;
+};
+
+const initialChat: ChatMessage[] = [
+  {
+    id: 0,
+    speaker: "Glyph",
+    text: "Hi, I’m Glyph. Choose one of my skills below and I’ll run it for you.",
+  },
+];
 
 function LiveAgentDemo() {
   const [activeAction, setActiveAction] = useState<AgentAction | null>(null);
-  const [exchange, setExchange] = useState<{
-    action: AgentAction;
-    response: string;
-  } | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>(initialChat);
+  const nextMessageId = useRef(1);
+  const chatEnd = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatEnd.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+  }, [messages]);
 
   const runAction = async (action: AgentAction) => {
+    const userMessageId = nextMessageId.current++;
+    const responseMessageId = nextMessageId.current++;
     setActiveAction(action);
-    setExchange({
-      action,
-      response: "",
-    });
+    setMessages((current) =>
+      [
+        ...current,
+        {
+          id: userMessageId,
+          speaker: "You" as const,
+          text: agentActions[action].label,
+        },
+        {
+          id: responseMessageId,
+          speaker: "Glyph" as const,
+          text: "",
+          pending: true,
+        },
+      ].slice(-6),
+    );
     try {
       const result = await runKioskCommand(
         (action === "cluster" ? "cluster-status" : action) as KioskCommand,
       );
-      setExchange({
-        action,
-        response: result.response,
-      });
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === responseMessageId
+            ? { ...message, text: result.response, pending: false }
+            : message,
+        ),
+      );
     } catch {
-      setExchange({
-        action,
-        response: "The live kiosk is temporarily unavailable. Please try again shortly.",
-      });
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === responseMessageId
+            ? {
+                ...message,
+                text: "The live kiosk is temporarily unavailable. Please try again shortly.",
+                pending: false,
+              }
+            : message,
+        ),
+      );
     } finally {
       setActiveAction(null);
     }
@@ -251,22 +292,13 @@ function LiveAgentDemo() {
         </div>
       </header>
       <div className="agent-chat" aria-live="polite" aria-atomic="true">
-        <div className="chat-message chat-message-agent">
-          <span className="chat-speaker">Glyph</span>
-          <p>
-            Hi, I’m Glyph. Choose one of my skills below and I’ll run it for
-            you.
-          </p>
-        </div>
-        {exchange && (
-          <>
-            <div className="chat-message chat-message-user">
-              <span className="chat-speaker">You</span>
-              <p>{agentActions[exchange.action].label}</p>
-            </div>
-            <div className="chat-message chat-message-agent">
-              <span className="chat-speaker">Glyph</span>
-              {activeAction ? (
+        {messages.map((message) => (
+          <div
+            className={`chat-message chat-message-${message.speaker === "Glyph" ? "agent" : "user"}`}
+            key={message.id}
+          >
+            <span className="chat-speaker">{message.speaker}</span>
+            {message.pending ? (
                 <div className="chat-typing" role="status" aria-label="Glyph is working">
                   <i />
                   <i />
@@ -274,11 +306,11 @@ function LiveAgentDemo() {
                   <span>Glyph is working</span>
                 </div>
               ) : (
-                <p>{exchange.response}</p>
+              <p>{message.text}</p>
               )}
-            </div>
-          </>
-        )}
+          </div>
+        ))}
+        <div ref={chatEnd} />
       </div>
       <div className="agent-actions" aria-label="Choose a skill for Glyph">
         <p>What would you like Glyph to do?</p>

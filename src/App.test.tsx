@@ -68,6 +68,38 @@ describe("App", () => {
     ).toBeInTheDocument();
   });
 
+  it("keeps the six most recent chat messages", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation(async (_url, init: RequestInit) => {
+        const { command } = JSON.parse(String(init.body));
+        return {
+          ok: true,
+          json: async () => ({
+            command,
+            response: `${command} response`,
+            live: true,
+          }),
+        };
+      }),
+    );
+    const { container } = render(<App />);
+
+    for (const label of [
+      "Tell me a joke",
+      "Agent features",
+      "Kyber architecture",
+      "Cluster status",
+    ]) {
+      fireEvent.click(screen.getByRole("button", { name: label }));
+      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Agent features" ? "features" : label === "Kyber architecture" ? "architecture" : "cluster-status"} response`);
+    }
+
+    expect(container.querySelectorAll(".chat-message")).toHaveLength(6);
+    expect(screen.queryByText("Tell me a joke", { selector: "p" })).not.toBeInTheDocument();
+    expect(screen.getByText("Cluster status", { selector: "p" })).toBeInTheDocument();
+  });
+
   it("closes the mobile menu with Escape", () => {
     render(<App />);
 
