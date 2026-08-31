@@ -61,7 +61,7 @@ describe("App", () => {
       screen.getByRole("button", { name: /Cluster status/ }),
     ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Tell me a joke/ }));
-    expect(screen.getByText("Working…")).toBeInTheDocument();
+    expect(screen.getByRole("status", { name: "Glyph is working" })).toBeInTheDocument();
     expect(screen.getByText("Tell me a joke", { selector: "p" })).toBeInTheDocument();
     expect(
       await screen.findByText(/Kubernetes pod go to therapy/),

@@ -217,7 +217,7 @@ function LiveAgentDemo() {
     setActiveAction(action);
     setExchange({
       action,
-      response: "Working…",
+      response: "",
     });
     try {
       const result = await runKioskCommand(
@@ -266,7 +266,16 @@ function LiveAgentDemo() {
             </div>
             <div className="chat-message chat-message-agent">
               <span className="chat-speaker">Glyph</span>
-              <p>{exchange.response}</p>
+              {activeAction ? (
+                <div className="chat-typing" role="status" aria-label="Glyph is working">
+                  <i />
+                  <i />
+                  <i />
+                  <span>Glyph is working</span>
+                </div>
+              ) : (
+                <p>{exchange.response}</p>
+              )}
             </div>
           </>
         )}
