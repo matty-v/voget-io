@@ -52,7 +52,7 @@ describe("App", () => {
       screen.getByText(/Hi, I’m Glyph. Choose one of my skills/),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /Agent features/ }),
+      screen.getByRole("button", { name: /Tell me a little about yourself/ }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /Kyber architecture/ }),
@@ -87,12 +87,12 @@ describe("App", () => {
 
     for (const label of [
       "Tell me a joke",
-      "Agent features",
+      "Tell me a little about yourself",
       "Kyber architecture",
       "Cluster status",
     ]) {
       fireEvent.click(screen.getByRole("button", { name: label }));
-      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Agent features" ? "features" : label === "Kyber architecture" ? "architecture" : "cluster-status"} response`);
+      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "Kyber architecture" ? "architecture" : "cluster-status"} response`);
     }
 
     expect(container.querySelectorAll(".chat-message")).toHaveLength(6);
@@ -106,7 +106,7 @@ describe("App", () => {
       vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({
-          command: "features",
+          command: "about",
           response: "| Field | Value |\n| --- | --- |\n| Runtime | **Codex** |\n\n<script>alert('no')</script>",
           live: true,
         }),
@@ -114,7 +114,7 @@ describe("App", () => {
     );
     const { container } = render(<App />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Agent features" }));
+    fireEvent.click(screen.getByRole("button", { name: "Tell me a little about yourself" }));
     expect(await screen.findByRole("table")).toBeInTheDocument();
     expect(screen.getByText("Codex")).toBeInTheDocument();
     expect(container.querySelector("script")).toBeNull();

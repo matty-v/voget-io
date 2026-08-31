@@ -189,10 +189,10 @@ const agentActions = {
     label: "Tell me a joke",
     skill: "kyber-joke",
   },
-  features: {
-    command: "/features",
-    label: "Agent features",
-    skill: "kyber-features",
+  about: {
+    command: "/about",
+    label: "Tell me a little about yourself",
+    skill: "glyph-about",
   },
   architecture: {
     command: "/architecture",
