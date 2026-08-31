@@ -34,10 +34,11 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_KYBER_GATEWAY_URL: https://voget.io/api/kyber-kiosk
 
-      # PR previews exercise the UI with a stubbed gateway. Keeping the Cloud
-      # Run rewrite out of preview channels avoids granting deploy previews
-      # production backend permissions or routing them to production data.
+      # Preview channels call the existing bounded kiosk gateway directly.
+      # They never receive Kyber credentials or permission to deploy Cloud Run.
       - name: Use frontend-only preview configuration
         run: cp firebase.preview.json firebase.json
 
