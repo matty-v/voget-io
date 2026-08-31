@@ -13,6 +13,8 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { runKioskCommand, type KioskCommand } from "./kyberGateway";
 
 type Navigate = (
@@ -299,15 +301,21 @@ function LiveAgentDemo() {
           >
             <span className="chat-speaker">{message.speaker}</span>
             {message.pending ? (
-                <div className="chat-typing" role="status" aria-label="Glyph is working">
-                  <i />
-                  <i />
-                  <i />
-                  <span>Glyph is working</span>
-                </div>
-              ) : (
-              <p>{message.text}</p>
-              )}
+              <div className="chat-typing" role="status" aria-label="Glyph is working">
+                <i />
+                <i />
+                <i />
+                <span>Glyph is working</span>
+              </div>
+            ) : (
+              <div className="chat-content">
+                {message.speaker === "Glyph" ? (
+                  <Markdown remarkPlugins={[remarkGfm]}>{message.text}</Markdown>
+                ) : (
+                  <p>{message.text}</p>
+                )}
+              </div>
+            )}
           </div>
         ))}
         <div ref={chatEnd} />

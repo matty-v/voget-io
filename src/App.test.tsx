@@ -100,6 +100,26 @@ describe("App", () => {
     expect(screen.getByText("Cluster status", { selector: "p" })).toBeInTheDocument();
   });
 
+  it("renders Glyph responses as safe GitHub-flavored Markdown", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          command: "features",
+          response: "| Field | Value |\n| --- | --- |\n| Runtime | **Codex** |\n\n<script>alert('no')</script>",
+          live: true,
+        }),
+      }),
+    );
+    const { container } = render(<App />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Agent features" }));
+    expect(await screen.findByRole("table")).toBeInTheDocument();
+    expect(screen.getByText("Codex")).toBeInTheDocument();
+    expect(container.querySelector("script")).toBeNull();
+  });
+
   it("closes the mobile menu with Escape", () => {
     render(<App />);
 
