@@ -9,8 +9,8 @@ import {
   Mail,
   Menu,
   Network,
+  Send,
   Sparkles,
-  Terminal,
   X,
 } from "lucide-react";
 import { runKioskCommand, type KioskCommand } from "./kyberGateway";
@@ -208,20 +208,15 @@ type AgentAction = keyof typeof agentActions;
 
 function LiveAgentDemo() {
   const [activeAction, setActiveAction] = useState<AgentAction | null>(null);
-  const [harness, setHarness] = useState("Codex");
-  const [live, setLive] = useState(false);
-  const [exchange, setExchange] = useState({
-    command: "awaiting command",
-    skill: "kiosk-ready",
-    response: "Select an installed kiosk skill below.",
-  });
+  const [exchange, setExchange] = useState<{
+    action: AgentAction;
+    response: string;
+  } | null>(null);
 
   const runAction = async (action: AgentAction) => {
-    const next = agentActions[action];
     setActiveAction(action);
     setExchange({
-      command: next.command,
-      skill: next.skill,
+      action,
       response: "Working…",
     });
     try {
@@ -229,19 +224,14 @@ function LiveAgentDemo() {
         (action === "cluster" ? "cluster-status" : action) as KioskCommand,
       );
       setExchange({
-        command: next.command,
-        skill: next.skill,
+        action,
         response: result.response,
       });
-      setHarness(result.harness ?? "Codex");
-      setLive(result.live);
     } catch {
       setExchange({
-        command: next.command,
-        skill: next.skill,
+        action,
         response: "The live kiosk is temporarily unavailable. Please try again shortly.",
       });
-      setLive(false);
     } finally {
       setActiveAction(null);
     }
@@ -252,32 +242,37 @@ function LiveAgentDemo() {
       <header className="agent-demo-header">
         <div className="agent-identity">
           <span className="agent-avatar">
-            <Terminal aria-hidden="true" />
+            <Sparkles aria-hidden="true" />
           </span>
           <div>
-            <strong>glyph@kyber</strong>
-            <span>Codex / terminal peek</span>
+            <strong>Glyph</strong>
+            <span>AI agent on Kyber</span>
           </div>
         </div>
-        <span className="agent-live">
-          <i /> {live ? "Live agent" : "Gateway ready"}
-        </span>
       </header>
-      <div className="agent-terminal" aria-live="polite" aria-atomic="true">
-        <div className="terminal-session">
-          <span>Kyber agent</span>
-          <span>Harness: {harness}</span>
-          <span>Mode: Kiosk</span>
+      <div className="agent-chat" aria-live="polite" aria-atomic="true">
+        <div className="chat-message chat-message-agent">
+          <span className="chat-speaker">Glyph</span>
+          <p>
+            Hi, I’m Glyph. Choose one of my skills below and I’ll run it for
+            you.
+          </p>
         </div>
-        <p className="terminal-command">
-          <span>›</span> {exchange.command}
-        </p>
-        <p className="terminal-skill">
-          <span>•</span> Running {exchange.skill} skill
-        </p>
-        <p className="terminal-response">{exchange.response}</p>
+        {exchange && (
+          <>
+            <div className="chat-message chat-message-user">
+              <span className="chat-speaker">You</span>
+              <p>{agentActions[exchange.action].label}</p>
+            </div>
+            <div className="chat-message chat-message-agent">
+              <span className="chat-speaker">Glyph</span>
+              <p>{exchange.response}</p>
+            </div>
+          </>
+        )}
       </div>
-      <div className="agent-actions" aria-label="Demo agent actions">
+      <div className="agent-actions" aria-label="Choose a skill for Glyph">
+        <p>What would you like Glyph to do?</p>
         {Object.entries(agentActions).map(([key, action]) => (
           <button
             type="button"
@@ -285,20 +280,13 @@ function LiveAgentDemo() {
             disabled={activeAction !== null}
             onClick={() => runAction(key as AgentAction)}
           >
-            <Sparkles aria-hidden="true" />
+            <Send aria-hidden="true" />
             <span>
-              <strong>{action.command}</strong>
               {activeAction === key ? "Running…" : action.label}
             </span>
           </button>
         ))}
       </div>
-      <footer className="agent-demo-footer">
-        <span>Live gateway / fixed actions / no free-form input</span>
-        <a href="https://kyber.voget.io" target="_blank" rel="noreferrer">
-          Learn how Kyber works <ArrowUpRight aria-hidden="true" />
-        </a>
-      </footer>
     </div>
   );
 }
@@ -310,24 +298,12 @@ function KyberSection() {
         <header className="module-heading">
           <span>Kyber / Active project</span>
         </header>
-        <h2>Kubernetes-native infrastructure for persistent AI agents.</h2>
+        <h2>Kyber: Kubernetes-native infrastructure for persistent AI agents.</h2>
         <p className="project-summary">
-          Kyber gives long-running agents durable identity, isolated compute,
-          controlled access to secrets, schedules, and two-way communication
-          channels.
+          Interact with a live AI agent running on the Kyber infrastructure:
+          Glyph.
         </p>
         <LiveAgentDemo />
-        <div className="facts" aria-label="Kyber facts">
-          <p>
-            <span>Runtime</span> / Kubernetes
-          </p>
-          <p>
-            <span>State</span> / Persistent
-          </p>
-          <p>
-            <span>Control</span> / Human
-          </p>
-        </div>
       </div>
       <section className="signal" id="dispatches">
         <header className="module-heading">

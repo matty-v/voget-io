@@ -33,13 +33,16 @@ test.describe("Systems Index homepage", () => {
     ).toHaveAttribute("src", "/profile.jpeg");
     await expect(
       page.getByRole("heading", {
-        name: "Kubernetes-native infrastructure for persistent AI agents.",
+        name: "Kyber: Kubernetes-native infrastructure for persistent AI agents.",
       }),
     ).toBeVisible();
     await expect(
       page.getByLabel("Interactive Kyber agent prototype"),
     ).toBeVisible();
-    await expect(page.getByText("Harness: Codex")).toBeVisible();
+    await expect(page.getByText("AI agent on Kyber")).toBeVisible();
+    await expect(
+      page.getByText(/Hi, I’m Glyph. Choose one of my skills/),
+    ).toBeVisible();
     await page.getByRole("button", { name: /Tell me a joke/ }).click();
     await expect(page.getByText(/Kubernetes pod go to therapy/)).toBeVisible();
   });

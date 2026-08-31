@@ -18,7 +18,7 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
-        name: "Kubernetes-native infrastructure for persistent AI agents.",
+        name: "Kyber: Kubernetes-native infrastructure for persistent AI agents.",
       }),
     ).toBeInTheDocument();
     expect(screen.getByText("Gravitee")).toBeInTheDocument();
@@ -47,7 +47,10 @@ describe("App", () => {
     }));
     render(<App />);
 
-    expect(screen.getByText("Harness: Codex")).toBeInTheDocument();
+    expect(screen.getByText("AI agent on Kyber")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Hi, I’m Glyph. Choose one of my skills/),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /Agent features/ }),
     ).toBeInTheDocument();
@@ -59,6 +62,7 @@ describe("App", () => {
     ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Tell me a joke/ }));
     expect(screen.getByText("Working…")).toBeInTheDocument();
+    expect(screen.getByText("Tell me a joke", { selector: "p" })).toBeInTheDocument();
     expect(
       await screen.findByText(/Kubernetes pod go to therapy/),
     ).toBeInTheDocument();
