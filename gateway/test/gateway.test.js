@@ -31,7 +31,7 @@ test("allows only production and project-scoped Firebase preview origins", () =>
 
 const config = {
   kyberURL: "https://kyber.invalid", agentName: "kiosk", apiKey: "test-key", harness: "Codex",
-  deadlineMs: 100, pollMs: 1, maxConcurrency: 2, maxResponseChars: 20,
+  deadlineMs: 100, pollMs: 1, maxQueueDepth: 2, maxResponseChars: 20,
   rateBurst: 10, ratePerSecond: 1, circuitFailures: 2, circuitResetMs: 1000,
 };
 
@@ -47,23 +47,64 @@ test("maps only allowlisted commands to fixed Kyber requests", async () => {
   assert.equal(denied.status, 400);
   assert.equal(calls.length, 0);
 
-  const result = await gateway.run("features", "1.2.3.4");
+  const result = await gateway.run("about", "1.2.3.4");
   assert.equal(result.status, 200);
   assert.equal(result.body.live, true);
   const submitted = JSON.parse(calls[0].init.body);
-  assert.match(submitted.prompt, /^Run the kyber-features skill\./);
-  assert.equal(submitted.correlation, "kiosk-v1:features");
+  assert.match(submitted.prompt, /^Use \$glyph-about\./);
+  assert.equal(submitted.correlation, "kiosk-v1:about");
   assert.equal(calls[0].init.headers.authorization, "Bearer test-key");
+
+  const architecture = await gateway.run("architecture", "1.2.3.4");
+  assert.equal(architecture.body.live, true);
+  const architectureRequest = JSON.parse(calls[2].init.body);
+  assert.match(architectureRequest.prompt, /^Use \$kyber-architecture\./);
+  assert.equal(architectureRequest.correlation, "kiosk-v1:architecture");
+
+  const features = await gateway.run("features", "1.2.3.4");
+  assert.equal(features.body.live, true);
+  const featuresRequest = JSON.parse(calls[4].init.body);
+  assert.match(featuresRequest.prompt, /^Use \$kyber-features\./);
+  assert.equal(featuresRequest.correlation, "kiosk-v1:features");
+
+  const contact = await gateway.run("contact", "1.2.3.4");
+  assert.equal(contact.body.live, true);
+  const contactRequest = JSON.parse(calls[6].init.body);
+  assert.match(contactRequest.prompt, /^Use \$contact-matt\./);
+  assert.equal(contactRequest.correlation, "kiosk-v1:contact");
+
+  const removed = await gateway.run("cluster-status", "1.2.3.4");
+  assert.equal(removed.status, 400);
 });
 
-test("bounds rate and concurrency", async () => {
-  let release;
-  const fetch = () => new Promise((resolve) => { release = () => resolve(json(503, {})); });
-  const gateway = new KioskGateway({ ...config, maxConcurrency: 1, rateBurst: 1 }, fetch);
+test("serializes admitted work and bounds the queue", async () => {
+  const releases = [];
+  let submissions = 0;
+  const fetch = async (_url, init) => {
+    if (init.method !== "POST") return json(200, { status: "completed", response: "ok" });
+    submissions++;
+    return new Promise((resolve) => releases.push(() => resolve(json(202, { id: `req_${submissions}` }))));
+  };
+  const gateway = new KioskGateway({ ...config, maxQueueDepth: 2 }, fetch);
   const first = gateway.run("joke", "one");
-  assert.equal((await gateway.run("joke", "two")).body.error, "busy");
-  assert.equal((await gateway.run("joke", "one")).body.error, "rate_limited");
-  release();
+  const second = gateway.run("about", "two");
+  assert.equal(submissions, 1);
+  assert.equal((await gateway.run("features", "three")).body.error, "busy");
+  releases.shift()();
+  assert.equal((await first).body.live, true);
+  assert.equal(submissions, 2);
+  releases.shift()();
+  assert.equal((await second).body.live, true);
+});
+
+test("rate limits before adding work to the queue", async () => {
+  const gateway = new KioskGateway({ ...config, rateBurst: 1 }, async (_url, init) =>
+    init.method === "POST"
+      ? json(202, { id: "req_1" })
+      : json(200, { status: "completed", response: "ok" }),
+  );
+  const first = gateway.run("joke", "one");
+  assert.equal((await gateway.run("about", "one")).body.error, "rate_limited");
   await first;
 });
 

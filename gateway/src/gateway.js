@@ -1,15 +1,17 @@
 const commands = Object.freeze({
+  about: "Use $glyph-about. Follow every required section in the skill and tell the visitor a little about yourself.",
   joke: "Run the kyber-joke skill. Return one short, public-safe joke about AI agents or infrastructure.",
-  features: "Run the kyber-features skill. Summarize Kyber's public product features in at most 700 characters.",
-  architecture: "Run the kyber-architecture skill. Explain Kyber's public architecture in at most 700 characters without internal names, addresses, or capacity details.",
-  "cluster-status": "Run the public-cluster-status skill. Return only its curated public status fields; never include resource names, namespaces, addresses, capacity, credentials, or diagnostics.",
+  features: "Use $kyber-features. Follow the skill exactly: provide selective formatted highlights and finish with its Quickstart link.",
+  architecture: "Use $kyber-architecture. Follow the skill exactly: include its Mermaid diagram and brief component walkthrough.",
+  contact: "Use $contact-matt. Follow the skill exactly and share Matt's three public contact options.",
 });
 
 const fallbacks = Object.freeze({
-  joke: "The live kiosk is taking a quick reboot. Even agents need a clean context window sometimes.",
+  about: "Glyph's live public profile is temporarily unavailable. Please try again shortly.",
+  joke: "Glyph is taking a quick reboot. Even agents need a clean context window sometimes.",
   features: "Kyber provides persistent agent identity, isolated runtimes, durable memory, schedules, secure credentials, and controlled human channels.",
   architecture: "Kyber is a Kubernetes-native control plane that reconciles persistent, isolated agent runtimes from declarative resources.",
-  "cluster-status": "Live public status is temporarily unavailable. No private cluster details are exposed.",
+  contact: "Matt would love to chat. Email matt.voget@gmail.com, connect on LinkedIn, or visit github.com/matty-v.",
 });
 
 export const commandNames = Object.keys(commands);
@@ -44,7 +46,8 @@ export class KioskGateway {
   constructor(config, fetchImpl = fetch) {
     this.config = config;
     this.fetch = fetchImpl;
-    this.active = 0;
+    this.active = false;
+    this.queue = [];
     this.failures = 0;
     this.openUntil = 0;
     this.buckets = new Map();
@@ -53,10 +56,32 @@ export class KioskGateway {
   async run(command, clientIP, signal) {
     if (!Object.hasOwn(commands, command)) return result(400, "invalid_command");
     if (!this.allow(clientIP)) return result(429, "rate_limited");
-    if (this.active >= this.config.maxConcurrency) return result(429, "busy");
+    if (this.queue.length + Number(this.active) >= this.config.maxQueueDepth) return result(429, "busy");
     if (Date.now() < this.openUntil) return fallback(command, "circuit_open");
 
-    this.active++;
+    return new Promise((resolve) => {
+      this.queue.push({ command, signal, resolve });
+      this.drain();
+    });
+  }
+
+  async drain() {
+    if (this.active) return;
+    const next = this.queue.shift();
+    if (!next) return;
+    this.active = true;
+    try {
+      next.resolve(await this.process(next.command, next.signal));
+    } finally {
+      this.active = false;
+      this.drain();
+    }
+  }
+
+  async process(command, signal) {
+    if (signal?.aborted) return fallback(command, "cancelled");
+    if (Date.now() < this.openUntil) return fallback(command, "circuit_open");
+
     const deadlineController = new AbortController();
     const deadlineTimer = setTimeout(
       () => deadlineController.abort(new DOMException("deadline", "TimeoutError")),
@@ -77,7 +102,6 @@ export class KioskGateway {
       return fallback(command, error?.name === "TimeoutError" ? "deadline" : "unavailable");
     } finally {
       clearTimeout(deadlineTimer);
-      this.active--;
     }
   }
 
@@ -153,7 +177,7 @@ export function loadConfig(env = process.env) {
       .split("|").map((value) => value.trim()).filter(Boolean),
     deadlineMs: positive(env.REQUEST_DEADLINE_MS, 15000),
     pollMs: positive(env.POLL_INTERVAL_MS, 250),
-    maxConcurrency: positive(env.MAX_CONCURRENCY, 8),
+    maxQueueDepth: positive(env.MAX_QUEUE_DEPTH, 4),
     maxResponseChars: positive(env.MAX_RESPONSE_CHARS, 8000),
     rateBurst: positive(env.RATE_BURST, 5),
     ratePerSecond: positive(env.RATE_PER_SECOND, 0.2),
