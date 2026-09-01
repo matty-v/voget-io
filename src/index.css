@@ -16,6 +16,23 @@
 }
 * {
   box-sizing: border-box;
+  scrollbar-color: var(--accent) var(--panel);
+  scrollbar-width: thin;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--panel);
+}
+*::-webkit-scrollbar-thumb {
+  border: 2px solid var(--panel);
+  border-radius: 0;
+  background: var(--accent);
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--text);
 }
 html {
   scroll-behavior: smooth;
@@ -520,6 +537,21 @@ svg {
   cursor: wait;
   opacity: 0.55;
 }
+.agent-actions .agent-action-featured {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+.agent-actions .agent-action-featured:hover:not(:disabled),
+.agent-actions .agent-action-featured:focus-visible {
+  color: var(--bg);
+  background: var(--accent);
+}
+.agent-actions .agent-action-featured:hover:not(:disabled) svg,
+.agent-actions .agent-action-featured:focus-visible svg {
+  color: var(--bg);
+}
 .facts {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -592,7 +624,6 @@ svg {
   display: grid;
   grid-template-columns: repeat(5, minmax(170px, 1fr));
   overflow-x: auto;
-  scrollbar-color: var(--line) transparent;
 }
 .career-list li {
   position: relative;

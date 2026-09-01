@@ -52,7 +52,7 @@ test.describe("Systems Index homepage", () => {
       page.getByRole("link", { name: /Kyber Explore the live platform site/i }),
     ).toHaveAttribute("href", "https://kyber.voget.io");
     await expect(
-      page.getByRole("link", { name: /Snapdex A product shipped/i }),
+      page.getByRole("link", { name: /Snapdex A fun way to catalog animals/i }),
     ).toHaveAttribute("href", "https://snapdex.ai");
     await expect(
       page.getByText("Writing").locator("xpath=ancestor::a"),

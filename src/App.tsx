@@ -73,7 +73,7 @@ const dispatches = [
   },
   {
     title: "Snapdex",
-    detail: "A product shipped by the Falcon Dev Team",
+    detail: "A fun way to catalog animals. Built by AI agents on running in Kyber clusters.",
     kind: "LIVE SITE",
     href: "https://snapdex.ai",
   },
@@ -209,6 +209,12 @@ const agentActions = {
     command: "/joke",
     label: "Tell me a joke",
     skill: "kyber-joke",
+  },
+  gettingStarted: {
+    command: "/getting-started",
+    label: "How do I get started with Kyber?",
+    skill: "kyber-getting-started",
+    featured: true,
   },
 } as const;
 
@@ -346,12 +352,15 @@ function LiveAgentDemo() {
           <button
             type="button"
             key={key}
+            className={"featured" in action && action.featured ? "agent-action-featured" : undefined}
             disabled={activeAction !== null}
             onClick={() => runAction(key as AgentAction)}
           >
             <Send aria-hidden="true" />
             <span>
-              {activeAction === key ? "Running…" : action.label}
+              {activeAction === key ? "Running…" : (
+                "featured" in action && action.featured ? <strong>{action.label}</strong> : action.label
+              )}
             </span>
           </button>
         ))}

@@ -67,9 +67,15 @@ test("maps only allowlisted commands to fixed Kyber requests", async () => {
   assert.match(featuresRequest.prompt, /^Use \$kyber-features\./);
   assert.equal(featuresRequest.correlation, "kiosk-v1:features");
 
+  const gettingStarted = await gateway.run("gettingStarted", "1.2.3.4");
+  assert.equal(gettingStarted.body.live, true);
+  const gettingStartedRequest = JSON.parse(calls[6].init.body);
+  assert.match(gettingStartedRequest.prompt, /^Use \$kyber-getting-started\./);
+  assert.equal(gettingStartedRequest.correlation, "kiosk-v1:gettingStarted");
+
   const contact = await gateway.run("contact", "1.2.3.4");
   assert.equal(contact.body.live, true);
-  const contactRequest = JSON.parse(calls[6].init.body);
+  const contactRequest = JSON.parse(calls[8].init.body);
   assert.match(contactRequest.prompt, /^Use \$contact-matt\./);
   assert.equal(contactRequest.correlation, "kiosk-v1:contact");
 

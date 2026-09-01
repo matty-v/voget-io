@@ -69,6 +69,11 @@ describe("App", () => {
       screen.getByRole("button", { name: /Describe Kyber's architecture/ }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("button", { name: /How do I get started with Kyber/ }).querySelector("strong"),
+    ).toHaveTextContent("How do I get started with Kyber?");
+    const actionButtons = screen.getByLabelText("Choose a skill for Glyph").querySelectorAll("button");
+    expect(actionButtons.item(actionButtons.length - 1)).toHaveClass("agent-action-featured");
+    expect(
       screen.getByRole("button", { name: /Get in touch with Matt/ }),
     ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Tell me a joke/ }));
@@ -100,11 +105,12 @@ describe("App", () => {
       "Tell me a little about yourself",
       "What are some features of Kyber?",
       "Describe Kyber's architecture",
+      "How do I get started with Kyber?",
       "Get in touch with Matt",
       "Tell me a joke",
     ]) {
       fireEvent.click(screen.getByRole("button", { name: label }));
-      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "What are some features of Kyber?" ? "features" : label === "Describe Kyber's architecture" ? "architecture" : "contact"} response`);
+      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "What are some features of Kyber?" ? "features" : label === "Describe Kyber's architecture" ? "architecture" : label === "How do I get started with Kyber?" ? "gettingStarted" : "contact"} response`);
     }
 
     expect(container.querySelectorAll(".chat-message")).toHaveLength(6);
@@ -129,6 +135,24 @@ describe("App", () => {
     expect(chat?.querySelector('a[href="mailto:matt.voget@gmail.com"]')).toBeTruthy();
     expect(chat?.querySelector('a[href="https://www.linkedin.com/in/matthew-voget-47a225a1/"]')).toBeTruthy();
     expect(chat?.querySelector('a[href="https://github.com/matty-v"]')).toBeTruthy();
+  });
+
+  it("keeps the getting-started action useful while a preview gateway is behind", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 400 }));
+    const { container } = render(<App />);
+
+    fireEvent.click(screen.getByRole("button", { name: "How do I get started with Kyber?" }));
+
+    expect(await screen.findByRole("link", { name: "Visit Kyber" })).toHaveAttribute(
+      "href",
+      "https://kyber.voget.io",
+    );
+    expect(container.querySelector("code")).toHaveTextContent(
+      "helm install kyber oci://ghcr.io/matty-v/charts/kyber",
+    );
+    expect(container.querySelector("code")).toHaveTextContent(
+      "15 minutes from an empty cluster to a live fleet console",
+    );
   });
 
   it("renders Glyph responses as safe GitHub-flavored Markdown", async () => {

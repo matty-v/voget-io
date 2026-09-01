@@ -2,7 +2,8 @@
 
 Server-side boundary between untrusted showcase browsers and Kyber's scoped
 request/reply API. Browsers submit only `about`, `features`, `architecture`,
-`contact`, or `joke`; this service maps each enum to a fixed versioned prompt.
+`gettingStarted`, `contact`, or `joke`; this service maps each enum to a fixed
+versioned prompt.
 
 Required environment: `KYBER_URL`, `KYBER_AGENT_NAME`, `KYBER_API_KEY`, and a
 comma-separated `ALLOWED_ORIGINS`. Firebase preview channels can be enabled
