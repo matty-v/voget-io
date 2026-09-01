@@ -54,6 +54,12 @@ test("maps only allowlisted commands to fixed Kyber requests", async () => {
   assert.match(submitted.prompt, /^Use \$glyph-about\./);
   assert.equal(submitted.correlation, "kiosk-v1:about");
   assert.equal(calls[0].init.headers.authorization, "Bearer test-key");
+
+  const architecture = await gateway.run("architecture", "1.2.3.4");
+  assert.equal(architecture.body.live, true);
+  const architectureRequest = JSON.parse(calls[2].init.body);
+  assert.match(architectureRequest.prompt, /^Use \$kyber-architecture\./);
+  assert.equal(architectureRequest.correlation, "kiosk-v1:architecture");
 });
 
 test("bounds rate and concurrency", async () => {
