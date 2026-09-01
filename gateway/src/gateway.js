@@ -8,7 +8,7 @@ const commands = Object.freeze({
 
 const fallbacks = Object.freeze({
   about: "Glyph's live public profile is temporarily unavailable. Please try again shortly.",
-  joke: "The live kiosk is taking a quick reboot. Even agents need a clean context window sometimes.",
+  joke: "Glyph is taking a quick reboot. Even agents need a clean context window sometimes.",
   features: "Kyber provides persistent agent identity, isolated runtimes, durable memory, schedules, secure credentials, and controlled human channels.",
   architecture: "Kyber is a Kubernetes-native control plane that reconciles persistent, isolated agent runtimes from declarative resources.",
   contact: "Matt would love to chat. Email matt.voget@gmail.com, connect on LinkedIn, or visit github.com/matty-v.",
@@ -46,7 +46,8 @@ export class KioskGateway {
   constructor(config, fetchImpl = fetch) {
     this.config = config;
     this.fetch = fetchImpl;
-    this.active = 0;
+    this.active = false;
+    this.queue = [];
     this.failures = 0;
     this.openUntil = 0;
     this.buckets = new Map();
@@ -55,10 +56,32 @@ export class KioskGateway {
   async run(command, clientIP, signal) {
     if (!Object.hasOwn(commands, command)) return result(400, "invalid_command");
     if (!this.allow(clientIP)) return result(429, "rate_limited");
-    if (this.active >= this.config.maxConcurrency) return result(429, "busy");
+    if (this.queue.length + Number(this.active) >= this.config.maxQueueDepth) return result(429, "busy");
     if (Date.now() < this.openUntil) return fallback(command, "circuit_open");
 
-    this.active++;
+    return new Promise((resolve) => {
+      this.queue.push({ command, signal, resolve });
+      this.drain();
+    });
+  }
+
+  async drain() {
+    if (this.active) return;
+    const next = this.queue.shift();
+    if (!next) return;
+    this.active = true;
+    try {
+      next.resolve(await this.process(next.command, next.signal));
+    } finally {
+      this.active = false;
+      this.drain();
+    }
+  }
+
+  async process(command, signal) {
+    if (signal?.aborted) return fallback(command, "cancelled");
+    if (Date.now() < this.openUntil) return fallback(command, "circuit_open");
+
     const deadlineController = new AbortController();
     const deadlineTimer = setTimeout(
       () => deadlineController.abort(new DOMException("deadline", "TimeoutError")),
@@ -79,7 +102,6 @@ export class KioskGateway {
       return fallback(command, error?.name === "TimeoutError" ? "deadline" : "unavailable");
     } finally {
       clearTimeout(deadlineTimer);
-      this.active--;
     }
   }
 
@@ -155,7 +177,7 @@ export function loadConfig(env = process.env) {
       .split("|").map((value) => value.trim()).filter(Boolean),
     deadlineMs: positive(env.REQUEST_DEADLINE_MS, 15000),
     pollMs: positive(env.POLL_INTERVAL_MS, 250),
-    maxConcurrency: positive(env.MAX_CONCURRENCY, 8),
+    maxQueueDepth: positive(env.MAX_QUEUE_DEPTH, 4),
     maxResponseChars: positive(env.MAX_RESPONSE_CHARS, 8000),
     rateBurst: positive(env.RATE_BURST, 5),
     ratePerSecond: positive(env.RATE_PER_SECOND, 0.2),

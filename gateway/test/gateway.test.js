@@ -31,7 +31,7 @@ test("allows only production and project-scoped Firebase preview origins", () =>
 
 const config = {
   kyberURL: "https://kyber.invalid", agentName: "kiosk", apiKey: "test-key", harness: "Codex",
-  deadlineMs: 100, pollMs: 1, maxConcurrency: 2, maxResponseChars: 20,
+  deadlineMs: 100, pollMs: 1, maxQueueDepth: 2, maxResponseChars: 20,
   rateBurst: 10, ratePerSecond: 1, circuitFailures: 2, circuitResetMs: 1000,
 };
 
@@ -77,14 +77,34 @@ test("maps only allowlisted commands to fixed Kyber requests", async () => {
   assert.equal(removed.status, 400);
 });
 
-test("bounds rate and concurrency", async () => {
-  let release;
-  const fetch = () => new Promise((resolve) => { release = () => resolve(json(503, {})); });
-  const gateway = new KioskGateway({ ...config, maxConcurrency: 1, rateBurst: 1 }, fetch);
+test("serializes admitted work and bounds the queue", async () => {
+  const releases = [];
+  let submissions = 0;
+  const fetch = async (_url, init) => {
+    if (init.method !== "POST") return json(200, { status: "completed", response: "ok" });
+    submissions++;
+    return new Promise((resolve) => releases.push(() => resolve(json(202, { id: `req_${submissions}` }))));
+  };
+  const gateway = new KioskGateway({ ...config, maxQueueDepth: 2 }, fetch);
   const first = gateway.run("joke", "one");
-  assert.equal((await gateway.run("joke", "two")).body.error, "busy");
-  assert.equal((await gateway.run("joke", "one")).body.error, "rate_limited");
-  release();
+  const second = gateway.run("about", "two");
+  assert.equal(submissions, 1);
+  assert.equal((await gateway.run("features", "three")).body.error, "busy");
+  releases.shift()();
+  assert.equal((await first).body.live, true);
+  assert.equal(submissions, 2);
+  releases.shift()();
+  assert.equal((await second).body.live, true);
+});
+
+test("rate limits before adding work to the queue", async () => {
+  const gateway = new KioskGateway({ ...config, rateBurst: 1 }, async (_url, init) =>
+    init.method === "POST"
+      ? json(202, { id: "req_1" })
+      : json(200, { status: "completed", response: "ok" }),
+  );
+  const first = gateway.run("joke", "one");
+  assert.equal((await gateway.run("about", "one")).body.error, "rate_limited");
   await first;
 });
 
