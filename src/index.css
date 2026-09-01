@@ -16,6 +16,23 @@
 }
 * {
   box-sizing: border-box;
+  scrollbar-color: var(--accent) var(--panel);
+  scrollbar-width: thin;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--panel);
+}
+*::-webkit-scrollbar-thumb {
+  border: 2px solid var(--panel);
+  border-radius: 0;
+  background: var(--accent);
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--text);
 }
 html {
   scroll-behavior: smooth;
@@ -592,7 +609,6 @@ svg {
   display: grid;
   grid-template-columns: repeat(5, minmax(170px, 1fr));
   overflow-x: auto;
-  scrollbar-color: var(--line) transparent;
 }
 .career-list li {
   position: relative;

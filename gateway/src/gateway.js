@@ -3,6 +3,7 @@ const commands = Object.freeze({
   joke: "Run the kyber-joke skill. Return one short, public-safe joke about AI agents or infrastructure.",
   features: "Use $kyber-features. Follow the skill exactly: provide selective formatted highlights and finish with its Quickstart link.",
   architecture: "Use $kyber-architecture. Follow the skill exactly: include its Mermaid diagram and brief component walkthrough.",
+  gettingStarted: "Use $kyber-getting-started. Follow the skill exactly and return only its Kyber landing-page link.",
   contact: "Use $contact-matt. Follow the skill exactly and share Matt's three public contact options.",
 });
 
@@ -11,6 +12,7 @@ const fallbacks = Object.freeze({
   joke: "Glyph is taking a quick reboot. Even agents need a clean context window sometimes.",
   features: "Kyber provides persistent agent identity, isolated runtimes, durable memory, schedules, secure credentials, and controlled human channels.",
   architecture: "Kyber is a Kubernetes-native control plane that reconciles persistent, isolated agent runtimes from declarative resources.",
+  gettingStarted: "[Visit Kyber](https://kyber.voget.io)",
   contact: "Matt would love to chat. Email matt.voget@gmail.com, connect on LinkedIn, or visit github.com/matty-v.",
 });
 

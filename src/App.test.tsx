@@ -69,6 +69,9 @@ describe("App", () => {
       screen.getByRole("button", { name: /Describe Kyber's architecture/ }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("button", { name: /How do I get started with Kyber/ }).querySelector("strong"),
+    ).toHaveTextContent("How do I get started with Kyber?");
+    expect(
       screen.getByRole("button", { name: /Get in touch with Matt/ }),
     ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Tell me a joke/ }));
@@ -100,11 +103,12 @@ describe("App", () => {
       "Tell me a little about yourself",
       "What are some features of Kyber?",
       "Describe Kyber's architecture",
+      "How do I get started with Kyber?",
       "Get in touch with Matt",
       "Tell me a joke",
     ]) {
       fireEvent.click(screen.getByRole("button", { name: label }));
-      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "What are some features of Kyber?" ? "features" : label === "Describe Kyber's architecture" ? "architecture" : "contact"} response`);
+      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "What are some features of Kyber?" ? "features" : label === "Describe Kyber's architecture" ? "architecture" : label === "How do I get started with Kyber?" ? "gettingStarted" : "contact"} response`);
     }
 
     expect(container.querySelectorAll(".chat-message")).toHaveLength(6);
