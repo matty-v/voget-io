@@ -139,13 +139,19 @@ describe("App", () => {
 
   it("keeps the getting-started action useful while a preview gateway is behind", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 400 }));
-    render(<App />);
+    const { container } = render(<App />);
 
     fireEvent.click(screen.getByRole("button", { name: "How do I get started with Kyber?" }));
 
     expect(await screen.findByRole("link", { name: "Visit Kyber" })).toHaveAttribute(
       "href",
       "https://kyber.voget.io",
+    );
+    expect(container.querySelector("code")).toHaveTextContent(
+      "helm install kyber oci://ghcr.io/matty-v/charts/kyber",
+    );
+    expect(container.querySelector("code")).toHaveTextContent(
+      "15 minutes from an empty cluster to a live fleet console",
     );
   });
 

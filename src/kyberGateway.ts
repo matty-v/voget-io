@@ -23,7 +23,7 @@ export async function runKioskCommand(command: KioskCommand, signal?: AbortSigna
     if (command === "gettingStarted" && (response.status === 400 || response.status === 404)) {
       return {
         command,
-        response: "[Visit Kyber](https://kyber.voget.io)",
+        response: "Ready to put Kyber to work? [Visit Kyber](https://kyber.voget.io), then launch it with the published Helm chart:\n\n```bash\n# Install from the published Helm chart. Nothing to pin, no fork.\nhelm install kyber oci://ghcr.io/matty-v/charts/kyber \\\n  --namespace kyber-system --wait\n# 15 minutes from an empty cluster to a live fleet console\n```",
         live: false,
         reason: "gateway_version_mismatch",
       };
