@@ -185,11 +185,6 @@ function MobileHeader() {
 }
 
 const agentActions = {
-  joke: {
-    command: "/joke",
-    label: "Tell me a joke",
-    skill: "kyber-joke",
-  },
   about: {
     command: "/about",
     label: "Tell me a little about yourself",
@@ -205,10 +200,15 @@ const agentActions = {
     label: "Describe Kyber's architecture",
     skill: "kyber-architecture",
   },
-  cluster: {
-    command: "/cluster-status",
-    label: "Cluster status",
-    skill: "public-cluster-status",
+  contact: {
+    command: "/contact",
+    label: "Get in touch with Matt",
+    skill: "contact-matt",
+  },
+  joke: {
+    command: "/joke",
+    label: "Tell me a joke",
+    skill: "kyber-joke",
   },
 } as const;
 
@@ -259,9 +259,7 @@ function LiveAgentDemo() {
       ].slice(-6),
     );
     try {
-      const result = await runKioskCommand(
-        (action === "cluster" ? "cluster-status" : action) as KioskCommand,
-      );
+      const result = await runKioskCommand(action as KioskCommand);
       setMessages((current) =>
         current.map((message) =>
           message.id === responseMessageId

@@ -1,4 +1,4 @@
-export type KioskCommand = "about" | "joke" | "features" | "architecture" | "cluster-status";
+export type KioskCommand = "about" | "features" | "architecture" | "contact" | "joke";
 
 export interface KioskResult {
   command: KioskCommand;

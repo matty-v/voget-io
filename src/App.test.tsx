@@ -69,7 +69,7 @@ describe("App", () => {
       screen.getByRole("button", { name: /Describe Kyber's architecture/ }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /Cluster status/ }),
+      screen.getByRole("button", { name: /Get in touch with Matt/ }),
     ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Tell me a joke/ }));
     expect(screen.getByRole("status", { name: "Glyph is working" })).toBeInTheDocument();
@@ -97,19 +97,38 @@ describe("App", () => {
     const { container } = render(<App />);
 
     for (const label of [
-      "Tell me a joke",
       "Tell me a little about yourself",
       "What are some features of Kyber?",
       "Describe Kyber's architecture",
-      "Cluster status",
+      "Get in touch with Matt",
+      "Tell me a joke",
     ]) {
       fireEvent.click(screen.getByRole("button", { name: label }));
-      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "What are some features of Kyber?" ? "features" : label === "Describe Kyber's architecture" ? "architecture" : "cluster-status"} response`);
+      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "What are some features of Kyber?" ? "features" : label === "Describe Kyber's architecture" ? "architecture" : "contact"} response`);
     }
 
     expect(container.querySelectorAll(".chat-message")).toHaveLength(6);
-    expect(screen.queryByText("Tell me a joke", { selector: "p" })).not.toBeInTheDocument();
-    expect(screen.getByText("Cluster status", { selector: "p" })).toBeInTheDocument();
+    expect(screen.queryByText("Tell me a little about yourself", { selector: "p" })).not.toBeInTheDocument();
+    expect(screen.getByText("Tell me a joke", { selector: "p" })).toBeInTheDocument();
+  });
+
+  it("renders Matt's contact links", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        command: "contact",
+        response: "Matt would love to chat.\n\n- [Email](mailto:matt.voget@gmail.com)\n- [LinkedIn](https://www.linkedin.com/in/matthew-voget-47a225a1/)\n- [GitHub](https://github.com/matty-v)",
+        live: true,
+      }),
+    }));
+    const { container } = render(<App />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Get in touch with Matt" }));
+    await screen.findByText("Matt would love to chat.");
+    const chat = container.querySelector(".agent-chat");
+    expect(chat?.querySelector('a[href="mailto:matt.voget@gmail.com"]')).toBeTruthy();
+    expect(chat?.querySelector('a[href="https://www.linkedin.com/in/matthew-voget-47a225a1/"]')).toBeTruthy();
+    expect(chat?.querySelector('a[href="https://github.com/matty-v"]')).toBeTruthy();
   });
 
   it("renders Glyph responses as safe GitHub-flavored Markdown", async () => {
