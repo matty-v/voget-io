@@ -3,7 +3,7 @@ const commands = Object.freeze({
   joke: "Run the kyber-joke skill. Return one short, public-safe joke about AI agents or infrastructure.",
   features: "Use $kyber-features. Follow the skill exactly: provide selective formatted highlights and finish with its Quickstart link.",
   architecture: "Use $kyber-architecture. Follow the skill exactly: include its Mermaid diagram and brief component walkthrough.",
-  "cluster-status": "Run the public-cluster-status skill. Return only its curated public status fields; never include resource names, namespaces, addresses, capacity, credentials, or diagnostics.",
+  contact: "Use $contact-matt. Follow the skill exactly and share Matt's three public contact options.",
 });
 
 const fallbacks = Object.freeze({
@@ -11,7 +11,7 @@ const fallbacks = Object.freeze({
   joke: "The live kiosk is taking a quick reboot. Even agents need a clean context window sometimes.",
   features: "Kyber provides persistent agent identity, isolated runtimes, durable memory, schedules, secure credentials, and controlled human channels.",
   architecture: "Kyber is a Kubernetes-native control plane that reconciles persistent, isolated agent runtimes from declarative resources.",
-  "cluster-status": "Live public status is temporarily unavailable. No private cluster details are exposed.",
+  contact: "Matt would love to chat. Email matt.voget@gmail.com, connect on LinkedIn, or visit github.com/matty-v.",
 });
 
 export const commandNames = Object.keys(commands);

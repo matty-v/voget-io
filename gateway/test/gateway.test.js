@@ -66,6 +66,15 @@ test("maps only allowlisted commands to fixed Kyber requests", async () => {
   const featuresRequest = JSON.parse(calls[4].init.body);
   assert.match(featuresRequest.prompt, /^Use \$kyber-features\./);
   assert.equal(featuresRequest.correlation, "kiosk-v1:features");
+
+  const contact = await gateway.run("contact", "1.2.3.4");
+  assert.equal(contact.body.live, true);
+  const contactRequest = JSON.parse(calls[6].init.body);
+  assert.match(contactRequest.prompt, /^Use \$contact-matt\./);
+  assert.equal(contactRequest.correlation, "kiosk-v1:contact");
+
+  const removed = await gateway.run("cluster-status", "1.2.3.4");
+  assert.equal(removed.status, 400);
 });
 
 test("bounds rate and concurrency", async () => {
