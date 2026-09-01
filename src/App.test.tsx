@@ -63,6 +63,9 @@ describe("App", () => {
       screen.getByRole("button", { name: /Tell me a little about yourself/ }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("button", { name: /What are some features of Kyber/ }),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("button", { name: /Describe Kyber's architecture/ }),
     ).toBeInTheDocument();
     expect(
@@ -96,11 +99,12 @@ describe("App", () => {
     for (const label of [
       "Tell me a joke",
       "Tell me a little about yourself",
+      "What are some features of Kyber?",
       "Describe Kyber's architecture",
       "Cluster status",
     ]) {
       fireEvent.click(screen.getByRole("button", { name: label }));
-      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "Describe Kyber's architecture" ? "architecture" : "cluster-status"} response`);
+      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "What are some features of Kyber?" ? "features" : label === "Describe Kyber's architecture" ? "architecture" : "cluster-status"} response`);
     }
 
     expect(container.querySelectorAll(".chat-message")).toHaveLength(6);
@@ -145,6 +149,28 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Describe Kyber's architecture" }));
     expect(await screen.findByRole("figure", { name: "Kyber architecture diagram" })).toBeInTheDocument();
     expect(await screen.findByText("Kyber control plane")).toBeInTheDocument();
+  });
+
+  it("renders the Kyber feature highlights and Quickstart link", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          command: "features",
+          response: "**Harness choice** — Codex and Claude Code.\n\n[Explore the Kyber Quickstart](https://kyber.voget.io/getting-started/quickstart/)",
+          live: true,
+        }),
+      }),
+    );
+    render(<App />);
+
+    fireEvent.click(screen.getByRole("button", { name: "What are some features of Kyber?" }));
+    expect(await screen.findByText("Harness choice")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Explore the Kyber Quickstart" })).toHaveAttribute(
+      "href",
+      "https://kyber.voget.io/getting-started/quickstart/",
+    );
   });
 
   it("closes the mobile menu with Escape", () => {

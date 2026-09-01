@@ -195,6 +195,11 @@ const agentActions = {
     label: "Tell me a little about yourself",
     skill: "glyph-about",
   },
+  features: {
+    command: "/features",
+    label: "What are some features of Kyber?",
+    skill: "kyber-features",
+  },
   architecture: {
     command: "/architecture",
     label: "Describe Kyber's architecture",
@@ -314,6 +319,9 @@ function LiveAgentDemo() {
                   <Markdown
                     remarkPlugins={[remarkGfm]}
                     components={{
+                      a: ({ children, href }) => (
+                        <a href={href} target="_blank" rel="noreferrer">{children}</a>
+                      ),
                       pre: ({ children }) => <div className="chat-code-block">{children}</div>,
                       code: ({ className, children, ...props }) =>
                         className === "language-mermaid" ? (

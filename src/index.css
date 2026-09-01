@@ -353,6 +353,11 @@ svg {
   font-family: "JetBrains Mono", monospace;
   font-size: 0.88em;
 }
+.chat-content a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
 .chat-code-block {
   overflow-x: auto;
   margin: 0.2em 0 0.7em;
