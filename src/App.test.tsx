@@ -2,6 +2,14 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
 
+vi.mock("mermaid", () => ({
+  default: {
+    initialize: vi.fn(),
+    parse: vi.fn().mockResolvedValue(true),
+    render: vi.fn().mockResolvedValue({ svg: "<svg><text>Kyber control plane</text></svg>" }),
+  },
+}));
+
 describe("App", () => {
   beforeEach(() => {
     window.history.replaceState({}, "", "/");
@@ -55,7 +63,7 @@ describe("App", () => {
       screen.getByRole("button", { name: /Tell me a little about yourself/ }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /Kyber architecture/ }),
+      screen.getByRole("button", { name: /Describe Kyber's architecture/ }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /Cluster status/ }),
@@ -88,11 +96,11 @@ describe("App", () => {
     for (const label of [
       "Tell me a joke",
       "Tell me a little about yourself",
-      "Kyber architecture",
+      "Describe Kyber's architecture",
       "Cluster status",
     ]) {
       fireEvent.click(screen.getByRole("button", { name: label }));
-      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "Kyber architecture" ? "architecture" : "cluster-status"} response`);
+      await screen.findByText(`${label === "Tell me a joke" ? "joke" : label === "Tell me a little about yourself" ? "about" : label === "Describe Kyber's architecture" ? "architecture" : "cluster-status"} response`);
     }
 
     expect(container.querySelectorAll(".chat-message")).toHaveLength(6);
@@ -118,6 +126,25 @@ describe("App", () => {
     expect(await screen.findByRole("table")).toBeInTheDocument();
     expect(screen.getByText("Codex")).toBeInTheDocument();
     expect(container.querySelector("script")).toBeNull();
+  });
+
+  it("renders Mermaid architecture diagrams in the chat", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          command: "architecture",
+          response: "Here’s the shape of Kyber:\n\n```mermaid\nflowchart LR\n  Intent --> Control\n```\n\nThe control plane reconciles intent.",
+          live: true,
+        }),
+      }),
+    );
+    render(<App />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Describe Kyber's architecture" }));
+    expect(await screen.findByRole("figure", { name: "Kyber architecture diagram" })).toBeInTheDocument();
+    expect(await screen.findByText("Kyber control plane")).toBeInTheDocument();
   });
 
   it("closes the mobile menu with Escape", () => {

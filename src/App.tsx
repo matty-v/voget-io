@@ -16,6 +16,7 @@ import {
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { runKioskCommand, type KioskCommand } from "./kyberGateway";
+import MermaidDiagram from "./MermaidDiagram";
 
 type Navigate = (
   event: React.MouseEvent<HTMLAnchorElement>,
@@ -196,7 +197,7 @@ const agentActions = {
   },
   architecture: {
     command: "/architecture",
-    label: "Kyber architecture",
+    label: "Describe Kyber's architecture",
     skill: "kyber-architecture",
   },
   cluster: {
@@ -310,7 +311,20 @@ function LiveAgentDemo() {
             ) : (
               <div className="chat-content">
                 {message.speaker === "Glyph" ? (
-                  <Markdown remarkPlugins={[remarkGfm]}>{message.text}</Markdown>
+                  <Markdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      pre: ({ children }) => <div className="chat-code-block">{children}</div>,
+                      code: ({ className, children, ...props }) =>
+                        className === "language-mermaid" ? (
+                          <MermaidDiagram chart={String(children).replace(/\n$/, "")} />
+                        ) : (
+                          <code className={className} {...props}>{children}</code>
+                        ),
+                    }}
+                  >
+                    {message.text}
+                  </Markdown>
                 ) : (
                   <p>{message.text}</p>
                 )}

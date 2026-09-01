@@ -338,6 +338,34 @@ svg {
   font-family: "JetBrains Mono", monospace;
   font-size: 0.88em;
 }
+.chat-code-block {
+  overflow-x: auto;
+  margin: 0.2em 0 0.7em;
+  white-space: pre;
+}
+.mermaid-diagram {
+  width: min(100%, 720px);
+  margin: 0.35em 0 0.85em;
+  padding: 10px;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
+  background: #181714;
+  white-space: normal;
+}
+.mermaid-diagram > div {
+  min-width: 560px;
+}
+.mermaid-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+.mermaid-diagram > span,
+.mermaid-error {
+  color: var(--muted);
+  font: 0.62rem/1.5 "JetBrains Mono", monospace;
+}
 .chat-content table {
   width: 100%;
   margin: 0.2em 0 0.7em;
