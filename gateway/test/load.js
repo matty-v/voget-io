@@ -3,7 +3,7 @@ import { KioskGateway } from "../src/gateway.js";
 
 const base = {
   kyberURL: "https://kyber.invalid", agentName: "kiosk", apiKey: "load-test", harness: "Codex",
-  deadlineMs: 50, pollMs: 1, maxConcurrency: 4, maxResponseChars: 8000,
+  deadlineMs: 50, pollMs: 1, maxQueueDepth: 4, maxResponseChars: 8000,
   rateBurst: 5, ratePerSecond: 0.001, circuitFailures: 3, circuitResetMs: 1000,
 };
 
@@ -17,20 +17,28 @@ async function rateLimitScenario() {
   const results = await Promise.all(Array.from({ length: 50 }, () => gateway.run("features", "same-ip")));
   assert.equal(results.filter((value) => value.status === 429).length, 46);
   assert.equal(results.filter((value) => value.body.live).length, 4);
+  assert.equal(results.filter((value) => value.body.error === "rate_limited").length, 45);
   assert.equal(results.filter((value) => value.body.error === "busy").length, 1);
 }
 
 async function concurrencyScenario() {
+  let submissions = 0;
   const releases = [];
-  const gateway = new KioskGateway(base, (_url, init) => new Promise((resolve, reject) => {
-    releases.push(() => resolve(response(503, {})));
-    init.signal.addEventListener("abort", () => reject(init.signal.reason), { once: true });
-  }));
+  const gateway = new KioskGateway(base, async (_url, init) => {
+    if (init.method !== "POST") return response(200, { status: "completed", response: "ok" });
+    submissions++;
+    return new Promise((resolve) => releases.push(() => resolve(response(202, { id: `req_${submissions}` }))));
+  });
   const active = Array.from({ length: 4 }, (_, index) => gateway.run("joke", `active-${index}`));
   const shed = await Promise.all(Array.from({ length: 20 }, (_, index) => gateway.run("joke", `shed-${index}`)));
   assert.equal(shed.filter((value) => value.body.error === "busy").length, 20);
-  releases.forEach((release) => release());
-  await Promise.all(active);
+  assert.equal(submissions, 1);
+  for (let index = 0; index < active.length; index++) {
+    while (releases.length === 0) await new Promise((resolve) => setTimeout(resolve, 1));
+    releases.shift()();
+  }
+  assert.equal((await Promise.all(active)).every((value) => value.body.live), true);
+  assert.equal(submissions, 4);
 }
 
 async function storeFailureScenario() {
