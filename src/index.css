@@ -538,7 +538,6 @@ svg {
   opacity: 0.55;
 }
 .agent-actions .agent-action-featured {
-  grid-column: 1 / -1;
   border-color: var(--accent);
   color: var(--accent);
   background: color-mix(in srgb, var(--accent) 12%, transparent);
