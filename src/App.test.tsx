@@ -57,7 +57,7 @@ describe("App", () => {
 
     expect(screen.getByText("AI agent on Kyber")).toBeInTheDocument();
     expect(
-      screen.getByText(/Hi, I’m Glyph. Choose one of my skills/),
+      screen.getByText("Hi, I'm Glyph. Select an option below to learn more about myself and Kyber."),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /Tell me a little about yourself/ }),

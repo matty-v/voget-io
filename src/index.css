@@ -219,6 +219,7 @@ svg {
 }
 .project-card,
 .signal {
+  min-width: 0;
   border: 1px solid var(--line);
   padding: 20px;
 }
@@ -245,6 +246,11 @@ svg {
   line-height: 1.55;
 }
 .agent-demo {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
   border: 1px solid #58554e;
   background: #121210;
 }
@@ -290,10 +296,14 @@ svg {
   text-transform: uppercase;
 }
 .agent-chat {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   height: 310px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overflow-x: hidden;
   overflow-y: auto;
   scroll-behavior: smooth;
   padding: 20px 16px;
@@ -305,10 +315,15 @@ svg {
   background-size: 100% 24px;
 }
 .chat-message {
+  min-width: 0;
   width: fit-content;
   max-width: min(82%, 62ch);
 }
 .chat-content {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
   margin: 4px 0 0;
   padding: 11px 13px;
   border: 1px solid var(--line);
@@ -344,7 +359,10 @@ svg {
   white-space: pre;
 }
 .mermaid-diagram {
-  width: min(100%, 720px);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   margin: 0.35em 0 0.85em;
   padding: 10px;
   overflow-x: auto;

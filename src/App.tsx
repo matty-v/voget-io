@@ -219,7 +219,7 @@ const initialChat: ChatMessage[] = [
   {
     id: 0,
     speaker: "Glyph",
-    text: "Hi, I’m Glyph. Choose one of my skills below and I’ll run it for you.",
+    text: "Hi, I'm Glyph. Select an option below to learn more about myself and Kyber.",
   },
 ];
 
