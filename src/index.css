@@ -537,6 +537,22 @@ svg {
   cursor: wait;
   opacity: 0.55;
 }
+.agent-actions .agent-action-featured {
+  grid-column: 1 / -1;
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+.agent-actions .agent-action-featured:hover:not(:disabled),
+.agent-actions .agent-action-featured:focus-visible {
+  color: var(--bg);
+  background: var(--accent);
+}
+.agent-actions .agent-action-featured:hover:not(:disabled) svg,
+.agent-actions .agent-action-featured:focus-visible svg {
+  color: var(--bg);
+}
 .facts {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

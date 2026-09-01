@@ -16,6 +16,19 @@ export async function runKioskCommand(command: KioskCommand, signal?: AbortSigna
     body: JSON.stringify({ command }),
     signal,
   });
-  if (!response.ok) throw new Error(`kiosk gateway returned ${response.status}`);
+  if (!response.ok) {
+    // PR previews call the currently deployed gateway, which can briefly lag a
+    // newly added frontend command. Preserve the fixed, public-safe response
+    // during that rolling-deploy window; the live gateway still invokes Glyph.
+    if (command === "gettingStarted" && (response.status === 400 || response.status === 404)) {
+      return {
+        command,
+        response: "[Visit Kyber](https://kyber.voget.io)",
+        live: false,
+        reason: "gateway_version_mismatch",
+      };
+    }
+    throw new Error(`kiosk gateway returned ${response.status}`);
+  }
   return response.json() as Promise<KioskResult>;
 }

@@ -200,12 +200,6 @@ const agentActions = {
     label: "Describe Kyber's architecture",
     skill: "kyber-architecture",
   },
-  gettingStarted: {
-    command: "/getting-started",
-    label: "How do I get started with Kyber?",
-    skill: "kyber-getting-started",
-    featured: true,
-  },
   contact: {
     command: "/contact",
     label: "Get in touch with Matt",
@@ -215,6 +209,12 @@ const agentActions = {
     command: "/joke",
     label: "Tell me a joke",
     skill: "kyber-joke",
+  },
+  gettingStarted: {
+    command: "/getting-started",
+    label: "How do I get started with Kyber?",
+    skill: "kyber-getting-started",
+    featured: true,
   },
 } as const;
 
@@ -352,6 +352,7 @@ function LiveAgentDemo() {
           <button
             type="button"
             key={key}
+            className={"featured" in action && action.featured ? "agent-action-featured" : undefined}
             disabled={activeAction !== null}
             onClick={() => runAction(key as AgentAction)}
           >
