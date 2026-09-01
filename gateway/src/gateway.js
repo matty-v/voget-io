@@ -1,5 +1,5 @@
 const commands = Object.freeze({
-  about: "Run the glyph-about skill. Tell the visitor a little about yourself using the bounded public self-profile and available skill list.",
+  about: "Use $glyph-about. Follow every required section in the skill and tell the visitor a little about yourself.",
   joke: "Run the kyber-joke skill. Return one short, public-safe joke about AI agents or infrastructure.",
   features: "Run the kyber-features skill. Summarize Kyber's public product features in at most 700 characters.",
   architecture: "Run the kyber-architecture skill. Explain Kyber's public architecture in at most 700 characters without internal names, addresses, or capacity details.",
