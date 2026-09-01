@@ -60,6 +60,12 @@ test("maps only allowlisted commands to fixed Kyber requests", async () => {
   const architectureRequest = JSON.parse(calls[2].init.body);
   assert.match(architectureRequest.prompt, /^Use \$kyber-architecture\./);
   assert.equal(architectureRequest.correlation, "kiosk-v1:architecture");
+
+  const features = await gateway.run("features", "1.2.3.4");
+  assert.equal(features.body.live, true);
+  const featuresRequest = JSON.parse(calls[4].init.body);
+  assert.match(featuresRequest.prompt, /^Use \$kyber-features\./);
+  assert.equal(featuresRequest.correlation, "kiosk-v1:features");
 });
 
 test("bounds rate and concurrency", async () => {

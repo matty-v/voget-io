@@ -1,7 +1,7 @@
 const commands = Object.freeze({
   about: "Use $glyph-about. Follow every required section in the skill and tell the visitor a little about yourself.",
   joke: "Run the kyber-joke skill. Return one short, public-safe joke about AI agents or infrastructure.",
-  features: "Run the kyber-features skill. Summarize Kyber's public product features in at most 700 characters.",
+  features: "Use $kyber-features. Follow the skill exactly: provide selective formatted highlights and finish with its Quickstart link.",
   architecture: "Use $kyber-architecture. Follow the skill exactly: include its Mermaid diagram and brief component walkthrough.",
   "cluster-status": "Run the public-cluster-status skill. Return only its curated public status fields; never include resource names, namespaces, addresses, capacity, credentials, or diagnostics.",
 });
