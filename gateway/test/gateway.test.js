@@ -51,7 +51,7 @@ test("maps only allowlisted commands to fixed Kyber requests", async () => {
   assert.equal(result.status, 200);
   assert.equal(result.body.live, true);
   const submitted = JSON.parse(calls[0].init.body);
-  assert.match(submitted.prompt, /^Run the glyph-about skill\./);
+  assert.match(submitted.prompt, /^Use \$glyph-about\./);
   assert.equal(submitted.correlation, "kiosk-v1:about");
   assert.equal(calls[0].init.headers.authorization, "Bearer test-key");
 });
