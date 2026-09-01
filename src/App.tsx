@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   Box,
@@ -9,11 +9,14 @@ import {
   Mail,
   Menu,
   Network,
+  Send,
   Sparkles,
-  Terminal,
   X,
 } from "lucide-react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { runKioskCommand, type KioskCommand } from "./kyberGateway";
+import MermaidDiagram from "./MermaidDiagram";
 
 type Navigate = (
   event: React.MouseEvent<HTMLAnchorElement>,
@@ -182,66 +185,100 @@ function MobileHeader() {
 }
 
 const agentActions = {
+  about: {
+    command: "/about",
+    label: "Tell me a little about yourself",
+    skill: "glyph-about",
+  },
+  features: {
+    command: "/features",
+    label: "What are some features of Kyber?",
+    skill: "kyber-features",
+  },
+  architecture: {
+    command: "/architecture",
+    label: "Describe Kyber's architecture",
+    skill: "kyber-architecture",
+  },
+  contact: {
+    command: "/contact",
+    label: "Get in touch with Matt",
+    skill: "contact-matt",
+  },
   joke: {
     command: "/joke",
     label: "Tell me a joke",
     skill: "kyber-joke",
   },
-  features: {
-    command: "/features",
-    label: "Agent features",
-    skill: "kyber-features",
-  },
-  architecture: {
-    command: "/architecture",
-    label: "Kyber architecture",
-    skill: "kyber-architecture",
-  },
-  cluster: {
-    command: "/cluster-status",
-    label: "Cluster status",
-    skill: "public-cluster-status",
-  },
 } as const;
 
 type AgentAction = keyof typeof agentActions;
+type ChatMessage = {
+  id: number;
+  speaker: "Glyph" | "You";
+  text: string;
+  pending?: boolean;
+};
+
+const initialChat: ChatMessage[] = [
+  {
+    id: 0,
+    speaker: "Glyph",
+    text: "Hi, I'm Glyph. Select an option below to learn more about myself and Kyber.",
+  },
+];
 
 function LiveAgentDemo() {
   const [activeAction, setActiveAction] = useState<AgentAction | null>(null);
-  const [harness, setHarness] = useState("Codex");
-  const [live, setLive] = useState(false);
-  const [exchange, setExchange] = useState({
-    command: "awaiting command",
-    skill: "kiosk-ready",
-    response: "Select an installed kiosk skill below.",
-  });
+  const [messages, setMessages] = useState<ChatMessage[]>(initialChat);
+  const nextMessageId = useRef(1);
+  const chatEnd = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatEnd.current?.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+  }, [messages]);
 
   const runAction = async (action: AgentAction) => {
-    const next = agentActions[action];
+    const userMessageId = nextMessageId.current++;
+    const responseMessageId = nextMessageId.current++;
     setActiveAction(action);
-    setExchange({
-      command: next.command,
-      skill: next.skill,
-      response: "Working…",
-    });
+    setMessages((current) =>
+      [
+        ...current,
+        {
+          id: userMessageId,
+          speaker: "You" as const,
+          text: agentActions[action].label,
+        },
+        {
+          id: responseMessageId,
+          speaker: "Glyph" as const,
+          text: "",
+          pending: true,
+        },
+      ].slice(-6),
+    );
     try {
-      const result = await runKioskCommand(
-        (action === "cluster" ? "cluster-status" : action) as KioskCommand,
+      const result = await runKioskCommand(action as KioskCommand);
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === responseMessageId
+            ? { ...message, text: result.response, pending: false }
+            : message,
+        ),
       );
-      setExchange({
-        command: next.command,
-        skill: next.skill,
-        response: result.response,
-      });
-      setHarness(result.harness ?? "Codex");
-      setLive(result.live);
     } catch {
-      setExchange({
-        command: next.command,
-        skill: next.skill,
-        response: "The live kiosk is temporarily unavailable. Please try again shortly.",
-      });
-      setLive(false);
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === responseMessageId
+            ? {
+                ...message,
+                text: "The live kiosk is temporarily unavailable. Please try again shortly.",
+                pending: false,
+              }
+            : message,
+        ),
+      );
     } finally {
       setActiveAction(null);
     }
@@ -252,32 +289,59 @@ function LiveAgentDemo() {
       <header className="agent-demo-header">
         <div className="agent-identity">
           <span className="agent-avatar">
-            <Terminal aria-hidden="true" />
+            <Sparkles aria-hidden="true" />
           </span>
           <div>
-            <strong>glyph@kyber</strong>
-            <span>Codex / terminal peek</span>
+            <strong>Glyph</strong>
+            <span>AI agent on Kyber</span>
           </div>
         </div>
-        <span className="agent-live">
-          <i /> {live ? "Live agent" : "Gateway ready"}
-        </span>
       </header>
-      <div className="agent-terminal" aria-live="polite" aria-atomic="true">
-        <div className="terminal-session">
-          <span>Kyber agent</span>
-          <span>Harness: {harness}</span>
-          <span>Mode: Kiosk</span>
-        </div>
-        <p className="terminal-command">
-          <span>›</span> {exchange.command}
-        </p>
-        <p className="terminal-skill">
-          <span>•</span> Running {exchange.skill} skill
-        </p>
-        <p className="terminal-response">{exchange.response}</p>
+      <div className="agent-chat" aria-live="polite" aria-atomic="true">
+        {messages.map((message) => (
+          <div
+            className={`chat-message chat-message-${message.speaker === "Glyph" ? "agent" : "user"}`}
+            key={message.id}
+          >
+            <span className="chat-speaker">{message.speaker}</span>
+            {message.pending ? (
+              <div className="chat-typing" role="status" aria-label="Glyph is working">
+                <i />
+                <i />
+                <i />
+                <span>Glyph is working</span>
+              </div>
+            ) : (
+              <div className="chat-content">
+                {message.speaker === "Glyph" ? (
+                  <Markdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      a: ({ children, href }) => (
+                        <a href={href} target="_blank" rel="noreferrer">{children}</a>
+                      ),
+                      pre: ({ children }) => <div className="chat-code-block">{children}</div>,
+                      code: ({ className, children, ...props }) =>
+                        className === "language-mermaid" ? (
+                          <MermaidDiagram chart={String(children).replace(/\n$/, "")} />
+                        ) : (
+                          <code className={className} {...props}>{children}</code>
+                        ),
+                    }}
+                  >
+                    {message.text}
+                  </Markdown>
+                ) : (
+                  <p>{message.text}</p>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+        <div ref={chatEnd} />
       </div>
-      <div className="agent-actions" aria-label="Demo agent actions">
+      <div className="agent-actions" aria-label="Choose a skill for Glyph">
+        <p>What would you like Glyph to do?</p>
         {Object.entries(agentActions).map(([key, action]) => (
           <button
             type="button"
@@ -285,20 +349,13 @@ function LiveAgentDemo() {
             disabled={activeAction !== null}
             onClick={() => runAction(key as AgentAction)}
           >
-            <Sparkles aria-hidden="true" />
+            <Send aria-hidden="true" />
             <span>
-              <strong>{action.command}</strong>
               {activeAction === key ? "Running…" : action.label}
             </span>
           </button>
         ))}
       </div>
-      <footer className="agent-demo-footer">
-        <span>Live gateway / fixed actions / no free-form input</span>
-        <a href="https://kyber.voget.io" target="_blank" rel="noreferrer">
-          Learn how Kyber works <ArrowUpRight aria-hidden="true" />
-        </a>
-      </footer>
     </div>
   );
 }
@@ -310,24 +367,12 @@ function KyberSection() {
         <header className="module-heading">
           <span>Kyber / Active project</span>
         </header>
-        <h2>Kubernetes-native infrastructure for persistent AI agents.</h2>
+        <h2>Kyber: Kubernetes-native infrastructure for persistent AI agents.</h2>
         <p className="project-summary">
-          Kyber gives long-running agents durable identity, isolated compute,
-          controlled access to secrets, schedules, and two-way communication
-          channels.
+          Interact with a live AI agent running on the Kyber infrastructure:
+          Glyph.
         </p>
         <LiveAgentDemo />
-        <div className="facts" aria-label="Kyber facts">
-          <p>
-            <span>Runtime</span> / Kubernetes
-          </p>
-          <p>
-            <span>State</span> / Persistent
-          </p>
-          <p>
-            <span>Control</span> / Human
-          </p>
-        </div>
       </div>
       <section className="signal" id="dispatches">
         <header className="module-heading">

@@ -33,13 +33,16 @@ test.describe("Systems Index homepage", () => {
     ).toHaveAttribute("src", "/profile.jpeg");
     await expect(
       page.getByRole("heading", {
-        name: "Kubernetes-native infrastructure for persistent AI agents.",
+        name: "Kyber: Kubernetes-native infrastructure for persistent AI agents.",
       }),
     ).toBeVisible();
     await expect(
       page.getByLabel("Interactive Kyber agent prototype"),
     ).toBeVisible();
-    await expect(page.getByText("Harness: Codex")).toBeVisible();
+    await expect(page.getByText("AI agent on Kyber")).toBeVisible();
+    await expect(
+      page.getByText("Hi, I'm Glyph. Select an option below to learn more about myself and Kyber."),
+    ).toBeVisible();
     await page.getByRole("button", { name: /Tell me a joke/ }).click();
     await expect(page.getByText(/Kubernetes pod go to therapy/)).toBeVisible();
   });
@@ -64,6 +67,30 @@ test.describe("Systems Index homepage", () => {
     await expect(page.getByText("→ Ivanti", { exact: true })).toBeVisible();
     await expect(page.getByText("→ SmartBear", { exact: true })).toBeVisible();
     await expect(page.getByText("→ Gravitee", { exact: true })).toBeVisible();
+  });
+
+  test("keeps architecture diagrams scrollable without widening the chat", async ({ page }) => {
+    await page.route("**/api/kyber-kiosk/v1/requests", async (route) => {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          command: "architecture",
+          response: "Here’s the shape of Kyber:\n\n```mermaid\nflowchart LR\n  Intent[Human intent] --> Resources[Agent and Machine resources]\n  Resources --> Control[Kyber control plane]\n  Control --> Pods[Persistent agent pods]\n  Pods --> Integrations[Bounded integrations]\n```",
+          live: true,
+        }),
+      });
+    });
+
+    const chat = page.getByLabel("Interactive Kyber agent prototype");
+    const widthBefore = await chat.evaluate((element) => element.getBoundingClientRect().width);
+    await page.getByRole("button", { name: "Describe Kyber's architecture" }).click();
+    const diagram = page.getByRole("figure", { name: "Kyber architecture diagram" });
+    await expect(diagram.locator("svg")).toBeVisible();
+    const widthAfter = await chat.evaluate((element) => element.getBoundingClientRect().width);
+    const isScrollable = await diagram.evaluate((element) => element.scrollWidth > element.clientWidth);
+
+    expect(Math.abs(widthAfter - widthBefore)).toBeLessThan(1);
+    expect(isScrollable).toBe(true);
   });
 
   test("has correct social and contact links", async ({ page }) => {

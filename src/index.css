@@ -219,6 +219,7 @@ svg {
 }
 .project-card,
 .signal {
+  min-width: 0;
   border: 1px solid var(--line);
   padding: 20px;
 }
@@ -245,6 +246,11 @@ svg {
   line-height: 1.55;
 }
 .agent-demo {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
   border: 1px solid #58554e;
   background: #121210;
 }
@@ -289,26 +295,18 @@ svg {
     monospace;
   text-transform: uppercase;
 }
-.agent-live {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--muted);
-  font:
-    0.55rem "JetBrains Mono",
-    monospace;
-  text-transform: uppercase;
-}
-.agent-live i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #55d86b;
-  animation: availability-pulse 2s ease-out infinite;
-}
-.agent-terminal {
-  min-height: 190px;
-  padding: 14px 16px 20px;
+.agent-chat {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 310px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  padding: 20px 16px;
   border-bottom: 1px solid var(--line);
   background-image: linear-gradient(
     rgba(255, 255, 255, 0.015) 1px,
@@ -316,46 +314,164 @@ svg {
   );
   background-size: 100% 24px;
 }
-.terminal-session {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-  margin: 0 -2px 18px;
-  padding: 8px 10px;
+.chat-message {
+  min-width: 0;
+  width: fit-content;
+  max-width: min(82%, 62ch);
+}
+.chat-content {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+  margin: 4px 0 0;
+  padding: 11px 13px;
   border: 1px solid var(--line);
+  color: var(--text);
+  font:
+    0.76rem/1.55 Inter,
+    sans-serif;
+  white-space: pre-wrap;
+}
+.chat-content > :first-child {
+  margin-top: 0;
+}
+.chat-content > :last-child {
+  margin-bottom: 0;
+}
+.chat-content p,
+.chat-content ul,
+.chat-content ol {
+  margin: 0 0 0.7em;
+}
+.chat-content ul,
+.chat-content ol {
+  padding-left: 1.4em;
+}
+.chat-content code {
+  color: var(--accent);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.88em;
+}
+.chat-content a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.chat-code-block {
+  overflow-x: auto;
+  margin: 0.2em 0 0.7em;
+  white-space: pre;
+}
+.mermaid-diagram {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0.35em 0 0.85em;
+  padding: 10px;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
+  background: #181714;
+  white-space: normal;
+}
+.mermaid-diagram > div {
+  min-width: 560px;
+}
+.mermaid-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+.mermaid-diagram > span,
+.mermaid-error {
+  color: var(--muted);
+  font: 0.62rem/1.5 "JetBrains Mono", monospace;
+}
+.chat-content table {
+  width: 100%;
+  margin: 0.2em 0 0.7em;
+  border-collapse: collapse;
+  font:
+    0.66rem/1.4 "JetBrains Mono",
+    monospace;
+  white-space: normal;
+}
+.chat-content th,
+.chat-content td {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.chat-content th {
+  color: var(--accent);
+  font-weight: 500;
+}
+.chat-speaker {
   color: var(--muted);
   font:
     0.52rem "JetBrains Mono",
     monospace;
-  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-.terminal-session span:first-child {
-  color: var(--text);
+.chat-message-agent .chat-content {
+  border-color: #4b4943;
+  background: #1d1c19;
 }
-.agent-terminal p {
-  margin: 0 0 12px;
-  color: var(--text);
-  font:
-    0.68rem/1.6 "JetBrains Mono",
-    monospace;
+.chat-typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 14px 16px;
+  border: 1px solid #4b4943;
+  background: #1d1c19;
 }
-.agent-terminal p:last-child {
-  margin: 0;
+.chat-typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: chat-typing-pulse 1.1s ease-in-out infinite;
 }
-.agent-terminal span {
-  color: var(--accent);
+.chat-typing i:nth-child(2) {
+  animation-delay: 0.15s;
 }
-.agent-terminal .terminal-skill {
-  color: var(--muted);
-  font-size: 0.58rem;
+.chat-typing i:nth-child(3) {
+  animation-delay: 0.3s;
 }
-.agent-terminal .terminal-skill span {
-  color: #55d86b;
+.chat-typing span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
-.agent-terminal .terminal-response {
-  padding-left: 13px;
-  white-space: pre-wrap;
+@keyframes chat-typing-pulse {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+.chat-message-user {
+  align-self: flex-end;
+  text-align: right;
+}
+.chat-message-user .chat-content {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: color-mix(in srgb, var(--accent) 10%, #121210);
+  text-align: left;
 }
 .agent-actions {
   display: grid;
@@ -363,13 +479,22 @@ svg {
   gap: 8px;
   padding: 12px;
 }
+.agent-actions > p {
+  grid-column: 1 / -1;
+  margin: 0 0 3px;
+  color: var(--muted);
+  font:
+    0.56rem "JetBrains Mono",
+    monospace;
+  text-transform: uppercase;
+}
 .agent-actions button {
   min-height: 58px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 9px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
   border: 1px solid var(--line);
   color: var(--text);
   background: transparent;
@@ -378,15 +503,13 @@ svg {
     0.59rem/1.35 "JetBrains Mono",
     monospace;
   text-transform: uppercase;
+  text-align: left;
 }
-.agent-actions button > span,
-.agent-actions button strong {
-  display: block;
-}
-.agent-actions button strong {
-  margin-bottom: 3px;
+.agent-actions button svg {
+  width: 14px;
+  height: 14px;
+  order: 2;
   color: var(--accent);
-  font-weight: 500;
 }
 .agent-actions button:hover:not(:disabled),
 .agent-actions button:focus-visible {
@@ -396,28 +519,6 @@ svg {
 .agent-actions button:disabled {
   cursor: wait;
   opacity: 0.55;
-}
-.agent-demo-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-top: 1px solid var(--line);
-}
-.agent-demo-footer > span,
-.agent-demo-footer a {
-  color: var(--muted);
-  font:
-    0.52rem "JetBrains Mono",
-    monospace;
-  text-transform: uppercase;
-}
-.agent-demo-footer a {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: var(--accent);
 }
 .facts {
   display: grid;
@@ -721,10 +822,6 @@ svg {
   .agent-actions {
     grid-template-columns: 1fr;
   }
-  .agent-demo-footer {
-    align-items: flex-start;
-    flex-direction: column;
-  }
   .facts {
     grid-template-columns: 1fr;
   }
@@ -750,8 +847,11 @@ svg {
     scroll-behavior: auto;
   }
   .availability i,
-  .agent-live i,
   .career-list em i {
     animation: none;
+  }
+  .chat-typing i {
+    animation: none;
+    opacity: 0.7;
   }
 }
