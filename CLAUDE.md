@@ -40,7 +40,8 @@ There is no combined "typecheck" script — `npm run build` typechecks via `tsc 
 ## Deployment
 
 - Firebase Hosting, project `kinetic-object-322814`, hosting target/site `voget-io` (see `.firebaserc` and `firebase.json`; static output from `dist/`).
-- **CI/CD** (`.github/workflows/`): push to `main` → `deploy.yml` (typecheck, lint, build, deploy to live channel). PRs → `test.yml` (unit + e2e) and `preview.yml` (deploy to a temporary Firebase preview channel, cleaned up on PR close). All pipelines run typecheck + lint + build, so keep those green before pushing.
+- **CI/CD** (`.github/workflows/`): app changes pushed to `main` run `deploy.yml` (typecheck, lint, build, Cloud Run gateway source deployment, then Hosting). Commits changing only `.github/**` and/or this `CLAUDE.md` do not deploy, avoiding unnecessary cloud builds. For deployment-workflow changes that require a live redeploy, use the deploy workflow's manual `workflow_dispatch` on main; its normal cloud costs still apply.
+- PRs run `test.yml` (typecheck, lint, build, unit, gateway/load and E2E tests). Ordinary human PRs also retain their preview/cleanup and automatic AI-review behavior. Dependabot-authored PRs and sol's `security/sol-` branches skip previews, automatic paid AI review, persistent npm cache and Playwright report uploads; the test assertions and execution remain. Comment-triggered AI is unchanged.
 
 ## Conventions
 

@@ -12,7 +12,9 @@ permissions:
 jobs:
   preview:
     runs-on: ubuntu-latest
-    if: github.event.action != 'closed'
+    # Sol/bot PRs retain independent tests/build without preview side effects.
+    if: >-
+      github.event.action != 'closed' && !startsWith(github.head_ref, 'security/sol-') && github.event.pull_request.user.login != 'dependabot[bot]'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -53,7 +55,9 @@ jobs:
 
   cleanup:
     runs-on: ubuntu-latest
-    if: github.event.action == 'closed'
+    # No preview was created for these PRs.
+    if: >-
+      github.event.action == 'closed' && !startsWith(github.head_ref, 'security/sol-') && github.event.pull_request.user.login != 'dependabot[bot]'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
