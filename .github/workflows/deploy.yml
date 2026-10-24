@@ -4,9 +4,20 @@ on:
   push:
     branches:
       - main
+    # CI/instruction-only changes do not rebuild Cloud Run or Hosting.
+    paths-ignore:
+      - '.github/**'
+      - 'CLAUDE.md'
+  # Use explicitly for deployment-workflow changes that need a live redeploy.
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build-and-deploy:
+    # Manual deployment must use reviewed main, never an arbitrary branch.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
