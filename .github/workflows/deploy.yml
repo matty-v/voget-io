@@ -22,6 +22,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect gateway source changes
+        id: gateway_changes
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: bash .github/scripts/gateway-changes.sh
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -47,9 +58,11 @@ jobs:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Set up Google Cloud CLI
+        if: steps.gateway_changes.outputs.changed == 'true'
         uses: google-github-actions/setup-gcloud@v3
 
       - name: Deploy Kyber kiosk gateway
+        if: steps.gateway_changes.outputs.changed == 'true'
         run: |
           gcloud run deploy voget-io-kyber-gateway \
             --project kinetic-object-322814 \

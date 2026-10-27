@@ -21,6 +21,9 @@ jobs:
           # Sol/bot PRs avoid persistent cache storage; tests still run.
           cache: ${{ !startsWith(github.head_ref, 'security/sol-') && github.event.pull_request.user.login != 'dependabot[bot]' && 'npm' || '' }}
 
+      - name: Test deployment change guard
+        run: node --test .github/scripts/gateway-changes.test.mjs
+
       - name: Install dependencies
         run: npm ci
 
