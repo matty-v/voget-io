@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "lucide-react": "^0.562.0",
-    "mermaid": "^11.17.2",
+    "mermaid": "^12.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
@@ -46,5 +46,8 @@
     "typescript-eslint": "^8.46.4",
     "vite": "^7.3.7",
     "vitest": "^4.1.12"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

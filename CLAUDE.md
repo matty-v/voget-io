@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `voget-io` is a single-page personal portfolio site (voget.io) built with Vite + React 19 + TypeScript + Tailwind CSS v3, deployed to Firebase Hosting.
 
+## Runtime
+
+Frontend development, CI and Hosting builds require Node.js 22.12 or newer; workflows use Node 22. Mermaid 12 requires ES2024 browsers (Safari 17.4 or newer). The component explicitly keeps the previous dagre layout and classic look with strict security and the custom base theme.
+
 ## Commands
 
 ```bash
