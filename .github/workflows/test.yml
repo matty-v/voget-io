@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           # Sol/bot PRs avoid persistent cache storage; tests still run.
           cache: ${{ !startsWith(github.head_ref, 'security/sol-') && github.event.pull_request.user.login != 'dependabot[bot]' && 'npm' || '' }}
 
@@ -56,7 +56,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           # Sol/bot PRs avoid persistent cache storage; tests still run.
           cache: ${{ !startsWith(github.head_ref, 'security/sol-') && github.event.pull_request.user.login != 'dependabot[bot]' && 'npm' || '' }}
 

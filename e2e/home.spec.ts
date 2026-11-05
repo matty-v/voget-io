@@ -93,6 +93,26 @@ test.describe("Systems Index homepage", () => {
     expect(isScrollable).toBe(true);
   });
 
+  test("renders ordinary mathematical architecture labels", async ({ page }) => {
+    await page.route("**/api/kyber-kiosk/v1/requests", async (route) => {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          command: "architecture",
+          response: '```mermaid\nflowchart LR\n  Input["$$x^2$$"] --> Output["Result"]\n```',
+          live: true,
+        }),
+      });
+    });
+    await page.getByRole("button", { name: "Describe Kyber's architecture" }).click();
+    const diagram = page.getByRole("figure", { name: "Kyber architecture diagram" });
+    await expect(diagram.locator("svg")).toBeVisible();
+    await expect(diagram.locator(".katex")).toHaveCount(1);
+    await expect(diagram.locator("math")).toHaveCount(1);
+    await expect(diagram.locator("svg")).toContainText("Result");
+    await expect(page.getByText("The architecture diagram could not be rendered.")).toHaveCount(0);
+  });
+
   test("has correct social and contact links", async ({ page }) => {
     await expect(
       page.getByRole("link", { name: "GitHub" }).last(),

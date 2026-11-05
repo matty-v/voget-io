@@ -26,6 +26,8 @@ export default function MermaidDiagram({ chart }: MermaidDiagramProps) {
           mermaid.initialize({
             startOnLoad: false,
             securityLevel: "strict",
+            layout: "dagre",
+            look: "classic",
             theme: "base",
             flowchart: { htmlLabels: false, curve: "basis" },
             themeVariables: {
