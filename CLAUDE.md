@@ -36,6 +36,10 @@ There is no combined "typecheck" script — `npm run build` typechecks via `tsc 
 - **Import alias**: `@/` maps to `src/` — configured in three places that must stay in sync: `vite.config.ts`, `vitest.config.ts`, and `tsconfig.app.json`.
 - **Design system** lives in `src/index.css` as CSS custom properties (`--accent-cyan`, `--accent-purple`, `--accent-pink`, `--bg-primary`, etc.) plus glow/particle/grid background effects. Components reference these via arbitrary-value Tailwind classes like `bg-[var(--accent-cyan)]`. Tailwind theme tokens are in `tailwind.config.js`.
 
+## Dependency overrides
+
+The TypeScript parser alone uses an exact minimatch 11.0.4 override to address GHSA-g3hv-75wg-m249. This crosses typescript-estree's declared major range; remove it once the supported parent adopts patched minimatch. `npm run test:dependency-compat` verifies its actual CommonJS resolution, normal path matching, and the real parser project-service allowlist before the normal CI gates. Legacy minimatch 3 consumers are unchanged.
+
 ## Testing
 
 - **Unit tests** (Vitest, jsdom, Testing Library): colocated as `*.test.tsx` next to components; global setup in `src/test/setup.ts`. `globals: true` so `describe/it/expect` need no import.
